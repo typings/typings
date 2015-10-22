@@ -1,0 +1,93 @@
+{
+  "name": "tdw",
+  "version": "0.0.0",
+  "description": "The TypeScript definition dependency manager",
+  "main": "dist/tdw.js",
+  "preferGlobal": true,
+  "bin": {
+    "tdw": "dist/bin/tdw.js",
+    "tdw-install": "dist/bin/tdw-install.js",
+    "tdw-uninstall": "dist/bin/tdw-uninstall.js",
+    "tdw-init": "dist/bin/tdw-init.js"
+  },
+  "files": [
+    "dist/",
+    "tdw.json",
+    "LICENSE"
+  ],
+  "scripts": {
+    "lint": "# TODO",
+    "build": "rm -rf dist/ && tsc --project src",
+    "test-spec": "ts-node --project src node_modules/blue-tape/bin/blue-tape.js src/**/*.spec.ts | tap-dot",
+    "test-cov": "ts-node --project src node_modules/istanbul/lib/cli.js cover -e .ts --print none -x \"**/*.spec.ts\" blue-tape -- src/**/*.spec.ts | tap-dot",
+    "test": "npm run lint && npm run test-cov",
+    "bump-version": "FILE=\"src/bin/tdw.ts\"; if [ \"$(git status --porcelain | grep \"^ M \"$FILE)\" = \"\" ]; then VERSION=$(node -p \"require('./package.json').version\") && sed \"s/VERSION = '\\([0-9]*\\.[0-9]*\\.[0-9]*\\)'/VERSION = '\"$VERSION\"'/\" $FILE > .tmp.ts && mv .tmp.ts $FILE && git add $FILE; fi",
+    "prepublish": "npm run build"
+  },
+  "pre-commit": [
+    "bump-version",
+    "test"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/TypedWriter/cli.git"
+  },
+  "keywords": [
+    "typescript",
+    "definition",
+    "package",
+    "manager",
+    "writer",
+    "typed"
+  ],
+  "author": {
+    "name": "Blake Embrey",
+    "email": "hello@blakeembrey.com",
+    "url": "http://blakeembrey.me"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/TypedWriter/cli/issues"
+  },
+  "homepage": "https://github.com/TypedWriter/cli",
+  "dependencies": {
+    "array-uniq": "^1.0.2",
+    "arrify": "^1.0.0",
+    "bluebird": "^2.10.0",
+    "chalk": "^1.0.0",
+    "commander": "^2.8.1",
+    "detect-indent": "^4.0.0",
+    "elegant-spinner": "^1.0.1",
+    "es6-promise": "^3.0.2",
+    "graceful-fs": "^4.1.2",
+    "has": "^1.0.1",
+    "invariant": "^2.0.0",
+    "log-update": "^1.0.2",
+    "minimist": "^1.2.0",
+    "mkdirp": "^0.5.1",
+    "native-or-bluebird": "^1.2.0",
+    "object-values": "^1.0.0",
+    "parse-json": "^2.2.0",
+    "popsicle": "^1.1.0",
+    "popsicle-cache": "0.0.4",
+    "popsicle-status": "^0.2.0",
+    "promise-finally": "^1.0.0",
+    "rimraf": "^2.4.3",
+    "semver": "^5.0.1",
+    "sort-keys": "^1.0.0",
+    "strip-bom": "^2.0.0",
+    "thenify": "^3.1.0",
+    "thenify-all": "^1.6.0",
+    "typescript": "^1.6.2",
+    "util-partial": "^1.0.0",
+    "xtend": "^4.0.0",
+    "zip-object": "^0.1.0"
+  },
+  "devDependencies": {
+    "blue-tape": "^0.1.10",
+    "istanbul": "blakeembrey/istanbul#transpiler-support",
+    "pre-commit": "^1.0.6",
+    "tap-dot": "^1.0.0",
+    "ts-node": "^0.2.0"
+  }
+}

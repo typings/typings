@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "dep": "file:typings/dep.d.ts"
+  },
+  "devDependencies": {
+    "dev-dep": "bower:dep"
+  }
+}

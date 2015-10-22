@@ -1,0 +1,8 @@
+{
+  "name": "bower-dep",
+  "main": "index.js",
+  "typings": "bower-dep.d.ts",
+  "dependencies": {
+    "example": "*"
+  }
+}

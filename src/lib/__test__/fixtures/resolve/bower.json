@@ -1,0 +1,6 @@
+{
+  "name": "foobar",
+  "dependencies": {
+    "bower-dep": "*"
+  }
+}
