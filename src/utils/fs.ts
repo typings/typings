@@ -19,8 +19,10 @@ import { ConfigJson } from '../interfaces/main'
 // Create a file cache for popsicle.
 const requestFileCache = popsicleCache()
 
-const mainTypingsDir = join(TYPINGS_DIR, 'main')
-const browserTypingsDir = join(TYPINGS_DIR, 'browser')
+const mainTypingsDir = join(TYPINGS_DIR, 'definitions/main')
+const browserTypingsDir = join(TYPINGS_DIR, 'definitions/browser')
+const ambientMainTypingsDir = join(TYPINGS_DIR, 'ambient/main')
+const ambientBrowserTypingsDir = join(TYPINGS_DIR, 'ambient/browser')
 
 export type Stats = fs.Stats
 
@@ -140,12 +142,11 @@ export function transformDtsFile (path: string, transform: (typings: string[]) =
 export interface DefinitionOptions {
   cwd: string
   name: string
+  ambient: boolean
 }
 
 export function writeDependency (contents: { main: string; browser: string }, options: DefinitionOptions): Promise<boolean> {
-  const typingsDir = join(options.cwd, TYPINGS_DIR)
-  const mainFile = join(options.cwd, mainTypingsDir, toDefinition(options.name))
-  const browserFile = join(options.cwd, browserTypingsDir, toDefinition(options.name))
+  const { mainFile, browserFile, mainDtsFile, browserDtsFile } = getDependencyLocation(options)
 
   return Promise.all([
     mkdirp(join(options.cwd, mainTypingsDir)),
@@ -159,30 +160,40 @@ export function writeDependency (contents: { main: string; browser: string }, op
     })
     .then(() => {
       return Promise.all([
-        transformDtsFile(join(typingsDir, DTS_MAIN_FILE), typings => typings.concat([mainFile])),
-        transformDtsFile(join(typingsDir, DTS_BROWSER_FILE), typings => typings.concat([browserFile]))
+        transformDtsFile(mainDtsFile, typings => typings.concat([mainFile])),
+        transformDtsFile(browserDtsFile, typings => typings.concat([browserFile]))
       ])
     })
     .then(() => undefined)
 }
 
-export function removeDependency (name: string, options: { cwd: string }) {
-  const typingsDir = join(options.cwd, TYPINGS_DIR)
-  const mainFile = join(options.cwd, mainTypingsDir, toDefinition(name))
-  const browserFile = join(options.cwd, browserTypingsDir, toDefinition(name))
+export function removeDependency (options: DefinitionOptions) {
+  const { mainFile, browserFile, mainDtsFile, browserDtsFile } = getDependencyLocation(options)
 
   return Promise.all([
     unlink(mainFile).catch(() => false),
     unlink(browserFile).catch(() => false)
   ])
     .then(() => {
-      const mainDtsFile = join(typingsDir, DTS_MAIN_FILE)
-      const browserDtsFile = join(typingsDir, DTS_BROWSER_FILE)
-
       return Promise.all([
         transformDtsFile(mainDtsFile, typings => typings.filter(x => x !== mainFile)),
         transformDtsFile(browserDtsFile, typings => typings.filter(x => x !== browserFile))
       ])
     })
     .then(() => undefined)
+}
+
+/**
+ * Return the dependency output locations based on definition options.
+ */
+function getDependencyLocation (options: DefinitionOptions) {
+  const typingsDir = join(options.cwd, TYPINGS_DIR)
+  const mainDtsFile = join(typingsDir, DTS_MAIN_FILE)
+  const browserDtsFile = join(typingsDir, DTS_BROWSER_FILE)
+  const mainDir = options.ambient ? ambientMainTypingsDir : mainTypingsDir
+  const browserDir = options.ambient ? ambientBrowserTypingsDir : browserTypingsDir
+  const mainFile = join(options.cwd, mainDir, toDefinition(options.name))
+  const browserFile = join(options.cwd, browserDir, toDefinition(options.name))
+
+  return { mainFile, browserFile, mainDtsFile, browserDtsFile }
 }

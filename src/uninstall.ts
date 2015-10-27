@@ -6,14 +6,17 @@ export interface UninstallDependencyOptions {
   save?: boolean
   saveDev?: boolean
   saveAmbient?: boolean
+  ambient?: boolean
   cwd: string
 }
 
 export function uninstallDependency (name: string, options: UninstallDependencyOptions) {
+  const ambient = options.saveAmbient || options.ambient
+
   return findProject(options.cwd)
     .then(
-      (cwd) => removeDependency(name, extend(options, { cwd })).then(() => writeToConfig(name, options)),
-      () => removeDependency(name, options)
+      (cwd) => removeDependency(extend(options, { cwd, name, ambient })).then(() => writeToConfig(name, options)),
+      () => removeDependency(extend(options, { name, ambient }))
     )
 }
 

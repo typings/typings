@@ -10,6 +10,7 @@ interface Args {
   save: boolean
   saveDev: boolean
   saveAmbient: boolean
+  ambient: boolean
   verbose: boolean
 }
 
