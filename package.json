@@ -18,8 +18,8 @@
   "scripts": {
     "lint": "# TODO",
     "build": "rm -rf dist/ && tsc --project src",
-    "test-spec": "ts-node --project src node_modules/blue-tape/bin/blue-tape.js src/**/*.spec.ts | tap-dot",
-    "test-cov": "ts-node --project src node_modules/istanbul/lib/cli.js cover -e .ts --print none -x \"**/*.spec.ts\" blue-tape -- src/**/*.spec.ts | tap-dot",
+    "test-spec": "ts-node --project src node_modules/blue-tape/bin/blue-tape.js test/**/*.ts src/**/*.spec.ts | tap-dot",
+    "test-cov": "ts-node --project src node_modules/istanbul/lib/cli.js cover -e .ts --print none -x \"*.spec.ts\" blue-tape -- test/**/*.ts src/**/*.spec.ts | tap-dot",
     "test": "npm run lint && npm run test-cov",
     "bump-version": "FILE=\"src/bin/tdw.ts\"; if [ \"$(git status --porcelain | grep \"^ M \"$FILE)\" = \"\" ]; then VERSION=$(node -p \"require('./package.json').version\") && sed \"s/VERSION = '\\([0-9]*\\.[0-9]*\\.[0-9]*\\)'/VERSION = '\"$VERSION\"'/\" $FILE > .tmp.ts && mv .tmp.ts $FILE && git add $FILE; fi",
     "prepublish": "npm run build"
@@ -53,7 +53,6 @@
   "dependencies": {
     "array-uniq": "^1.0.2",
     "arrify": "^1.0.0",
-    "bluebird": "^3.0.1",
     "chalk": "^1.0.0",
     "commander": "^2.8.1",
     "detect-indent": "^4.0.0",
@@ -65,7 +64,6 @@
     "log-update": "^1.0.2",
     "minimist": "^1.2.0",
     "mkdirp": "^0.5.1",
-    "native-or-bluebird": "^1.2.0",
     "object-values": "^1.0.0",
     "parse-json": "^2.2.0",
     "popsicle": "^1.1.0",

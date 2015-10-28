@@ -5,6 +5,8 @@ import extend = require('xtend')
 import { install, installDependency } from '../tdw'
 import { wrapExecution } from '../utils/cli'
 
+require('es6-promise').polyfill()
+
 interface Args {
   _: string[]
   save?: boolean

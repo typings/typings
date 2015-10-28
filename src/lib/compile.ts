@@ -1,5 +1,4 @@
 import * as ts from 'typescript'
-import Promise = require('native-or-bluebird')
 import extend = require('xtend')
 import zipObject = require('zip-object')
 import partial = require('util-partial')

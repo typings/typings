@@ -2,7 +2,6 @@ import extend = require('xtend')
 import invariant = require('invariant')
 import stripBom = require('strip-bom')
 import arrify = require('arrify')
-import Promise = require('native-or-bluebird')
 import zipObject = require('zip-object')
 import partial = require('util-partial')
 import { resolve as resolveUrl } from 'url'
