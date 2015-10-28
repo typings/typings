@@ -17,7 +17,7 @@ test('compile', t => {
         src: join(FIXTURE_DIR, CONFIG_FILE),
         missing: false,
         ambient: false,
-        main: join(FIXTURE_DIR, 'root'),
+        main: 'root',
         browser: {
           b: 'browser'
         },
@@ -32,8 +32,8 @@ test('compile', t => {
         missing: false,
         ambient: false,
         main: undefined,
-        typings: join(FIXTURE_DIR, 'a/typed.d.ts'),
-        browserTypings: join(FIXTURE_DIR, 'a/typed.browser.d.ts'),
+        typings: 'typed.d.ts',
+        browserTypings: 'typed.browser.d.ts',
         dependencies: {},
         devDependencies: {},
         ambientDependencies: {}
@@ -41,11 +41,11 @@ test('compile', t => {
 
       const b: DependencyTree = {
         type: PROJECT_NAME,
-        src: __filename,
+        src: join(FIXTURE_DIR, 'bower.json'),
         missing: false,
         ambient: false,
         main: undefined,
-        typings: join(FIXTURE_DIR, 'typings/b.d.ts'),
+        typings: 'typings/b.d.ts',
         dependencies: {},
         devDependencies: {},
         ambientDependencies: {}
@@ -53,11 +53,11 @@ test('compile', t => {
 
       const browser: DependencyTree = {
         type: PROJECT_NAME,
-        src: __filename,
+        src: join(FIXTURE_DIR, 'package.json'),
         missing: false,
         ambient: false,
         main: undefined,
-        typings: join(FIXTURE_DIR, 'browser.d.ts'),
+        typings: 'browser.d.ts',
         dependencies: {},
         devDependencies: {},
         ambientDependencies: {}
@@ -68,7 +68,7 @@ test('compile', t => {
         src: join(FIXTURE_DIR, `dep/${CONFIG_FILE}`),
         missing: false,
         ambient: false,
-        main: join(FIXTURE_DIR, 'dep/main.d.ts'),
+        main: 'dep/main.d.ts',
         dependencies: {},
         devDependencies: {},
         ambientDependencies: {}

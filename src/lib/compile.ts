@@ -44,14 +44,14 @@ interface CompileOptions extends Options {
 function getStringifyOptions (tree: DependencyTree, options: CompileOptions) {
   const overrides: Overrides = {}
   const isTypings = typeof tree.typings === 'string'
-  const entry = isTypings ? tree.typings : tree.main
+  const main = isTypings ? tree.typings : tree.main
   const browser = isTypings ? tree.browserTypings : tree.browser
 
   // TODO(blakeembrey): Warn when using `typings` and a browser field.
 
   if (options.browser && browser) {
     if (typeof browser === 'string') {
-      const mainDefinition = resolveFrom(tree.src, normalizeToDefinition(entry))
+      const mainDefinition = resolveFrom(tree.src, normalizeToDefinition(main))
       const browserDefinition = resolveFrom(tree.src, normalizeToDefinition(<string> browser))
 
       overrides[mainDefinition] = browserDefinition
@@ -74,10 +74,11 @@ function getStringifyOptions (tree: DependencyTree, options: CompileOptions) {
   const imported: ts.Map<boolean> = {}
   const files: ts.Map<Promise<string>> = {}
   const dependencies: ts.Map<StringifyOptions> = {}
+  const entry = resolveFrom(tree.src, normalizeToDefinition(main))
 
   return extend(options, {
     tree,
-    entry: normalizeToDefinition(entry),
+    entry,
     isTypings,
     overrides,
     files,
