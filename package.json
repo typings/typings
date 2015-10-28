@@ -1,6 +1,6 @@
 {
   "name": "tdw",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "The TypeScript definition dependency manager",
   "main": "dist/tdw.js",
   "preferGlobal": true,

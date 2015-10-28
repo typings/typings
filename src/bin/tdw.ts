@@ -3,7 +3,7 @@
 import minimist = require('minimist')
 import { spawn } from 'child_process'
 
-const VERSION = '0.0.0'
+const VERSION = '0.0.1'
 
 const ALIASES: { [cmd: string]: string } = {
   // Install.
