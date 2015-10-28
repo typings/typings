@@ -54,12 +54,33 @@ export function resolveFrom (from: string, to: string) {
 /**
  * Make a path relative to another.
  */
-export function relativeTo (from: string, to: string) {
-  if (isHttp(to)) {
+export function relativeTo (from: string, to: string): string {
+  if (isHttp(from)) {
+    if (isHttp(to)) {
+      const fromUrl = parseUrl(from)
+      const toUrl = parseUrl(to)
+
+      if (toUrl.auth !== fromUrl.auth || toUrl.host !== fromUrl.host) {
+        return to
+      }
+
+      let relativeUrl = relativeTo(fromUrl.pathname, toUrl.pathname)
+
+      if (toUrl.search) {
+        relativeUrl += toUrl.search
+      }
+
+      if (toUrl.hash) {
+        relativeUrl += toUrl.hash
+      }
+
+      return relativeUrl
+    }
+
     return to
   }
 
-  return isHttp(from) ? resolveUrl(from, to) : relative(dirname(from), to)
+  return relative(dirname(from), to)
 }
 
 /**
