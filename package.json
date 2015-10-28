@@ -53,6 +53,7 @@
   "dependencies": {
     "array-uniq": "^1.0.2",
     "arrify": "^1.0.0",
+    "bluebird": "^3.0.1",
     "chalk": "^1.0.0",
     "commander": "^2.8.1",
     "detect-indent": "^4.0.0",
