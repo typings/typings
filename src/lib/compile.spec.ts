@@ -1,9 +1,11 @@
 import test = require('blue-tape')
+import Promise = require('native-or-bluebird')
 import { EOL } from 'os'
 import { join } from 'path'
 import compile from './compile'
 import { DependencyTree } from '../interfaces/main'
 import { PROJECT_NAME, CONFIG_FILE } from '../utils/config'
+import { readFile } from '../utils/fs'
 
 const FIXTURES_DIR = join(__dirname, '__test__/fixtures')
 
@@ -172,6 +174,31 @@ test('compile', t => {
             '}',
             'declare var __dirname: string'
           ].join(EOL))
+        })
+    })
+
+    t.test('compile inline ambient definitions', t => {
+      const FIXTURE_DIR = join(FIXTURES_DIR, 'compile-inline-ambient')
+      const typings = join(FIXTURE_DIR, 'node.d.ts')
+
+      const node: DependencyTree = {
+        type: PROJECT_NAME,
+        src: __filename,
+        missing: false,
+        ambient: true,
+        typings,
+        dependencies: {},
+        devDependencies: {},
+        ambientDependencies: {}
+      }
+
+      return Promise.all<any>([
+        compile(node, { name: 'name', cwd: __dirname, ambient: true }),
+        readFile(typings, 'utf8')
+      ])
+        .then(([result, contents] = []) => {
+          t.equal(`${result.main}\n`, contents)
+          t.equal(`${result.browser}\n`, contents)
         })
     })
   })

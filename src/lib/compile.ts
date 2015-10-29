@@ -150,7 +150,11 @@ function getDependency (name: string, options: StringifyOptions) {
     return tree.dependencies[overrides[name]]
   }
 
-  return tree.dependencies[name]
+  if (has(tree.dependencies, name)) {
+    return tree.dependencies[name]
+  }
+
+  throw new TypeError(`Unable to resolve "${name}" from "${options.name}"`)
 }
 
 /**
@@ -167,13 +171,14 @@ function stringifyDependencyPath (path: string, options: StringifyOptions): Prom
     .then(contents => {
       const info = ts.preProcessFile(contents)
       const { tree, ambient, cwd, browser, name } = options
+      const ambientModules = info.ambientExternalModules || []
 
       // Skip output of lib files.
       if (info.isLibFile) {
         return
       }
 
-      if (info.ambientExternalModules && !ambient) {
+      if (ambientModules.length && !ambient) {
         return Promise.reject(new TypeError(`Attempted to compile ${name} as non-ambient when it contains external module declarations`))
       }
 
@@ -188,6 +193,11 @@ function stringifyDependencyPath (path: string, options: StringifyOptions): Prom
       const imports = importedFiles.map(path => {
         // Return `null` to skip the dependency writing, could have the same import twice.
         if (has(options.imported, path)) {
+          return
+        }
+
+        // Support inline ambient module declarations.
+        if (ambientModules.indexOf(path) > -1) {
           return
         }
 

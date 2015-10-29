@@ -150,8 +150,8 @@ export function writeDependency (contents: { main: string; browser: string }, op
   const { mainFile, browserFile, mainDtsFile, browserDtsFile } = getDependencyLocation(options)
 
   return Promise.all([
-    mkdirp(join(options.cwd, mainTypingsDir)),
-    mkdirp(join(options.cwd, browserTypingsDir))
+    mkdirp(dirname(mainFile)),
+    mkdirp(dirname(browserFile))
   ])
     .then(() => {
       return Promise.all([
