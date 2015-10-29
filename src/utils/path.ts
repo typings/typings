@@ -1,5 +1,6 @@
 import { resolve as resolveUrl, parse as parseUrl } from 'url'
-import { resolve, dirname, basename, isAbsolute, relative, extname } from 'path'
+import { resolve, dirname, basename, relative, extname } from 'path'
+import isAbsolute = require('is-absolute')
 
 /**
  * Check if a path looks like a HTTP url.

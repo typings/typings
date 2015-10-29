@@ -1,4 +1,5 @@
 import extend = require('xtend')
+import Promise = require('native-or-bluebird')
 import { dirname } from 'path'
 import { resolveDependency, resolveTypeDependencies } from './lib/dependencies'
 import compile from './lib/compile'

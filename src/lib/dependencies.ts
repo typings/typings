@@ -4,6 +4,7 @@ import stripBom = require('strip-bom')
 import arrify = require('arrify')
 import zipObject = require('zip-object')
 import partial = require('util-partial')
+import Promise = require('native-or-bluebird')
 import { resolve as resolveUrl } from 'url'
 import { resolve, dirname, join } from 'path'
 import { readJson, readConfigFrom, readJsonFrom, readConfig } from '../utils/fs'

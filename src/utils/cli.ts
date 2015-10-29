@@ -1,6 +1,7 @@
 import logUpdate = require('log-update')
 import spinner = require('elegant-spinner')
 import chalk = require('chalk')
+import Promise = require('native-or-bluebird')
 import promiseFinally from 'promise-finally'
 
 export interface Options {

@@ -4,6 +4,7 @@ import zipObject = require('zip-object')
 import partial = require('util-partial')
 import has = require('has')
 import values = require('object-values')
+import Promise = require('native-or-bluebird')
 import { EOL } from 'os'
 import { join } from 'path'
 import { DependencyTree, DependencyBranch, Browser, Overrides } from '../interfaces/main'

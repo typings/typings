@@ -5,8 +5,6 @@ import extend = require('xtend')
 import { init } from '../tdw'
 import { wrapExecution } from '../utils/cli'
 
-require('es6-promise').polyfill()
-
 interface ArgvOptions {
   upgrade: boolean
   verbose: boolean

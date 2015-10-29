@@ -1,4 +1,5 @@
 import { join, dirname } from 'path'
+import Promise = require('native-or-bluebird')
 import { isFile } from '../utils/fs'
 import { CONFIG_FILE } from './config'
 

@@ -1,5 +1,6 @@
 import { EOL } from 'os'
-import { resolve, relative, isAbsolute, normalize } from 'path'
+import { resolve, relative, normalize } from 'path'
+import isAbsolute = require('is-absolute')
 
 /**
  * Match reference tags in a file. Matching the newline before the
