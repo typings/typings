@@ -15,7 +15,7 @@ npm install tdw --global
 
 ## Usage
 
-**TDW** provides a simple way for dependencies to be maintained and installed. By resolving over various sources recursively, type definitions can be recursively compiled into a single definition for bundling.
+**TDW** provides a simple way for dependencies to be installed and maintained. By resolving over different sources recursively, type definitions can be compiled into a single definition for bundling - without any version conflicts.
 
 ### Init
 
@@ -23,7 +23,7 @@ npm install tdw --global
 tdw init
 ```
 
-Initialize a new package definition at this location.
+Initialize a new type definition at this location.
 
 ### Install
 
@@ -31,7 +31,7 @@ Initialize a new package definition at this location.
 tdw install [location] --name [name]
 ```
 
-Install a package dependency, and optionally write it into the configuration file.
+Install a type dependency, and optionally save it in the configuration file.
 
 #### Flags
 
@@ -50,7 +50,7 @@ Install a package dependency, and optionally write it into the configuration fil
 * `npm:<package>/<path>`
 * `bower:<package>/<path>`
 
-Where `path` can either be `tdw.json` file, a `.d.ts` file or empty.
+Where `path` can either be `tdw.json` file, a `.d.ts` file or empty (it will automatically append `tdw.json` to the path).
 
 ### Uninstall
 
@@ -58,7 +58,7 @@ Where `path` can either be `tdw.json` file, a `.d.ts` file or empty.
 tdw uninstall [name]
 ```
 
-### Writing Definitions
+### Writing Type Dependencies
 
 Writing a new type definition is as simple as creating a new package. Start with a new `tdw.json` file, and add dependencies as you would normally. When you publish on GitHub, locally, in a package or even on your own website, someone else can install it and use it.
 
@@ -76,14 +76,20 @@ Writing a new type definition is as simple as creating a new package. Start with
 ```
 
 * **main** The entry point to the definition
-* **browser** A string or map of paths to override when resolving
-* **ambient** Specify that this definition must be installed as ambient
+* **browser** A string or map of paths to override when resolving (just like `browser` in `package.json`)
+* **ambient** Specify that this definition _must_ be installed as ambient
 * **name** The name of the definition
 * **dependencies** A map of dependencies that need installing
 * **devDependencies** A map of development dependencies that need installing
 * **ambientDependencies** A map of environment dependencies that need installing
 
-**Please note:** The dependencies map can accept either strings, or an array of strings, as the location of the dependency. For most people, a string is more than enough. However, in some cases it's possible that a type definition is available at multiple locations and should be resolved to the first available. For example, publishing a type definition and referring to an `npm:<package>` that might not be installed. In this situation, you could have a second source as `github:<org>/<package>` to install from.
+#### Multiple Dependency Sources
+
+The dependencies map can accept either strings, or an array of strings, which points to the location of the dependency. For most people, a single string is more than enough. In some cases it's possible that a type definition is available from multiple locations and will be resolved to the first available. For example, publishing a type definition and referring to `npm:<package>` that might not be available. In this situation, you can have a second source as `github:<org>/<package>` to install from.
+
+#### What Are Ambient Dependencies?
+
+Ambient dependencies are definitions which provide an environment. Such dependencies could be `node`, `browserify`, `window` or even `Array.prototype.map`. These are globals that exist, you do not "require" them.
 
 ## License
 
