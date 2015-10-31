@@ -145,7 +145,7 @@ test('compile', t => {
         src: join(FIXTURE_DIR, CONFIG_FILE),
         missing: false,
         ambient: false,
-        typings: 'file.d.ts',
+        main: 'file.d.ts',
         dependencies: {},
         devDependencies: {},
         ambientDependencies: {}
@@ -154,7 +154,7 @@ test('compile', t => {
       return compile(file, { name: 'foobar', cwd: __dirname, ambient: false })
         .then(results => {
           t.equal(results.main, [
-            'declare module \'foobar\' {',
+            'declare module \'foobar/file\' {',
             'function foo (value: string): foo.Bar;',
             '',
             'module foo {',
@@ -166,6 +166,10 @@ test('compile', t => {
             '}',
             '',
             'export = foo;',
+            '}',
+            'declare module \'foobar\' {',
+            'import main = require(\'foobar/file\');',
+            'export = main;',
             '}'
           ].join(EOL))
         })

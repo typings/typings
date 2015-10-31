@@ -267,7 +267,7 @@ function stringifyFile (path: string, contents: string, options: StringifyOption
   function replacer (node: ts.Node) {
     // Flag `export =` as the main re-definition needs to be written different.
     if (node.kind === ts.SyntaxKind.ExportAssignment) {
-      isES6Export = (<ts.ExportAssignment> node).isExportEquals
+      isES6Export = !(<ts.ExportAssignment> node).isExportEquals
     }
 
     if (
