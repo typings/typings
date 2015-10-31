@@ -1,11 +1,11 @@
-# TypeScript Definition Writer
+# TypeScript Definition Installer
 
 [![NPM version][npm-image]][npm-url]
 [![NPM downloads][downloads-image]][downloads-url]
 [![Build status][travis-image]][travis-url]
 [![Test coverage][coveralls-image]][coveralls-url]
 
-> The TypeScript definition dependency manager.
+> The TypeScript definition manager.
 
 ## Installation
 
@@ -15,7 +15,11 @@ npm install typings --global
 
 ## Usage
 
-**Typings** provides a simple way for dependencies to be installed and maintained. By resolving over different sources recursively, type definitions can be compiled into a single definition for bundling - without any version conflicts.
+**Typings** provides a simple way for type dependencies to be installed and maintained. By resolving over various sources recursively, type definitions can be compiled into a single definition for bundling - avoiding any version conflicts.
+
+```sh
+typings install https://raw.githubusercontent.com/borisyankov/DefinitelyTyped/master/node/node.d.ts --name node --ambient
+```
 
 ### Init
 
@@ -23,7 +27,7 @@ npm install typings --global
 typings init
 ```
 
-Initialize a new type definition at this location.
+Initialize a new typings project at this location.
 
 ### Install
 
@@ -50,7 +54,7 @@ Install a type dependency, and optionally save it in the configuration file.
 * `npm:<package>/<path>`
 * `bower:<package>/<path>`
 
-Where `path` can either be `typings.json` file, a `.d.ts` file or empty (it will automatically append `typings.json` to the path).
+Where `path` can either be `typings.json` file, a `.d.ts` file, or empty (it will automatically append `typings.json` when the path is not a `.d.ts` file).
 
 ### Uninstall
 
@@ -60,7 +64,7 @@ typings uninstall [name]
 
 ### Writing Type Dependencies
 
-Writing a new type definition is as simple as creating a new package. Start with a new `typings.json` file, and add dependencies as you would normally. When you publish on GitHub, locally, in a package or even on your own website, someone else can install it and use it.
+Writing a new type definition is as simple as creating a new package. Start by creating a new `typings.json` file, then add dependencies as you would normally. When you publish to GitHub, locally, alongside a package (NPM or Bower) or even on your own website, someone else can install it and use it.
 
 ```json
 {
