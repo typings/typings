@@ -6,7 +6,7 @@ import isAbsolute = require('is-absolute')
  * Match reference tags in a file. Matching the newline before the
  * reference to remove unwanted data when removing the line from the file.
  */
-const REFERENCE_REGEXP = /[ \t]*\/\/\/[ \t]*<reference[ \t]+path=(["'])([^'"]*)\1[ \t]*\/>[ \t]*\r?\n?/gm
+export const REFERENCE_REGEXP = /^\/\/\/[ \t]*<reference[ \t]+path[ \t]*=("|')(.*?)\1.*?\/>[ \t]*\r?\n?/gm
 
 /**
  * References come back in a semi-useful structure to enable slicing them

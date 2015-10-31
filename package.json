@@ -1,18 +1,18 @@
 {
-  "name": "tdw",
+  "name": "typings",
   "version": "0.0.1",
   "description": "The TypeScript definition dependency manager",
-  "main": "dist/tdw.js",
+  "main": "dist/typings.js",
   "preferGlobal": true,
   "bin": {
-    "tdw": "dist/bin/tdw.js",
-    "tdw-install": "dist/bin/tdw-install.js",
-    "tdw-uninstall": "dist/bin/tdw-uninstall.js",
-    "tdw-init": "dist/bin/tdw-init.js"
+    "typings": "dist/bin/typings.js",
+    "typings-install": "dist/bin/typings-install.js",
+    "typings-uninstall": "dist/bin/typings-uninstall.js",
+    "typings-init": "dist/bin/typings-init.js"
   },
   "files": [
     "dist/",
-    "tdw.json",
+    "typings.json",
     "LICENSE"
   ],
   "scripts": {
@@ -21,7 +21,7 @@
     "test-spec": "ts-node --project src node_modules/blue-tape/bin/blue-tape.js test/**/*.ts src/**/*.spec.ts | tap-dot",
     "test-cov": "ts-node --project src node_modules/istanbul/lib/cli.js cover -e .ts --print none -x \"*.spec.ts\" blue-tape -- test/**/*.ts src/**/*.spec.ts | tap-dot",
     "test": "npm run lint && npm run test-cov",
-    "bump-version": "FILE=\"src/bin/tdw.ts\"; if [ \"$(git status --porcelain | grep \"^ M \"$FILE)\" = \"\" ]; then VERSION=$(node -p \"require('./package.json').version\") && sed \"s/VERSION = '\\([0-9]*\\.[0-9]*\\.[0-9]*\\)'/VERSION = '\"$VERSION\"'/\" $FILE > .tmp.ts && mv .tmp.ts $FILE && git add $FILE; fi",
+    "bump-version": "FILE=\"src/bin/typings.ts\"; if [ \"$(git status --porcelain | grep \"^ M \"$FILE)\" = \"\" ]; then VERSION=$(node -p \"require('./package.json').version\") && sed \"s/VERSION = '\\([0-9]*\\.[0-9]*\\.[0-9]*\\)'/VERSION = '\"$VERSION\"'/\" $FILE > .tmp.ts && mv .tmp.ts $FILE && git add $FILE; fi",
     "prepublish": "npm run build"
   },
   "pre-commit": [
@@ -30,7 +30,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/TypedWriter/cli.git"
+    "url": "git://github.com/typings/cli.git"
   },
   "keywords": [
     "typescript",
@@ -47,9 +47,9 @@
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/TypedWriter/cli/issues"
+    "url": "https://github.com/typings/cli/issues"
   },
-  "homepage": "https://github.com/TypedWriter/cli",
+  "homepage": "https://github.com/typings/cli",
   "dependencies": {
     "array-uniq": "^1.0.2",
     "arrify": "^1.0.0",

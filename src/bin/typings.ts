@@ -26,10 +26,10 @@ const argv = minimist<{ _: string[] }>(process.argv.slice(2), {
 const command = ALIASES[argv._[0]]
 
 if (command != null) {
-  spawn(`tdw-${command}`, argv._.slice(1), { stdio: 'inherit' })
+  spawn(`typings-${command}`, argv._.slice(1), { stdio: 'inherit' })
 } else {
   // Print documentation.
-  
+
   // Commands:
   // install [src] --name [name]
   // uninstall [name]

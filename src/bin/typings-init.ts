@@ -2,7 +2,7 @@
 
 import minimist = require('minimist')
 import extend = require('xtend')
-import { init } from '../tdw'
+import { init } from '../typings'
 import { wrapExecution } from '../utils/cli'
 
 interface ArgvOptions {

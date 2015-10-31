@@ -72,7 +72,7 @@ test('dependencies', t => {
       //   type: PROJECT_NAME,
       //   ambient: false,
       //   missing: true,
-      //   src: 'https://raw.githubusercontent.com/foo/bar/master/tdw.json',
+      //   src: 'https://raw.githubusercontent.com/foo/bar/master/typings.json',
       //   main: undefined,
       //   typings: {},
       //   dependencies: {},

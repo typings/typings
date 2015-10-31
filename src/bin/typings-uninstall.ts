@@ -2,21 +2,20 @@
 
 import minimist = require('minimist')
 import extend = require('xtend')
-import { install, installDependency } from '../tdw'
+import { uninstallDependency } from '../typings'
 import { wrapExecution } from '../utils/cli'
 
 interface Args {
   _: string[]
-  save?: boolean
-  saveDev?: boolean
-  saveAmbient?: boolean
-  name: string
+  save: boolean
+  saveDev: boolean
+  saveAmbient: boolean
+  ambient: boolean
   verbose: boolean
 }
 
 const args = minimist<Args>(process.argv.slice(2), {
   boolean: ['save', 'saveAmbient', 'saveDev', 'ambient', 'verbose'],
-  string: ['name'],
   alias: {
     save: ['S'],
     saveAmbient: ['A', 'save-ambient'],
@@ -29,8 +28,6 @@ const args = minimist<Args>(process.argv.slice(2), {
 
 const options = extend(args, { cwd: process.cwd() })
 
-if (!args._.length) {
-  wrapExecution(install(options), options)
-} else {
-  wrapExecution(installDependency(args._[0], options), options)
+if (args._.length) {
+  wrapExecution(uninstallDependency(args._[0], options), options)
 }

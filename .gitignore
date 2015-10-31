@@ -3,4 +3,4 @@ coverage/
 .DS_Store
 npm-debug.log
 dist/
-tdw_typings/
+typings/

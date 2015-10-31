@@ -10,17 +10,17 @@
 ## Installation
 
 ```sh
-npm install tdw --global
+npm install typings --global
 ```
 
 ## Usage
 
-**TDW** provides a simple way for dependencies to be installed and maintained. By resolving over different sources recursively, type definitions can be compiled into a single definition for bundling - without any version conflicts.
+**Typings** provides a simple way for dependencies to be installed and maintained. By resolving over different sources recursively, type definitions can be compiled into a single definition for bundling - without any version conflicts.
 
 ### Init
 
 ```sh
-tdw init
+typings init
 ```
 
 Initialize a new type definition at this location.
@@ -28,16 +28,16 @@ Initialize a new type definition at this location.
 ### Install
 
 ```sh
-tdw install [location] --name [name]
+typings install [location] --name [name]
 ```
 
 Install a type dependency, and optionally save it in the configuration file.
 
 #### Flags
 
-* **--save, -S** Save to `tdw.json`
-* **--save-dev, -D** Save as a dev dependency to `tdw.json`
-* **--save-ambient, -A** Save as an ambient dependency to `tdw.json`
+* **--save, -S** Save to `typings.json`
+* **--save-dev, -D** Save as a dev dependency to `typings.json`
+* **--save-ambient, -A** Save as an ambient dependency to `typings.json`
 * **--ambient** Write as an ambient dependency
 * **--name** The name of the dependency
 
@@ -50,21 +50,21 @@ Install a type dependency, and optionally save it in the configuration file.
 * `npm:<package>/<path>`
 * `bower:<package>/<path>`
 
-Where `path` can either be `tdw.json` file, a `.d.ts` file or empty (it will automatically append `tdw.json` to the path).
+Where `path` can either be `typings.json` file, a `.d.ts` file or empty (it will automatically append `typings.json` to the path).
 
 ### Uninstall
 
 ```sh
-tdw uninstall [name]
+typings uninstall [name]
 ```
 
 ### Writing Type Dependencies
 
-Writing a new type definition is as simple as creating a new package. Start with a new `tdw.json` file, and add dependencies as you would normally. When you publish on GitHub, locally, in a package or even on your own website, someone else can install it and use it.
+Writing a new type definition is as simple as creating a new package. Start with a new `typings.json` file, and add dependencies as you would normally. When you publish on GitHub, locally, in a package or even on your own website, someone else can install it and use it.
 
 ```json
 {
-  "name": "tdw",
+  "name": "typings",
   "main": "path/to/definition.d.ts",
   "ambient": false,
   "author": "Blake Embrey <hello@blakeembrey.com>",
@@ -95,11 +95,11 @@ Ambient dependencies are definitions which provide an environment. Such dependen
 
 MIT
 
-[npm-image]: https://img.shields.io/npm/v/tdw.svg?style=flat
-[npm-url]: https://npmjs.org/package/tdw
-[downloads-image]: https://img.shields.io/npm/dm/tdw.svg?style=flat
-[downloads-url]: https://npmjs.org/package/tdw
-[travis-image]: https://img.shields.io/travis/TypedWriter/cli.svg?style=flat
-[travis-url]: https://travis-ci.org/TypedWriter/cli
-[coveralls-image]: https://img.shields.io/coveralls/TypedWriter/cli.svg?style=flat
-[coveralls-url]: https://coveralls.io/r/TypedWriter/cli?branch=master
+[npm-image]: https://img.shields.io/npm/v/typings.svg?style=flat
+[npm-url]: https://npmjs.org/package/typings
+[downloads-image]: https://img.shields.io/npm/dm/typings.svg?style=flat
+[downloads-url]: https://npmjs.org/package/typings
+[travis-image]: https://img.shields.io/travis/typings/cli.svg?style=flat
+[travis-url]: https://travis-ci.org/typings/cli
+[coveralls-image]: https://img.shields.io/coveralls/typings/cli.svg?style=flat
+[coveralls-url]: https://coveralls.io/r/typings/cli?branch=master

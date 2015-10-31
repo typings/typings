@@ -114,11 +114,11 @@ test('parse', t => {
     })
 
     t.test('parse github paths to `.d.ts` files', t => {
-      const actual = parseDependency('github:foo/bar/typings/tdw.d.ts')
+      const actual = parseDependency('github:foo/bar/typings/file.d.ts')
       const expected = {
-        raw: 'github:foo/bar/typings/tdw.d.ts',
+        raw: 'github:foo/bar/typings/file.d.ts',
         type: 'hosted',
-        location: 'https://raw.githubusercontent.com/foo/bar/master/typings/tdw.d.ts'
+        location: 'https://raw.githubusercontent.com/foo/bar/master/typings/file.d.ts'
       }
 
       t.deepEqual(actual, expected)
