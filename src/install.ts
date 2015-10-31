@@ -90,9 +90,9 @@ function writeToConfig (dependency: Dependency, options: InstallDependencyOption
     if (options.save) {
       config.dependencies = extend(config.dependencies, { [options.name]: location })
     } else if (options.saveDev) {
-      config.dependencies = extend(config.devDependencies, { [options.name]: location })
+      config.devDependencies = extend(config.devDependencies, { [options.name]: location })
     } else if (options.saveAmbient) {
-      config.dependencies = extend(config.ambientDependencies, { [options.name]: location })
+      config.ambientDependencies = extend(config.ambientDependencies, { [options.name]: location })
     }
 
     return config
