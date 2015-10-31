@@ -240,7 +240,8 @@ function stringifyFile (path: string, contents: string, options: StringifyOption
   const sourceFile = ts.createSourceFile(path, contents, ts.ScriptTarget.Latest, true)
   const { tree, name } = options
 
-  let isES6Export = false
+  let isES6Export = true
+  let wasDeclared = false
 
   // TODO(blakeembrey): Provide validation for ambient modules
   if (options.ambient) {
@@ -262,10 +263,11 @@ function stringifyFile (path: string, contents: string, options: StringifyOption
     return normalizeSlashes(join(options.name, modulePath))
   }
 
-  const moduleText = processTree(sourceFile, node => {
-    // Flag ES6 exports, the main defintion needs to be handled differently.
-    if (node.kind === ts.SyntaxKind.ExportDeclaration) {
-      isES6Export = true
+  // Custom replacer function to rewrite the file.
+  function replacer (node: ts.Node) {
+    // Flag `export =` as the main re-definition needs to be written different.
+    if (node.kind === ts.SyntaxKind.ExportAssignment) {
+      isES6Export = (<ts.ExportAssignment> node).isExportEquals
     }
 
     if (
@@ -279,7 +281,10 @@ function stringifyFile (path: string, contents: string, options: StringifyOption
     }
 
     if (node.kind === ts.SyntaxKind.DeclareKeyword) {
-      return ''
+      // Notify the reader to remove leading trivia.
+      wasDeclared = true
+
+      return sourceFile.text.slice(node.getFullStart(), node.getStart())
     }
 
     if (node.kind === ts.SyntaxKind.ExternalModuleReference) {
@@ -287,7 +292,28 @@ function stringifyFile (path: string, contents: string, options: StringifyOption
 
       return ` require('${path}')`
     }
-  }).trim()
+  }
+
+  // Read through the file.
+  function read (start: number, end: number) {
+    const text = sourceFile.text.slice(start, end)
+
+    // Trim trailing whitespace.
+    if (end == null) {
+      return text.replace(/\s+$/, '')
+    }
+
+    // Remove leading whitespace from the statement after "declare".
+    if (wasDeclared) {
+      wasDeclared = false
+
+      return text.replace(/^\s+/, '')
+    }
+
+    return text
+  }
+
+  const moduleText = processTree(sourceFile, replacer, read)
 
   const isEntry = options.entry === path
 
@@ -322,7 +348,7 @@ function declareText (name: string, text: string) {
  *
  * Original Source: https://github.com/SitePen/dts-generator/blob/22402351ffd953bf32344a0e48f2ba073fc5b65a/index.ts#L70-L101
  */
-function processTree (sourceFile: ts.SourceFile, replacer: (node: ts.Node) => string): string {
+function processTree (sourceFile: ts.SourceFile, replacer: (node: ts.Node) => string, read: (start: number, end?: number) => string): string {
   let code = ''
   let position = 0
 
@@ -331,7 +357,7 @@ function processTree (sourceFile: ts.SourceFile, replacer: (node: ts.Node) => st
   }
 
   function readThrough (node: ts.Node) {
-    code += sourceFile.text.slice(position, node.pos)
+    code += read(position, node.pos)
     position = node.pos
   }
 
@@ -351,7 +377,7 @@ function processTree (sourceFile: ts.SourceFile, replacer: (node: ts.Node) => st
 
   visit(sourceFile)
 
-  code += sourceFile.text.slice(position)
+  code += read(position)
 
   return code
 }

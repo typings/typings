@@ -137,6 +137,40 @@ test('compile', t => {
         })
     })
 
+    t.test('compile export equals', t => {
+      const FIXTURE_DIR = join(FIXTURES_DIR, 'compile-export-equals')
+
+      const file: DependencyTree = {
+        type: PROJECT_NAME,
+        src: join(FIXTURE_DIR, CONFIG_FILE),
+        missing: false,
+        ambient: false,
+        typings: 'file.d.ts',
+        dependencies: {},
+        devDependencies: {},
+        ambientDependencies: {}
+      }
+
+      return compile(file, { name: 'foobar', cwd: __dirname, ambient: false })
+        .then(results => {
+          t.equal(results.main, [
+            'declare module \'foobar\' {',
+            'function foo (value: string): foo.Bar;',
+            '',
+            'module foo {',
+            '  export interface Bar {',
+            '    (message: any, ...args: any[]): void;',
+            '    enabled: boolean;',
+            '    namespace: string;',
+            '  }',
+            '}',
+            '',
+            'export = foo;',
+            '}'
+          ].join(EOL))
+        })
+    })
+
     t.test('compile an ambient definition', t => {
       const FIXTURE_DIR = join(FIXTURES_DIR, 'compile-ambient')
 
