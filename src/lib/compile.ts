@@ -10,6 +10,7 @@ import { join } from 'path'
 import { DependencyTree, DependencyBranch, Browser, Overrides } from '../interfaces/main'
 import { readFileFrom } from '../utils/fs'
 import { resolveFrom, relativeTo, isModuleName, normalizeSlashes, toDefinition, fromDefinition, normalizeToDefinition } from '../utils/path'
+import { REFERENCE_REGEXP } from '../utils/references'
 
 /**
  * Options interface. Supply a name and the current working directory.
@@ -201,6 +202,9 @@ function stringifyDependencyPath (path: string, options: StringifyOptions): Prom
           return
         }
 
+        // Set the file to "already imported" to avoid duplication.
+        options.imported[path] = true
+
         if (isModuleName(path)) {
           const parts = path.split('/')
           const dependencyName = parts.shift()
@@ -209,14 +213,10 @@ function stringifyDependencyPath (path: string, options: StringifyOptions): Prom
           const compileOptions = { cwd, browser, files, name: moduleName, ambient: false }
           const stringifyOptions = cachedStringifyOptions(dependencyName, compileOptions, options)
 
-          const compile = compileDependencyPath(dependencyPath, stringifyOptions)
-          options.imported[path] = true
-          return compile
+          return compileDependencyPath(dependencyPath, stringifyOptions)
         }
 
-        const stringify = stringifyDependencyPath(path, options)
-        options.imported[path] = true
-        return stringify
+        return stringifyDependencyPath(path, options)
       })
 
       // const references = referencedFiles.map(path => {
@@ -225,7 +225,7 @@ function stringifyDependencyPath (path: string, options: StringifyOptions): Prom
 
       return Promise.all(imports)
         .then(files => {
-          files.push(stringifyFile(path, contents, options))
+          files.push(stringifyFile(path, contents.replace(REFERENCE_REGEXP, ''), options))
 
           // Filter skipped dependencies.
           return files.filter(x => x != null).join(EOL)
