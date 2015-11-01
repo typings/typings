@@ -44,8 +44,9 @@ const MISSING_DEPENDENCY = extend(DEFAULT_DEPENDENCY, {
  * Options for resolving dependencies.
  */
 export interface Options {
-  dev?: boolean
   cwd: string
+  dev?: boolean
+  ambient?: boolean
 }
 
 /**
@@ -334,7 +335,7 @@ function resolveTypeDependencyFrom (src: string, options: Options, parent?: Depe
 
       const dependencyMap = extend(config.dependencies)
       const devDependencyMap = extend(options.dev ? config.devDependencies : {})
-      const ambientDependencyMap = extend(config.ambientDependencies)
+      const ambientDependencyMap = extend(options.ambient ? config.ambientDependencies: {})
 
       return Promise.all<any>([
         resolveTypeDependencyMap(src, dependencyMap, options, tree),

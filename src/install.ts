@@ -22,7 +22,7 @@ export interface InstallOptions {
 }
 
 export function install (options: InstallOptions) {
-  return resolveTypeDependencies(options)
+  return resolveTypeDependencies({ cwd: options.cwd, dev: true, ambient: true })
     .then(tree => {
       const cwd = dirname(tree.src)
       const queue: [string, DependencyTree, boolean][] = []
