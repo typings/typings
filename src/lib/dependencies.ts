@@ -324,6 +324,8 @@ function resolveTypeDependencyFrom (src: string, options: Options, parent?: Depe
         name: config.name,
         main: config.main,
         browser: config.browser,
+        typings: config.typings,
+        browserTypings: config.browserTypings,
         ambient: !!config.ambient,
         type: PROJECT_NAME,
         src,

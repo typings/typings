@@ -24,6 +24,8 @@ export interface ConfigJson {
   main?: string
   browser?: Browser
   ambient?: boolean
+  typings?: string
+  browserTypings?: string | Browser
 
   // Meta information.
   name?: string
