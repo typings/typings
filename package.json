@@ -69,7 +69,7 @@
     "object-values": "^1.0.0",
     "parse-json": "^2.2.0",
     "popsicle": "^1.2.1",
-    "popsicle-cache": "^0.1.1",
+    "popsicle-cache": "^0.2.0",
     "popsicle-status": "^0.2.0",
     "promise-finally": "^2.0.1",
     "semver": "^5.0.1",
