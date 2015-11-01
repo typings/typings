@@ -24,9 +24,11 @@ export interface Options {
  * Compile a dependency tree using a root name.
  */
 export default function compile (tree: DependencyTree, options: Options) {
+  const files: ts.Map<Promise<string>> = {}
+
   return Promise.all([
-    compileDependencyTree(tree, extend(options, { browser: false })),
-    compileDependencyTree(tree, extend(options, { browser: true }))
+    compileDependencyTree(tree, extend(options, { browser: false, files })),
+    compileDependencyTree(tree, extend(options, { browser: true, files }))
   ])
     .then(([main, browser]) => ({ main, browser }))
 }
@@ -35,13 +37,14 @@ export default function compile (tree: DependencyTree, options: Options) {
  * Extends the default options with different compilation settings.
  */
 interface CompileOptions extends Options {
+  files: ts.Map<Promise<string>>
   browser: boolean
 }
 
 /**
  * Get stringify options for a dependency.
  */
-function getStringifyOptions (tree: DependencyTree, options: CompileOptions) {
+function getStringifyOptions (tree: DependencyTree, options: CompileOptions): StringifyOptions {
   const overrides: Overrides = {}
   const isTypings = typeof tree.typings === 'string'
   const main = isTypings ? tree.typings : tree.main
@@ -72,7 +75,6 @@ function getStringifyOptions (tree: DependencyTree, options: CompileOptions) {
   }
 
   const imported: ts.Map<boolean> = {}
-  const files: ts.Map<Promise<string>> = {}
   const dependencies: ts.Map<StringifyOptions> = {}
   const entry = resolveFrom(tree.src, normalizeToDefinition(main))
 
@@ -81,7 +83,6 @@ function getStringifyOptions (tree: DependencyTree, options: CompileOptions) {
     entry,
     isTypings,
     overrides,
-    files,
     imported,
     dependencies
   })
@@ -111,7 +112,6 @@ interface StringifyOptions extends CompileOptions {
   isTypings: boolean
   overrides: Overrides
   imported: ts.Map<boolean>
-  files: ts.Map<Promise<string>>
   dependencies: ts.Map<StringifyOptions>
   tree: DependencyTree
 }
@@ -170,7 +170,7 @@ function stringifyDependencyPath (path: string, options: StringifyOptions): Prom
   return cachedReadFileFrom(definitionPath, options)
     .then(contents => {
       const info = ts.preProcessFile(contents)
-      const { tree, ambient, cwd, browser, name } = options
+      const { tree, ambient, cwd, browser, name, files } = options
       const ambientModules = info.ambientExternalModules || []
 
       // Skip output of lib files.
@@ -206,7 +206,7 @@ function stringifyDependencyPath (path: string, options: StringifyOptions): Prom
           const dependencyName = parts.shift()
           const dependencyPath = parts.length === 0 ? null : parts.join('/')
           const moduleName = ambient ? dependencyName : `${name}!${dependencyName}`
-          const compileOptions = { cwd, browser, name: moduleName, ambient: false }
+          const compileOptions = { cwd, browser, files, name: moduleName, ambient: false }
           const stringifyOptions = cachedStringifyOptions(dependencyName, compileOptions, options)
 
           const compile = compileDependencyPath(dependencyPath, stringifyOptions)
