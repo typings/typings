@@ -19,6 +19,7 @@ export interface Options {
   cwd: string
   name: string
   ambient: boolean
+  strict?: boolean
 }
 
 /**
@@ -155,7 +156,9 @@ function getDependency (name: string, options: StringifyOptions) {
     return tree.dependencies[name]
   }
 
-  throw new TypeError(`Unable to resolve "${name}" from "${options.name}"`)
+  if (options.strict) {
+    throw new TypeError(`Unable to resolve "${name}" from "${options.name}"`)
+  }
 }
 
 /**
@@ -212,6 +215,11 @@ function stringifyDependencyPath (path: string, options: StringifyOptions): Prom
           const moduleName = ambient ? dependencyName : `${name}!${dependencyName}`
           const compileOptions = { cwd, browser, files, name: moduleName, ambient: false }
           const stringifyOptions = cachedStringifyOptions(dependencyName, compileOptions, options)
+
+          // When no options are returned, the dependency is missing.
+          if (!stringifyOptions) {
+            return
+          }
 
           return compileDependencyPath(dependencyPath, stringifyOptions)
         }
