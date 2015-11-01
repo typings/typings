@@ -136,7 +136,11 @@ function cachedStringifyOptions (name: string, compileOptions: CompileOptions, o
   const tree = getDependency(name, options)
 
   if (!has(options.dependencies, name)) {
-    options.dependencies[name] = getStringifyOptions(tree, compileOptions)
+    if (tree) {
+      options.dependencies[name] = getStringifyOptions(tree, compileOptions)
+    } else {
+      options.dependencies[name] = null
+    }
   }
 
   return options.dependencies[name]
