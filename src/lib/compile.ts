@@ -19,7 +19,6 @@ export interface Options {
   cwd: string
   name: string
   ambient: boolean
-  strict?: boolean
 }
 
 /**
@@ -159,10 +158,6 @@ function getDependency (name: string, options: StringifyOptions) {
   if (has(tree.dependencies, name)) {
     return tree.dependencies[name]
   }
-
-  if (options.strict) {
-    throw new TypeError(`Unable to resolve "${name}" from "${options.name}"`)
-  }
 }
 
 /**
@@ -213,9 +208,7 @@ function stringifyDependencyPath (path: string, options: StringifyOptions): Prom
         options.imported[path] = true
 
         if (isModuleName(path)) {
-          const parts = path.split('/')
-          const dependencyName = parts.shift()
-          const dependencyPath = parts.length === 0 ? null : parts.join('/')
+          const [dependencyName, dependencyPath] = getModuleNameParts(path)
           const moduleName = ambient ? dependencyName : `${name}!${dependencyName}`
           const compileOptions = { cwd, browser, files, name: moduleName, ambient: false }
           const stringifyOptions = cachedStringifyOptions(dependencyName, compileOptions, options)
@@ -246,6 +239,17 @@ function stringifyDependencyPath (path: string, options: StringifyOptions): Prom
 }
 
 /**
+ * Separate the module name into pieces.
+ */
+function getModuleNameParts (moduleName: string): [string, string] {
+  const parts = moduleName.split(/[\\\/]/)
+  const dependencyName = parts.shift()
+  const dependencyPath = parts.length === 0 ? null : parts.join('/')
+
+  return [dependencyName, dependencyPath]
+}
+
+/**
  * Stringify a dependency file contents.
  */
 function stringifyFile (path: string, contents: string, options: StringifyOptions) {
@@ -267,6 +271,13 @@ function stringifyFile (path: string, contents: string, options: StringifyOption
   // Stringify the import path to a namespaced import.
   function importPath (name: string) {
     if (isModuleName(name)) {
+      const [moduleName] = getModuleNameParts(name)
+
+      // If the dependency is not specified, **do not** transform - it's ambient.
+      if (options.dependencies[moduleName] == null) {
+        return name
+      }
+
       return `${options.name}!${name}`
     }
 
