@@ -22,10 +22,12 @@ export function wrapExecution (promise: any, options?: Options) {
 
   return promiseFinally(Promise.resolve(promise), end)
     .catch((error: Error) => {
-      console.log(chalk.red(error.message))
+      console.log(chalk.red(`${error.name}: ${error.message}`))
 
       if (options.verbose && 'stack' in error) {
         console.log((<any> error).stack)
       }
+
+      process.exit(1)
     })
 }
