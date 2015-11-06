@@ -21,9 +21,24 @@ const ALIASES: { [cmd: string]: string } = {
   init: 'init'
 }
 
-const argv = minimist<{ _: string[] }>(process.argv.slice(2), {
+interface Argv {
+  _: string[]
+  version: boolean
+}
+
+const argv = minimist<Argv>(process.argv.slice(2), {
+  boolean: ['version'],
+  alias: {
+    version: ['v']
+  },
   stopEarly: true
 })
+
+if (argv.version) {
+  console.log(VERSION)
+
+  process.exit(0)
+}
 
 const command = ALIASES[argv._[0]]
 
