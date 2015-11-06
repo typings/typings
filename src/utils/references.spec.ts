@@ -14,13 +14,13 @@ test('references', t => {
 
     const expected = [
       {
-        start: 0,
-        end: 37,
+        start: 1,
+        end: 38,
         path: join(__dirname, 'foobar.d.ts')
       },
       {
-        start: 38,
-        end: 75,
+        start: 39,
+        end: 77,
         path: join(__dirname, 'example.d.ts')
       }
     ]
