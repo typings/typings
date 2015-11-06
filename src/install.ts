@@ -37,9 +37,12 @@ export function install (options: InstallOptions) {
       addToQueue(tree.devDependencies, false)
       addToQueue(tree.ambientDependencies, true)
 
-      return queue.reduce((result, [name, tree, ambient]) => {
-        return result.then(() => installDependencyTree(tree, { cwd, name, ambient }))
-      }, Promise.resolve())
+      return queue.reduce(
+        function (result, [name, tree, ambient]) {
+          return result.then(() => installDependencyTree(tree, { cwd, name, ambient }))
+        },
+        Promise.resolve()
+      )
     })
 }
 

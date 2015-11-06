@@ -4,7 +4,6 @@ import resolveDependencies from './dependencies'
 import { PROJECT_NAME } from '../utils/config'
 import { DependencyTree, DependencyBranch } from '../interfaces/main'
 
-const CACHE_PATH = join(__dirname, '.cache')
 const RESOLVE_FIXTURE_DIR = join(__dirname, '__test__/fixtures/resolve')
 
 test('dependencies', t => {
@@ -68,18 +67,6 @@ test('dependencies', t => {
         ambientDependencies: {}
       }
 
-      // const githubDep: DependencyTree = {
-      //   type: PROJECT_NAME,
-      //   ambient: false,
-      //   missing: true,
-      //   src: 'https://raw.githubusercontent.com/foo/bar/master/typings.json',
-      //   main: undefined,
-      //   typings: {},
-      //   dependencies: {},
-      //   devDependencies: {},
-      //   ambientDependencies: {}
-      // }
-
       const npmDep: DependencyTree = {
         type: 'npm',
         ambient: false,
@@ -107,12 +94,11 @@ test('dependencies', t => {
       }
 
       ;(<any> expected).dependencies['bower-dep'] = bowerDep
-      ;(<any> expected).dependencies['dep'] = typedDep
-      // ;(<any> expected).dependencies['github-dep'] = githubDep
+      ;(<any> expected).dependencies.dep = typedDep
       ;(<any> expected).dependencies['npm-dep'] = npmDep
       ;(<any> expected).devDependencies['dev-dep'] = typedDevDep
 
-      ;(<any> bowerDep).dependencies['example'] = exampleDep
+      ;(<any> bowerDep).dependencies.example = exampleDep
 
       return resolveDependencies({
         cwd: RESOLVE_FIXTURE_DIR,

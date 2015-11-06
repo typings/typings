@@ -4,11 +4,13 @@ import * as references from './references'
 
 test('references', t => {
   t.test('parse references from string', t => {
-    const actual = references.extractReferences([
-      '/// <reference path="foobar.d.ts" />',
-      '',
-      '///\t<reference\t path="example.d.ts"/>'
-    ].join('\n'), __dirname)
+    const file = `
+/// <reference path="foobar.d.ts" />
+
+///\t<reference\t path="example.d.ts"/>
+`
+
+    const actual = references.extractReferences(file, __dirname)
 
     const expected = [
       {

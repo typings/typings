@@ -9,7 +9,6 @@ import detectIndent = require('detect-indent')
 import sortKeys = require('sort-keys')
 import mdp = require('mkdirp')
 import uniq = require('array-uniq')
-import extend = require('xtend')
 import Promise = require('native-or-bluebird')
 import { join, dirname } from 'path'
 import { CONFIG_FILE, TYPINGS_DIR, DTS_MAIN_FILE, DTS_BROWSER_FILE } from './config'

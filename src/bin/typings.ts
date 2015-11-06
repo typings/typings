@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 
 import minimist = require('minimist')
+import wordwrap = require('wordwrap')
 import { spawn } from 'child_process'
-
-const VERSION = '0.0.12'
+import { join } from 'path'
+import { VERSION } from '../typings'
+import { PROJECT_NAME } from '../utils/config'
 
 const ALIASES: { [cmd: string]: string } = {
   // Install.
@@ -28,14 +30,16 @@ const command = ALIASES[argv._[0]]
 if (command != null) {
   spawn(`typings-${command}`, argv._.slice(1), { stdio: 'inherit' })
 } else {
-  // Print documentation.
+  const wrap = wordwrap(4, 80)
 
-  // Commands:
-  // install [src] --name [name]
-  // uninstall [name]
-  // init
-  // search [query]
-  // prune
-  // validate
-  // convert [location] --out [directory]
+  console.log(`
+Usage: ${PROJECT_NAME} <command>
+
+Commands:
+${wrap(Object.keys(ALIASES).sort().join(', '))}
+
+${PROJECT_NAME} <cmd> -h     get help for <cmd>
+
+${PROJECT_NAME}@${VERSION} ${join(__dirname, '../..')}
+`)
 }

@@ -1,24 +1,17 @@
 import extend = require('xtend')
 import invariant = require('invariant')
-import stripBom = require('strip-bom')
 import arrify = require('arrify')
 import zipObject = require('zip-object')
 import partial = require('util-partial')
 import Promise = require('native-or-bluebird')
-import { resolve as resolveUrl } from 'url'
 import { resolve, dirname, join } from 'path'
-import { readJson, readConfigFrom, readJsonFrom, readConfig } from '../utils/fs'
+import { resolve as resolveUrl } from 'url'
+import { readJson, readConfigFrom } from '../utils/fs'
 import { parseDependency } from '../utils/parse'
 import { findUp, findConfigFile } from '../utils/find'
 import { isDefinition, isHttp } from '../utils/path'
 import { CONFIG_FILE, PROJECT_NAME } from '../utils/config'
-
-import {
-  Dependency,
-  Dependencies,
-  DependencyBranch,
-  DependencyTree
-} from '../interfaces/main'
+import { Dependency, DependencyBranch, DependencyTree } from '../interfaces/main'
 
 /**
  * Default dependency config options.
@@ -154,7 +147,12 @@ export function resolveBowerDependencies (options: Options): Promise<DependencyT
 /**
  * Resolve bower dependencies from a path.
  */
-function resolveBowerDependencyFrom (src: string, componentPath: string, options: Options, parent?: DependencyTree): Promise<DependencyTree> {
+function resolveBowerDependencyFrom (
+  src: string,
+  componentPath: string,
+  options: Options,
+  parent?: DependencyTree
+): Promise<DependencyTree> {
   checkCircularDependency(parent, src)
 
   return readJson(src)
@@ -213,7 +211,12 @@ function resolveBowerComponentPath (path: string): Promise<string> {
 /**
  * Recursively resolve dependencies from a list and component path.
  */
-function resolveBowerDependencyMap (componentPath: string, dependencies: any, options: Options, parent: DependencyTree): Promise<DependencyBranch> {
+function resolveBowerDependencyMap (
+  componentPath: string,
+  dependencies: any,
+  options: Options,
+  parent: DependencyTree
+): Promise<DependencyBranch> {
   const keys = Object.keys(dependencies)
 
   return Promise.all(keys.map(function (name) {
@@ -320,43 +323,45 @@ function resolveTypeDependencyFrom (src: string, options: Options, parent?: Depe
   checkCircularDependency(parent, src)
 
   return readConfigFrom(src)
-    .then<DependencyTree>(function (config) {
-      const tree = extend(DEFAULT_DEPENDENCY, {
-        name: config.name,
-        main: config.main,
-        browser: config.browser,
-        typings: config.typings,
-        browserTypings: config.browserTypings,
-        ambient: !!config.ambient,
-        type: PROJECT_NAME,
-        src,
-        parent
-      })
-
-      const dependencyMap = extend(config.dependencies)
-      const devDependencyMap = extend(options.dev ? config.devDependencies : {})
-      const ambientDependencyMap = extend(options.ambient ? config.ambientDependencies: {})
-
-      return Promise.all<any>([
-        resolveTypeDependencyMap(src, dependencyMap, options, tree),
-        resolveTypeDependencyMap(src, devDependencyMap, options, tree),
-        resolveTypeDependencyMap(src, ambientDependencyMap, options, tree)
-      ])
-        .then(function ([dependencies, devDependencies, ambientDependencies]) {
-          tree.dependencies = dependencies
-          tree.devDependencies = devDependencies
-          tree.ambientDependencies = ambientDependencies
-
-          return tree
+    .then<DependencyTree>(
+      function (config) {
+        const tree = extend(DEFAULT_DEPENDENCY, {
+          name: config.name,
+          main: config.main,
+          browser: config.browser,
+          typings: config.typings,
+          browserTypings: config.browserTypings,
+          ambient: !!config.ambient,
+          type: PROJECT_NAME,
+          src,
+          parent
         })
-    },
-    function () {
-      return extend(MISSING_DEPENDENCY, {
-        type: PROJECT_NAME,
-        src,
-        parent
-      })
-    })
+
+        const dependencyMap = extend(config.dependencies)
+        const devDependencyMap = extend(options.dev ? config.devDependencies : {})
+        const ambientDependencyMap = extend(options.ambient ? config.ambientDependencies : {})
+
+        return Promise.all<any>([
+          resolveTypeDependencyMap(src, dependencyMap, options, tree),
+          resolveTypeDependencyMap(src, devDependencyMap, options, tree),
+          resolveTypeDependencyMap(src, ambientDependencyMap, options, tree)
+        ])
+          .then(function ([dependencies, devDependencies, ambientDependencies]) {
+            tree.dependencies = dependencies
+            tree.devDependencies = devDependencies
+            tree.ambientDependencies = ambientDependencies
+
+            return tree
+          })
+      },
+      function () {
+        return extend(MISSING_DEPENDENCY, {
+          type: PROJECT_NAME,
+          src,
+          parent
+        })
+      }
+    )
 }
 
 /**
@@ -369,16 +374,19 @@ function resolveTypeDependencyMap (src: string, dependencies: any, options: Opti
   return Promise.all(keys.map(function (name) {
     // Map over the dependency list and resolve to the first found dependency.
     return arrify(dependencies[name])
-      .reduce(function (result: Promise<DependencyTree>, dependency: string) {
-        return result.then(function (tree) {
-          // Continue trying to resolve when the dependency is missing.
-          if (tree.missing) {
-            return resolveDependency(parseDependency(dependency), extend(options, { dev: false, cwd }), parent)
-          }
+      .reduce(
+        function (result: Promise<DependencyTree>, dependency: string) {
+          return result.then(function (tree) {
+            // Continue trying to resolve when the dependency is missing.
+            if (tree.missing) {
+              return resolveDependency(parseDependency(dependency), extend(options, { dev: false, cwd }), parent)
+            }
 
-          return tree
-        })
-      }, Promise.resolve(MISSING_DEPENDENCY))
+            return tree
+          })
+        },
+        Promise.resolve(MISSING_DEPENDENCY)
+      )
   }))
     .then(partial(zipObject, keys))
 }

@@ -1,15 +1,12 @@
 import * as ts from 'typescript'
 import extend = require('xtend')
-import zipObject = require('zip-object')
-import partial = require('util-partial')
 import has = require('has')
-import values = require('object-values')
 import Promise = require('native-or-bluebird')
 import { EOL } from 'os'
 import { join } from 'path'
-import { DependencyTree, DependencyBranch, Browser, Overrides } from '../interfaces/main'
+import { DependencyTree, Overrides } from '../interfaces/main'
 import { readFileFrom } from '../utils/fs'
-import { resolveFrom, relativeTo, isModuleName, normalizeSlashes, toDefinition, fromDefinition, normalizeToDefinition } from '../utils/path'
+import { resolveFrom, relativeTo, isModuleName, normalizeSlashes, fromDefinition, normalizeToDefinition } from '../utils/path'
 import { REFERENCE_REGEXP } from '../utils/references'
 
 /**
@@ -76,6 +73,7 @@ function getStringifyOptions (tree: DependencyTree, options: CompileOptions): St
   }
 
   const imported: ts.Map<boolean> = {}
+  const referenced: ts.Map<boolean> = {}
   const dependencies: ts.Map<StringifyOptions> = {}
   const entry = resolveFrom(tree.src, normalizeToDefinition(main))
 
@@ -85,6 +83,7 @@ function getStringifyOptions (tree: DependencyTree, options: CompileOptions): St
     isTypings,
     overrides,
     imported,
+    referenced,
     dependencies
   })
 }
@@ -113,6 +112,7 @@ interface StringifyOptions extends CompileOptions {
   isTypings: boolean
   overrides: Overrides
   imported: ts.Map<boolean>
+  referenced: ts.Map<boolean>
   dependencies: ts.Map<StringifyOptions>
   tree: DependencyTree
 }
@@ -186,7 +186,6 @@ function stringifyDependencyPath (path: string, options: StringifyOptions): Prom
       }
 
       const importedFiles = info.importedFiles.map(x => isModuleName(x.fileName) ? x.fileName : resolveFrom(path, x.fileName))
-      const referencedFiles = info.referencedFiles.map(x => resolveFrom(path, x.fileName))
 
       // All dependencies MUST be imported for ambient modules.
       if (ambient) {
@@ -223,10 +222,6 @@ function stringifyDependencyPath (path: string, options: StringifyOptions): Prom
 
         return stringifyDependencyPath(path, options)
       })
-
-      // const references = referencedFiles.map(path => {
-      //   return has(options.resolved, path) ? options.resolved[path] : readFileFrom(path)
-      // })
 
       return Promise.all(imports)
         .then(files => {
@@ -371,7 +366,11 @@ function declareText (name: string, text: string) {
  *
  * Original Source: https://github.com/SitePen/dts-generator/blob/22402351ffd953bf32344a0e48f2ba073fc5b65a/index.ts#L70-L101
  */
-function processTree (sourceFile: ts.SourceFile, replacer: (node: ts.Node) => string, read: (start: number, end?: number) => string): string {
+function processTree (
+  sourceFile: ts.SourceFile,
+  replacer: (node: ts.Node) => string,
+  reader: (start: number, end?: number) => string
+): string {
   let code = ''
   let position = 0
 
@@ -380,7 +379,7 @@ function processTree (sourceFile: ts.SourceFile, replacer: (node: ts.Node) => st
   }
 
   function readThrough (node: ts.Node) {
-    code += read(position, node.pos)
+    code += reader(position, node.pos)
     position = node.pos
   }
 
@@ -392,15 +391,14 @@ function processTree (sourceFile: ts.SourceFile, replacer: (node: ts.Node) => st
     if (replacement != null) {
       code += replacement
       skip(node)
-    }
-    else {
+    } else {
       ts.forEachChild(node, visit)
     }
   }
 
   visit(sourceFile)
 
-  code += read(position)
+  code += reader(position)
 
   return code
 }

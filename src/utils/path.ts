@@ -1,5 +1,5 @@
-import { resolve as resolveUrl, parse as parseUrl } from 'url'
 import { resolve, dirname, basename, relative, extname } from 'path'
+import { resolve as resolveUrl, parse as parseUrl } from 'url'
 import isAbsolute = require('is-absolute')
 
 /**

@@ -16,8 +16,8 @@
     "LICENSE"
   ],
   "scripts": {
-    "lint": "# TODO",
-    "build": "rm -rf dist/ && tsc --project src",
+    "lint": "tslint src/**/*.ts",
+    "build": "rm -rf dist/ && tsc",
     "test-spec": "ts-node --project src node_modules/blue-tape/bin/blue-tape.js test/**/*.ts src/**/*.spec.ts | tap-dot",
     "test-cov": "ts-node --project src node_modules/istanbul/lib/cli.js cover -e .ts --print none -x \"*.spec.ts\" blue-tape -- test/**/*.ts src/**/*.spec.ts | tap-dot",
     "test": "npm run lint && npm run test-cov",
@@ -79,6 +79,7 @@
     "thenify-all": "^1.6.0",
     "typescript": "^1.6.2",
     "util-partial": "^1.0.0",
+    "wordwrap": "^1.0.0",
     "xtend": "^4.0.0",
     "zip-object": "^0.1.0"
   },
@@ -87,6 +88,7 @@
     "istanbul": "blakeembrey/istanbul#transpiler-support",
     "pre-commit": "^1.0.6",
     "tap-dot": "^1.0.0",
-    "ts-node": "^0.4.0"
+    "ts-node": "^0.4.0",
+    "tslint": "^2.5.1"
   }
 }

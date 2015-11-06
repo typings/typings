@@ -1,10 +1,8 @@
-import extend = require('xtend')
 import Promise = require('native-or-bluebird')
 import { join } from 'path'
 import { ConfigJson } from './interfaces/main'
-import { transformJson, writeJson, isFile } from './utils/fs'
+import { writeJson, isFile } from './utils/fs'
 import { CONFIG_FILE } from './utils/config'
-import { inferDefinitionName } from './utils/path'
 
 export interface Options {
   upgrade: boolean

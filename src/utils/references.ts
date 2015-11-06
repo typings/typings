@@ -20,7 +20,7 @@ export interface Reference {
 
 export function extractReferences (contents: string, cwd: string): Reference[] {
   const refs: Reference[] = []
-  let m: any
+  let m: RegExpExecArray
 
   while ((m = REFERENCE_REGEXP.exec(contents)) != null) {
     refs.push({
