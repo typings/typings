@@ -3,7 +3,7 @@ import { parse, format } from 'url'
 import { normalize, basename } from 'path'
 import { Dependency } from '../interfaces/main'
 import { CONFIG_FILE } from './config'
-import { isDefinition, normalizeSlashes } from './path'
+import { isDefinition } from './path'
 
 function gitFromPathname (pathname: string) {
   const segments = pathname.substr(1).split('/')
@@ -105,28 +105,4 @@ export function parseDependency (raw: string): Dependency {
   }
 
   throw new TypeError(`Unsupported dependency: ${raw}`)
-}
-
-/**
- * Attempt to normalize the dependency location.
- */
-export function stringifyDependency (dependency: Dependency): string {
-  if (dependency.type === 'bower') {
-    return `bower:${dependency.location}`
-  }
-
-  if (dependency.type === 'npm') {
-    return `npm:${dependency.location}`
-  }
-
-  if (dependency.type === 'hosted') {
-    // TODO: Detect GitHub and Bitbucket URLs.
-    return dependency.location
-  }
-
-  if (dependency.type === 'file') {
-    return `file:${normalizeSlashes(dependency.location)}`
-  }
-
-  throw new TypeError(`Unknown dependency type: ${dependency.type}`)
 }

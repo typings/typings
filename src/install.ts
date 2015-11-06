@@ -5,7 +5,7 @@ import { resolveDependency, resolveTypeDependencies } from './lib/dependencies'
 import compile from './lib/compile'
 import { findProject } from './utils/find'
 import { writeDependency, transformConfig } from './utils/fs'
-import { parseDependency, stringifyDependency } from './utils/parse'
+import { parseDependency } from './utils/parse'
 import { DependencyTree, Dependency } from './interfaces/main'
 
 export interface InstallDependencyOptions {
@@ -86,16 +86,16 @@ function writeToConfig (dependency: Dependency, options: InstallDependencyOption
     return
   }
 
-  const location = stringifyDependency(dependency)
+  const { raw } = dependency
 
   return transformConfig(options.cwd, config => {
     // Extend different fields depending on the option passed in.
     if (options.save) {
-      config.dependencies = extend(config.dependencies, { [options.name]: location })
+      config.dependencies = extend(config.dependencies, { [options.name]: raw })
     } else if (options.saveDev) {
-      config.devDependencies = extend(config.devDependencies, { [options.name]: location })
+      config.devDependencies = extend(config.devDependencies, { [options.name]: raw })
     } else if (options.saveAmbient) {
-      config.ambientDependencies = extend(config.ambientDependencies, { [options.name]: location })
+      config.ambientDependencies = extend(config.ambientDependencies, { [options.name]: raw })
     }
 
     return config
