@@ -2,7 +2,7 @@ import extend = require('xtend')
 import Promise = require('native-or-bluebird')
 import { dirname } from 'path'
 import { resolveDependency, resolveTypeDependencies } from './lib/dependencies'
-import compile from './lib/compile'
+import compile, { Options as CompileOptions } from './lib/compile'
 import { findProject } from './utils/find'
 import { writeDependency, transformConfig } from './utils/fs'
 import { parseDependency } from './utils/parse'
@@ -39,7 +39,7 @@ export function install (options: InstallOptions) {
 
       return queue.reduce(
         function (result, [name, tree, ambient]) {
-          return result.then(() => installDependencyTree(tree, { cwd, name, ambient }))
+          return result.then(() => installDependencyTree(tree, { cwd, name, ambient, meta: true }))
         },
         Promise.resolve()
       )
@@ -70,13 +70,14 @@ function installTo (location: string, options: InstallDependencyOptions) {
       return installDependencyTree(tree, {
         cwd: options.cwd,
         name: options.name,
-        ambient: options.ambient || options.saveAmbient
+        ambient: options.ambient || options.saveAmbient,
+        meta: true
       })
     })
     .then(() => writeToConfig(dependency, options))
 }
 
-function installDependencyTree (tree: DependencyTree, options: { cwd: string; name: string; ambient: boolean }) {
+function installDependencyTree (tree: DependencyTree, options: CompileOptions) {
   return compile(tree, options)
     .then(definitions => writeDependency(definitions, options))
 }

@@ -3,11 +3,13 @@ import extend = require('xtend')
 import has = require('has')
 import Promise = require('native-or-bluebird')
 import { EOL } from 'os'
-import { join } from 'path'
+import { join, relative } from 'path'
 import { DependencyTree, Overrides } from '../interfaces/main'
 import { readFileFrom } from '../utils/fs'
-import { resolveFrom, relativeTo, isModuleName, normalizeSlashes, fromDefinition, normalizeToDefinition } from '../utils/path'
+import { resolveFrom, relativeTo, isHttp, isModuleName, normalizeSlashes, fromDefinition, normalizeToDefinition } from '../utils/path'
 import { REFERENCE_REGEXP } from '../utils/references'
+import { PROJECT_NAME } from '../utils/config'
+import { VERSION } from '../typings'
 
 /**
  * Options interface. Supply a name and the current working directory.
@@ -16,6 +18,7 @@ export interface Options {
   cwd: string
   name: string
   ambient: boolean
+  meta: boolean
 }
 
 /**
@@ -171,9 +174,9 @@ function stringifyDependencyPath (path: string, options: StringifyOptions): Prom
   }
 
   return cachedReadFileFrom(definitionPath, options)
-    .then(contents => {
-      const info = ts.preProcessFile(contents)
-      const { tree, ambient, cwd, browser, name, files } = options
+    .then(rawContents => {
+      const info = ts.preProcessFile(rawContents)
+      const { tree, ambient, cwd, browser, name, files, meta } = options
       const ambientModules = info.ambientExternalModules || []
 
       // Skip output of lib files.
@@ -209,7 +212,7 @@ function stringifyDependencyPath (path: string, options: StringifyOptions): Prom
         if (isModuleName(path)) {
           const [dependencyName, dependencyPath] = getModuleNameParts(path)
           const moduleName = ambient ? dependencyName : `${name}!${dependencyName}`
-          const compileOptions = { cwd, browser, files, name: moduleName, ambient: false }
+          const compileOptions = { cwd, browser, files, name: moduleName, ambient: false, meta }
           const stringifyOptions = cachedStringifyOptions(dependencyName, compileOptions, options)
 
           // When no options are returned, the dependency is missing.
@@ -225,10 +228,13 @@ function stringifyDependencyPath (path: string, options: StringifyOptions): Prom
 
       return Promise.all(imports)
         .then(files => {
-          files.push(stringifyFile(path, contents.replace(REFERENCE_REGEXP, ''), options))
+          const stringifyOptions = extend(options, { originalPath: path })
+          const contents = rawContents.replace(REFERENCE_REGEXP, '')
+
+          files.push(stringifyFile(definitionPath, contents, stringifyOptions))
 
           // Filter skipped dependencies.
-          return files.filter(x => x != null).join(EOL)
+          return files.filter(x => x != null).join(EOL + EOL)
         })
     })
 }
@@ -247,12 +253,13 @@ function getModuleNameParts (moduleName: string): [string, string] {
 /**
  * Stringify a dependency file contents.
  */
-function stringifyFile (path: string, contents: string, options: StringifyOptions) {
+function stringifyFile (path: string, contents: string, options: StringifyOptions & { originalPath: string }) {
   const sourceFile = ts.createSourceFile(path, contents, ts.ScriptTarget.Latest, true)
-  const { tree, name } = options
+  const { tree, name, originalPath } = options
 
-  let isES6Export = true
-  let wasDeclared = false
+  // Output information for the original type source.
+  const source = isHttp(path) ? path : relative(options.cwd, path)
+  const prefix = options.meta ? `// Compiled using ${PROJECT_NAME}@${VERSION}${EOL}// Source: ${source}${EOL}` : ''
 
   // TODO(blakeembrey): Provide validation for ambient modules
   if (options.ambient) {
@@ -260,8 +267,11 @@ function stringifyFile (path: string, contents: string, options: StringifyOption
       throw new TypeError(`Unable to compile "${path}" - looks like an external module`)
     }
 
-    return contents.trim()
+    return prefix + contents.trim()
   }
+
+  let isES6Export = true
+  let wasDeclared = false
 
   // Stringify the import path to a namespaced import.
   function importPath (name: string) {
@@ -276,9 +286,9 @@ function stringifyFile (path: string, contents: string, options: StringifyOption
       return `${options.name}!${name}`
     }
 
-    const modulePath = relativeTo(tree.src, resolveFrom(path, name))
+    const relativePath = relativeTo(tree.src, resolveFrom(path, name))
 
-    return normalizeSlashes(join(options.name, modulePath))
+    return normalizeSlashes(join(options.name, relativePath))
   }
 
   // Custom replacer function to rewrite the file.
@@ -316,6 +326,11 @@ function stringifyFile (path: string, contents: string, options: StringifyOption
   function read (start: number, end: number) {
     const text = sourceFile.text.slice(start, end)
 
+    // Trim leading whitespace.
+    if (start === 0) {
+      return text.replace(/^\s+$/, '')
+    }
+
     // Trim trailing whitespace.
     if (end == null) {
       return text.replace(/\s+$/, '')
@@ -332,26 +347,25 @@ function stringifyFile (path: string, contents: string, options: StringifyOption
   }
 
   const moduleText = processTree(sourceFile, replacer, read)
-
-  const isEntry = options.entry === path
+  const isEntry = originalPath === options.entry
 
   // Direct usage of definition/typings. This is *not* a psuedo-module.
   if (isEntry && options.isTypings) {
-    return declareText(name, moduleText)
+    return prefix + declareText(name, moduleText)
   }
 
   const moduleName = `${name}/${normalizeSlashes(relativeTo(tree.src, fromDefinition(path)))}`
   const declared = declareText(moduleName, moduleText)
 
   if (!isEntry) {
-    return declared
+    return prefix + declared
   }
 
   const importText = isES6Export ?
     `export * from '${moduleName}';` :
     `import main = require('${moduleName}');${EOL}export = main;`
 
-  return `${declared}${EOL}${declareText(name, importText)}`
+  return prefix + declared + EOL + declareText(name, importText)
 }
 
 /**
