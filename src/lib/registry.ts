@@ -51,10 +51,15 @@ export function read (options: ReadOptions) {
       function (entry: RegistryJson) {
         return select(entry, options)
       },
-      function () {
-        return Promise.reject(new TypeError(
-          `Unable to find "${name}" from "${source}" in the registry`
-        ))
+      function (error: any) {
+        if (error.type === 'EINVALIDSTATUS') {
+          return Promise.reject(new TypeError(
+            `Unable to find "${name}" from "${source}" in the registry. ` +
+            `If you can contribute this typing, please help us out - https://github.com/typings/registry`
+          ))
+        }
+
+        return Promise.reject(error)
       }
     )
 }
