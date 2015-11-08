@@ -1,7 +1,11 @@
 import extend = require('xtend')
-import { removeDependency, transformConfig } from './utils/fs'
+import invariant = require('invariant')
+import { removeDependency, transformConfig, DefinitionOptions } from './utils/fs'
 import { findProject } from './utils/find'
 
+/**
+ * Uninstall options.
+ */
 export interface UninstallDependencyOptions {
   save?: boolean
   saveDev?: boolean
@@ -10,20 +14,36 @@ export interface UninstallDependencyOptions {
   cwd: string
 }
 
+/**
+ * Uninstall a dependency, given a name.
+ */
 export function uninstallDependency (name: string, options: UninstallDependencyOptions) {
   const ambient = options.saveAmbient || options.ambient
 
+  // Remove the dependency from fs and config.
+  function uninstall (options: DefinitionOptions) {
+    return removeDependency(options).then(() => writeToConfig(name, options))
+  }
+
   return findProject(options.cwd)
     .then(
-      (cwd) => removeDependency(extend(options, { cwd, name, ambient })).then(() => writeToConfig(name, options)),
-      () => removeDependency(extend(options, { name, ambient }))
+      (cwd) => uninstall(extend(options, { cwd, name, ambient })),
+      () => uninstall(extend(options, { name, ambient }))
     )
 }
 
+/**
+ * Delete the dependency from the configuration file.
+ */
 function writeToConfig (name: string, options: UninstallDependencyOptions) {
   if (!options.save && !options.saveDev && !options.saveAmbient) {
     return
   }
+
+  invariant(
+    (options.save || options.saveDev) && (options.ambient || options.saveAmbient),
+    '--save and --save-dev are incompatible with ambient dependencies'
+  )
 
   return transformConfig(options.cwd, config => {
     if (options.save && config.dependencies) {
@@ -35,7 +55,7 @@ function writeToConfig (name: string, options: UninstallDependencyOptions) {
     }
 
     if (options.saveAmbient && config.ambientDependencies) {
-      delete config.ambientDependencies
+      delete config.ambientDependencies[name]
     }
 
     return config

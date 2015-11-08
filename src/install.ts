@@ -8,19 +8,29 @@ import { writeDependency, transformConfig } from './utils/fs'
 import { parseDependency } from './utils/parse'
 import { DependencyTree, Dependency } from './interfaces/main'
 
+/**
+ * Options for installing a new dependency.
+ */
 export interface InstallDependencyOptions {
   save?: boolean
   saveDev?: boolean
   saveAmbient?: boolean
   ambient?: boolean
-  name: string
+  name?: string
   cwd: string
+  source?: string
 }
 
+/**
+ * Only options required for a full install.
+ */
 export interface InstallOptions {
   cwd: string
 }
 
+/**
+ * Install all dependencies on the current project.
+ */
 export function install (options: InstallOptions) {
   return resolveTypeDependencies({ cwd: options.cwd, dev: true, ambient: true })
     .then(tree => {
@@ -46,18 +56,29 @@ export function install (options: InstallOptions) {
     })
 }
 
+/**
+ * Install a dependency into the currect project.
+ */
 export function installDependency (dependency: string, options: InstallDependencyOptions) {
   if (!options.name) {
     return Promise.reject(new Error('You must specify a name for the dependency'))
   }
 
+  // Install dependency.
+  function install (options: InstallDependencyOptions) {
+    return installTo(dependency, options)
+  }
+
   return findProject(options.cwd)
     .then(
-      (cwd) => installTo(dependency, extend(options, { cwd })),
-      () => installTo(dependency, options)
+      (cwd) => install(extend(options, { cwd })),
+      () => install(options)
     )
 }
 
+/**
+ * Install from a dependency string.
+ */
 function installTo (location: string, options: InstallDependencyOptions) {
   const dependency = parseDependency(location)
 
@@ -77,11 +98,17 @@ function installTo (location: string, options: InstallDependencyOptions) {
     .then(() => writeToConfig(dependency, options))
 }
 
+/**
+ * Compile a dependency tree into the users typings.
+ */
 function installDependencyTree (tree: DependencyTree, options: CompileOptions) {
   return compile(tree, options)
     .then(definitions => writeDependency(definitions, options))
 }
 
+/**
+ * Write a dependency to the configuration file.
+ */
 function writeToConfig (dependency: Dependency, options: InstallDependencyOptions) {
   if (!options.save && !options.saveDev && !options.saveAmbient) {
     return

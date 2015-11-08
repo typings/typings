@@ -7,15 +7,13 @@ import { wrapExecution } from '../utils/cli'
 import { PROJECT_NAME } from '../utils/config'
 
 interface ArgvOptions {
-  upgrade: boolean
   verbose: boolean
   help: boolean
 }
 
 const args = minimist<ArgvOptions>(process.argv.slice(2), {
-  boolean: ['upgrade', 'verbose', 'help'],
+  boolean: ['verbose', 'help'],
   alias: {
-    upgrade: ['u'],
     verbose: ['v'],
     help: ['h']
   }

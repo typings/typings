@@ -32,29 +32,47 @@ export const writeFile = thenify<string, string | Buffer, void>(fs.writeFile)
 export const mkdirp = thenify<string, void>(mdp)
 export const unlink = thenify<string, void>(fs.unlink)
 
+/**
+ * Verify a path exists and is a file.
+ */
 export function isFile (path: string): Promise<boolean> {
   return stat(path).then(stat => stat.isFile(), () => false)
 }
 
+/**
+ * Read JSON from a path.
+ */
 export function readJson (path: string): Promise<any> {
   return readFile(path, 'utf8')
     .then(stripBom)
     .then(contents => parseJson(contents, path))
 }
 
+/**
+ * Write JSON to a file.
+ */
 export function writeJson (path: string, json: any, indent: string | number = 2) {
   return writeFile(path, JSON.stringify(json, null, indent))
 }
 
+/**
+ * Read a configuration file.
+ */
 export function readConfig (path: string): Promise<ConfigJson> {
   return readJson(path)
 }
 
+/**
+ * Read a configuration file from anywhere (HTTP or local).
+ */
 export function readConfigFrom (path: string): Promise<ConfigJson> {
   // TODO(blakeembrey): Provide more insightful errors from config.
   return readJsonFrom(path)
 }
 
+/**
+ * Read a file over HTTP, using a file cache and status check.
+ */
 export function readHttp (url: string): Promise<string> {
   return popsicle(url)
     .use(requestFileCache)
@@ -62,24 +80,32 @@ export function readHttp (url: string): Promise<string> {
     .then(x => x.body)
 }
 
+/**
+ * Read a file from anywhere (HTTP or local filesystem).
+ */
 export function readFileFrom (from: string): Promise<string> {
   return isHttp(from) ? readHttp(from) : readFile(from, 'utf8')
 }
 
+/**
+ * Read JSON from anywhere.
+ */
 export function readJsonFrom (from: string): Promise<any> {
   return readFileFrom(from)
     .then(stripBom)
     .then(contents => parseJson(contents, from))
 }
 
-export function parseConfig (contents: string, path: string) {
-  return parseJson(contents, path)
-}
-
+/**
+ * Parse a string as JSON.
+ */
 export function parseJson (contents: string, path: string) {
   return parse(contents, null, path)
 }
 
+/**
+ * Transform a file contents (read and write in a single operation).
+ */
 export function transformFile (path: string, transform: (contents: string) => string | Promise<string>) {
   function handle (contents: string) {
     return Promise.resolve(transform(contents))
@@ -93,6 +119,9 @@ export function transformFile (path: string, transform: (contents: string) => st
     )
 }
 
+/**
+ * Transform a JSON file in a single operation.
+ */
 export function transformJson (path: string, transform: (json: any) => any) {
   return transformFile(path, (contents) => {
     const indent = contents ? detectIndent(contents).indent : 2
@@ -103,6 +132,9 @@ export function transformJson (path: string, transform: (json: any) => any) {
   })
 }
 
+/**
+ * Transform a configuration file in a single operation.
+ */
 export function transformConfig (cwd: string, transform: (config: ConfigJson) => ConfigJson) {
   const path = join(cwd, CONFIG_FILE)
 
@@ -139,12 +171,18 @@ export function transformDtsFile (path: string, transform: (typings: string[]) =
   })
 }
 
+/**
+ * Options for interacting with dependencies.
+ */
 export interface DefinitionOptions {
   cwd: string
   name: string
   ambient: boolean
 }
 
+/**
+ * Write a dependency to the filesytem.
+ */
 export function writeDependency (contents: { main: string; browser: string }, options: DefinitionOptions): Promise<boolean> {
   const { mainFile, browserFile, mainDtsFile, browserDtsFile } = getDependencyLocation(options)
 
@@ -167,6 +205,9 @@ export function writeDependency (contents: { main: string; browser: string }, op
     .then(() => undefined)
 }
 
+/**
+ * Remove a dependency from the filesystem.
+ */
 export function removeDependency (options: DefinitionOptions) {
   const { mainFile, browserFile, mainDtsFile, browserDtsFile } = getDependencyLocation(options)
 

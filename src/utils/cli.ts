@@ -3,12 +3,19 @@ import spinner = require('elegant-spinner')
 import chalk = require('chalk')
 import Promise = require('native-or-bluebird')
 import promiseFinally from 'promise-finally'
+import inquirer = require('inquirer')
 
-export interface Options {
+/**
+ * Options for the execution.
+ */
+export interface ExecutionOptions {
   verbose: boolean
 }
 
-export function wrapExecution (promise: any, options?: Options) {
+/**
+ * Wrap async execution with a spinner.
+ */
+export function wrapExecution <T> (promise: T | Promise<T>, options?: ExecutionOptions): Promise<T> {
   const frame = spinner()
   const update = () => logUpdate(frame())
   const interval = setInterval(update, 50)
@@ -29,5 +36,14 @@ export function wrapExecution (promise: any, options?: Options) {
       }
 
       process.exit(1)
+
+      // TODO(blakeembrey): Fix type inference, we'll never reach here.
+      return Promise.reject(error)
     })
+}
+
+export function inquire (questions: inquirer.Questions) {
+  return new Promise(resolve => {
+    inquirer.prompt(questions, resolve)
+  })
 }

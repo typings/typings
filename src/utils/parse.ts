@@ -5,6 +5,9 @@ import { Dependency } from '../interfaces/main'
 import { CONFIG_FILE } from './config'
 import { isDefinition } from './path'
 
+/**
+ * Find the Git options from a path.
+ */
 function gitFromPathname (pathname: string) {
   const segments = pathname.substr(1).split('/')
   const repo = segments.shift()

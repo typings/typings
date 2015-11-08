@@ -379,7 +379,11 @@ function resolveTypeDependencyMap (src: string, dependencies: any, options: Opti
           return result.then(function (tree) {
             // Continue trying to resolve when the dependency is missing.
             if (tree.missing) {
-              return resolveDependency(parseDependency(dependency), extend(options, { dev: false, cwd }), parent)
+              return resolveDependency(
+                parseDependency(dependency),
+                extend(options, { dev: false, cwd }),
+                parent
+              )
             }
 
             return tree
