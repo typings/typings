@@ -18,7 +18,7 @@ npm install typings --global
 **Typings** provides a simple way for type dependencies to be installed and maintained. By resolving over various sources recursively, type definitions can be compiled into a single definition for bundling - avoiding any version conflicts.
 
 ```sh
-typings install https://raw.githubusercontent.com/borisyankov/DefinitelyTyped/master/node/node.d.ts --name node --ambient
+typings install debug --save
 ```
 
 ### Init
@@ -55,6 +55,10 @@ Install a type dependency, and optionally save it in the configuration file.
 * `bower:<package>/<path>`
 
 Where `path` can either be `typings.json` file, a `.d.ts` file, or empty (it will automatically append `typings.json` when the path is not a `.d.ts` file).
+
+#### Registry
+
+Package installations without a location will be looked up in the [registry](https://github.com/typings/registry). For example, `typings install debug` would resolve to [this entry](https://github.com/typings/registry/blob/master/npm/debug.json) in the registry. Anyone can contribute their own typings to the registry, just open a pull request.
 
 ### Uninstall
 
