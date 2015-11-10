@@ -15,11 +15,13 @@ npm install typings --global
 
 ## Usage
 
-**Typings** provides a simple way for type dependencies to be installed and maintained. By resolving over various sources recursively, type definitions can be compiled into a single definition for bundling - avoiding any version conflicts.
+**Typings** is a simple way for type dependencies to be installed and maintained. It uses a `typings.json` file that can resolve  from GitHub, NPM, Bower, HTTP and from local files. Packages can use type definitions with different sources and versions, and know they will _never_ cause a conflict.
 
 ```sh
 typings install debug --save
 ```
+
+There's an [open registry](https://github.com/typings/registry) maintained by the community, which is used to resolve to the official typing for a package.
 
 ### Init
 
@@ -27,23 +29,28 @@ typings install debug --save
 typings init
 ```
 
-Initialize a new typings project at this location.
+Initialize a new `typings.json` file.
 
 ### Install
 
 ```sh
-typings install [location] --name [name]
+typings install # (with no arguments, in package directory)
+typings install <pkg>[@<version>] --source [npm | github | bower | ambient | common]
+typings install file:<path>
+typings install github:<github username>/<github project>[/<path>][#<commit>]
+typings install bitbucket:<bitbucket username>/<bitbucket project>[/<path>][#<commit>]
+typings install <http:// url>
 ```
 
 Install a type dependency, and optionally save it in the configuration file.
 
 #### Flags
 
-* **--save, -S** Save to `typings.json`
-* **--save-dev, -D** Save as a dev dependency to `typings.json`
-* **--save-ambient, -A** Save as an ambient dependency to `typings.json`
-* **--ambient** Write as an ambient dependency
-* **--name** The name of the dependency
+* **--save, -S** Save as a dependency in `typings.json`
+* **--save-dev, -D** Save as a dev dependency in `typings.json`
+* **--save-ambient, -A** Save as an ambient dependency in `typings.json`
+* **--ambient** Write as an ambient dependency (enabled when using `--save-ambient`)
+* **--name** The name of the dependency (required for non-registry dependencies)
 
 #### Possible Locations
 
@@ -54,21 +61,45 @@ Install a type dependency, and optionally save it in the configuration file.
 * `npm:<package>/<path>`
 * `bower:<package>/<path>`
 
-Where `path` can either be `typings.json` file, a `.d.ts` file, or empty (it will automatically append `typings.json` when the path is not a `.d.ts` file).
+Where `path` can be a `typings.json` file, a `.d.ts` file, or empty (it will automatically append `typings.json` to the path when it is not a `.d.ts` file).
 
 #### Registry
 
-Package installations without a location will be looked up in the [registry](https://github.com/typings/registry). For example, `typings install debug` would resolve to [this entry](https://github.com/typings/registry/blob/master/npm/debug.json) in the registry. Anyone can contribute their own typings to the registry, just open a pull request.
+Package installation without a location will be looked up in the [registry](https://github.com/typings/registry). For example, `typings install debug` will resolve to [this entry](https://github.com/typings/registry/blob/master/npm/debug.json) in the registry. Anyone can contribute their own typings to the registry, just open a pull request.
 
 ### Uninstall
 
 ```sh
-typings uninstall [name]
+typings uninstall <pkg> [--ambient] [--save|--save-dev|--save-ambient]
 ```
+
+#### Flags
+
+* **--save** Remove from dependencies in `typings.json`
+* **--save-dev** Remove from dev dependencies in `typings.json`
+* **--save-ambient** Remove from ambient dependencies in `typings.json`
+* **--ambient** Remove as an ambient dependency (enabled when using `--save-ambient`)
+
+## FAQ
+
+### Using With Git and Continuous Integration
+
+If you're already publishing your module with TypeScript, you're probably using NPM scripts to automate the build. To integrate **typings** into this flow, I recommend you run it as part of the `prepublish` or `build` steps. For example:
+
+```json
+{
+  "scripts": {
+    "build": "rm -rf dist && tsc",
+    "prepublish": "typings install && npm run build"
+  }
+}
+```
+
+If you're using some other set up, just run `typings install` before you execute the build step. This will install the type definitions from `typings.json` before the TypeScript compiler runs.
 
 ### Writing Type Dependencies
 
-Writing a new type definition is as simple as creating a new package. Start by creating a new `typings.json` file, then add dependencies as you would normally. When you publish to GitHub, locally, alongside a package (NPM or Bower) or even on your own website, someone else can install it and use it.
+Writing a new type definition is as simple as creating a new package. Start by creating a new `typings.json` file, then add dependencies as normal. When you publish to GitHub, locally, alongside your package (NPM or Bower) or even to your own website, someone else can reference it and use it.
 
 ```json
 {
@@ -83,9 +114,9 @@ Writing a new type definition is as simple as creating a new package. Start by c
 }
 ```
 
-* **main** The entry point to the definition
-* **browser** A string or map of paths to override when resolving (just like `browser` in `package.json`)
-* **ambient** Specify that this definition _must_ be installed as ambient
+* **main** The entry point to the definition (canonical to "main" in NPM's `package.json`)
+* **browser** A string or map of paths to override when resolving (canonical to "browser" in NPM's `package.json`)
+* **ambient** Specify that this definition _must_ be installed as ambient (also inferred from the type definition)
 * **name** The name of the definition
 * **dependencies** A map of dependencies that need installing
 * **devDependencies** A map of development dependencies that need installing
@@ -93,11 +124,11 @@ Writing a new type definition is as simple as creating a new package. Start by c
 
 #### Multiple Dependency Sources
 
-The dependencies map can accept either strings, or an array of strings, which points to the location of the dependency. For most people, a single string is more than enough. In some cases it's possible that a type definition is available from multiple locations and will be resolved to the first available. For example, publishing a type definition and referring to `npm:<package>` that might not be available. In this situation, you can have a second source as `github:<org>/<package>` to install from.
+The values of the dependency map can be a string, or an array of strings, which point to the location of the type information. For most cases, using a string is enough. In some cases, however, it's possible that a type definition becomes available over multiple sources. In this case, **typings** will resolve to the first available entry. For example, publishing a type definition that refers to `npm:<package>` will resolve before `github:<org>/<package>`, but only when the package is installed.
 
 #### What Are Ambient Dependencies?
 
-Ambient dependencies are definitions which provide an environment. Such dependencies could be `node`, `browserify`, `window` or even `Array.prototype.map`. These are globals that exist, you do not "require" them.
+Ambient dependencies are type definitions which provide information about an environment. Some examples of these dependencies are `node`, `browserify`, `window` or even `Array.prototype.map`. These are globals that _need_ to exist, but you do not "require" them.
 
 ## License
 
