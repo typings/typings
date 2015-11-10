@@ -85,7 +85,7 @@ function installTo (location: string, options: InstallDependencyOptions) {
   return resolveDependency(dependency, options)
     .then(tree => {
       if (tree.missing) {
-        return Promise.reject(new TypeError('Unable to resolve dependency'))
+        return Promise.reject(new TypeError(`Unable to resolve "${location}"`))
       }
 
       return installDependencyTree(tree, {
