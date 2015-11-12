@@ -18,7 +18,12 @@ const ALIASES: { [cmd: string]: string } = {
   remove: 'uninstall',
   uninstall: 'uninstall',
   // Init.
-  init: 'init'
+  init: 'init',
+  // List.
+  ls: 'list',
+  ll: 'list',
+  la: 'list',
+  list: 'list'
 }
 
 interface Argv {

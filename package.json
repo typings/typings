@@ -6,9 +6,10 @@
   "preferGlobal": true,
   "bin": {
     "typings": "dist/bin/typings.js",
+    "typings-init": "dist/bin/typings-init.js",
     "typings-install": "dist/bin/typings-install.js",
-    "typings-uninstall": "dist/bin/typings-uninstall.js",
-    "typings-init": "dist/bin/typings-init.js"
+    "typings-list": "dist/bin/typings-list.js",
+    "typings-uninstall": "dist/bin/typings-uninstall.js"
   },
   "files": [
     "dist/",
@@ -51,6 +52,7 @@
   },
   "homepage": "https://github.com/typings/cli",
   "dependencies": {
+    "archy": "^1.0.0",
     "array-uniq": "^1.0.2",
     "arrify": "^1.0.0",
     "bluebird": "^3.0.1",

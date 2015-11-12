@@ -42,7 +42,7 @@ typings install bitbucket:<bitbucket username>/<bitbucket project>[/<path>][#<co
 typings install <http:// url>
 ```
 
-Install a type dependency, and optionally save it in the configuration file.
+Install a dependency into the `typings` directory, and optionally save it in the configuration file.
 
 #### Flags
 
@@ -73,12 +73,22 @@ Package installation without a location will be looked up in the [registry](http
 typings uninstall <pkg> [--ambient] [--save|--save-dev|--save-ambient]
 ```
 
+Remove a dependency from the `typings` directory, and optionally remove from the configuration file.
+
 #### Flags
 
 * **--save** Remove from dependencies in `typings.json`
 * **--save-dev** Remove from dev dependencies in `typings.json`
 * **--save-ambient** Remove from ambient dependencies in `typings.json`
 * **--ambient** Remove as an ambient dependency (enabled when using `--save-ambient`)
+
+### List
+
+```sh
+typings ls [--ambient]
+```
+
+Print the `typings` dependency tree. (This command resolves on demand and is not cached)
 
 ## FAQ
 
