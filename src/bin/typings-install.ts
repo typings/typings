@@ -3,7 +3,7 @@
 import minimist = require('minimist')
 import extend = require('xtend')
 import { install, installDependency } from '../typings'
-import { wrapExecution, inquire } from '../utils/cli'
+import { loader, inquire } from '../utils/cli'
 import { PROJECT_NAME } from '../utils/config'
 import { VALID_SOURCES, read, isRegistryPath, parseRegistryPath } from '../lib/registry'
 
@@ -56,19 +56,19 @@ function installer (args: Args) {
   const options = extend(args, { cwd: process.cwd() })
 
   if (!args._.length) {
-    return wrapExecution(install(options), options)
+    return loader(install(options), options)
   }
 
   const dependency = args._[0]
   const source = args.source || 'npm'
 
   if (!isRegistryPath(dependency)) {
-    return wrapExecution(installDependency(dependency, options), options)
+    return loader(installDependency(dependency, options), options)
   }
 
   const { name, version } = parseRegistryPath(dependency)
 
-  return wrapExecution(read({ source, name, version }), options)
+  return loader(read({ source, name, version }), options)
     .then(function (locations) {
       if (locations.length === 1) {
         return locations[0]
@@ -86,7 +86,7 @@ function installer (args: Args) {
     .then(function (location) {
       const installation = installDependency(location, extend({ name }, options))
 
-      return wrapExecution(installation, options)
+      return loader(installation, options)
     })
 }
 

@@ -15,7 +15,7 @@ export interface ExecutionOptions {
 /**
  * Wrap async execution with a spinner.
  */
-export function wrapExecution <T> (promise: T | Promise<T>, options?: ExecutionOptions): Promise<T> {
+export function loader <T> (promise: T | Promise<T>, options?: ExecutionOptions): Promise<T> {
   const frame = spinner()
   const update = () => logUpdate(frame())
   const interval = setInterval(update, 50)

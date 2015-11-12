@@ -3,7 +3,7 @@
 import minimist = require('minimist')
 import extend = require('xtend')
 import { init } from '../typings'
-import { wrapExecution } from '../utils/cli'
+import { loader } from '../utils/cli'
 import { PROJECT_NAME } from '../utils/config'
 
 interface ArgvOptions {
@@ -29,4 +29,4 @@ ${PROJECT_NAME} init
 
 const options = extend(args, { cwd: process.cwd() })
 
-wrapExecution(init(options), options)
+loader(init(options), options)

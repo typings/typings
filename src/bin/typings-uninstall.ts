@@ -3,7 +3,7 @@
 import minimist = require('minimist')
 import extend = require('xtend')
 import { uninstallDependency } from '../typings'
-import { wrapExecution } from '../utils/cli'
+import { loader } from '../utils/cli'
 import { PROJECT_NAME } from '../utils/config'
 
 interface Args {
@@ -42,5 +42,5 @@ Aliases: r, rm, remove, un
 const options = extend(args, { cwd: process.cwd() })
 
 if (args._.length) {
-  wrapExecution(uninstallDependency(args._[0], options), options)
+  loader(uninstallDependency(args._[0], options), options)
 }
