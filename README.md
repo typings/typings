@@ -82,7 +82,7 @@ typings uninstall <pkg> [--ambient] [--save|--save-dev|--save-ambient]
 
 ## FAQ
 
-### Using With Git and Continuous Integration
+### How Do I Use Typings With Git and Continuous Integration?
 
 If you're already publishing your module with TypeScript, you're probably using NPM scripts to automate the build. To integrate **typings** into this flow, I recommend you run it as part of the `prepublish` or `build` steps. For example:
 
@@ -97,7 +97,7 @@ If you're already publishing your module with TypeScript, you're probably using 
 
 If you're using some other set up, just run `typings install` before you execute the build step. This will install the type definitions from `typings.json` before the TypeScript compiler runs.
 
-### Writing Type Dependencies
+### How Do I Write Typings Definitions?
 
 Writing a new type definition is as simple as creating a new package. Start by creating a new `typings.json` file, then add dependencies as normal. When you publish to GitHub, locally, alongside your package (NPM or Bower) or even to your own website, someone else can reference it and use it.
 
@@ -122,13 +122,17 @@ Writing a new type definition is as simple as creating a new package. Start by c
 * **devDependencies** A map of development dependencies that need installing
 * **ambientDependencies** A map of environment dependencies that need installing
 
-#### Multiple Dependency Sources
+#### Can I Use Multiple Sources?
 
 The values of the dependency map can be a string, or an array of strings, which point to the location of the type information. For most cases, using a string is enough. In some cases, however, it's possible that a type definition becomes available over multiple sources. In this case, **typings** will resolve to the first available entry. For example, publishing a type definition that refers to `npm:<package>` will resolve before `github:<org>/<package>`, but only when the package is installed.
 
 #### What Are Ambient Dependencies?
 
 Ambient dependencies are type definitions which provide information about an environment. Some examples of these dependencies are `node`, `browserify`, `window` or even `Array.prototype.map`. These are globals that _need_ to exist, but you do not "require" them.
+
+#### Should I Use The `typings` Field In `package.json`?
+
+Maybe. If you're relying on typings to provide the type dependencies, I recommend that you omit the `typings` entry for now. If you don't use the `typings.json` file, add `typings` in `package.json`. This is because TypeScript 1.6+ comes with node module resolution built-in, but unless all the packages in the NPM dependency tree have their own typings entry inline you'll be breaking TypeScript users of your library. Typings has complete support for the node module resolution strategy in TypeScript.
 
 ## License
 
