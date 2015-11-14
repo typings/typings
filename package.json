@@ -22,13 +22,8 @@
     "test-spec": "ts-node node_modules/blue-tape/bin/blue-tape.js test/**/*.ts src/**/*.spec.ts | tap-dot",
     "test-cov": "ts-node node_modules/istanbul/lib/cli.js cover -e .ts --print none -x \"*.spec.ts\" blue-tape -- test/**/*.ts src/**/*.spec.ts | tap-dot",
     "test": "npm run lint && npm run test-cov",
-    "bump-version": "FILE=\"src/typings.ts\"; if [ \"$(git status --porcelain | grep \"^ M \"$FILE)\" = \"\" ]; then VERSION=$(node -p \"require('./package.json').version\") && sed \"s/VERSION = '\\([0-9]*\\.[0-9]*\\.[0-9]*\\)'/VERSION = '\"$VERSION\"'/\" $FILE > .tmp.ts && mv .tmp.ts $FILE && git add $FILE; fi",
     "prepublish": "npm run build"
   },
-  "pre-commit": [
-    "bump-version",
-    "test"
-  ],
   "repository": {
     "type": "git",
     "url": "git://github.com/typings/cli.git"

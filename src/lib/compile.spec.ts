@@ -6,8 +6,9 @@ import compile from './compile'
 import { DependencyTree } from '../interfaces/main'
 import { PROJECT_NAME, CONFIG_FILE } from '../utils/config'
 import { readFile } from '../utils/fs'
-import { VERSION } from '../typings'
+import { version } from '../typings'
 
+const VERSION = version()
 const FIXTURES_DIR = join(__dirname, '__test__/fixtures')
 
 test('compile', t => {

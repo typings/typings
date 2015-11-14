@@ -4,7 +4,7 @@ import minimist = require('minimist')
 import wordwrap = require('wordwrap')
 import { spawn } from 'child_process'
 import { join } from 'path'
-import { VERSION } from '../typings'
+import { version } from '../typings'
 import { PROJECT_NAME } from '../utils/config'
 
 const ALIASES: { [cmd: string]: string } = {
@@ -40,7 +40,7 @@ const argv = minimist<Argv>(process.argv.slice(2), {
 })
 
 if (argv.version) {
-  console.log(VERSION)
+  console.log(version())
 
   process.exit(0)
 }
@@ -62,6 +62,6 @@ ${wrap(Object.keys(ALIASES).sort().join(', '))}
 
 ${PROJECT_NAME} <cmd> -h     get help for <cmd>
 
-${PROJECT_NAME}@${VERSION} ${join(__dirname, '../..')}
+${PROJECT_NAME}@${version()} ${join(__dirname, '../..')}
 `)
 }
