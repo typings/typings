@@ -10,6 +10,7 @@ import sortKeys = require('sort-keys')
 import mdp = require('mkdirp')
 import uniq = require('array-uniq')
 import Promise = require('native-or-bluebird')
+import lockfile = require('lockfile')
 import { join, dirname } from 'path'
 import { CONFIG_FILE, TYPINGS_DIR, DTS_MAIN_FILE, DTS_BROWSER_FILE } from './config'
 import { isHttp, toDefinition } from './path'
@@ -31,6 +32,8 @@ export const readFile = thenify<string, string, string>(fs.readFile)
 export const writeFile = thenify<string, string | Buffer, void>(fs.writeFile)
 export const mkdirp = thenify<string, void>(mdp)
 export const unlink = thenify<string, void>(fs.unlink)
+export const lock = thenify(lockfile.lock)
+export const unlock = thenify(lockfile.unlock)
 
 /**
  * Verify a path exists and is a file.
@@ -112,11 +115,17 @@ export function transformFile (path: string, transform: (contents: string) => st
       .then(contents => writeFile(path, contents))
   }
 
-  return readFile(path, 'utf8')
+  const lockfile = `${path}.lock`
+
+  return lock(lockfile)
+    .then(() => {
+      return readFile(path, 'utf8')
+    })
     .then(
       (contents) => handle(contents),
       () => handle(undefined)
     )
+    .then(() => unlock(lockfile))
 }
 
 /**

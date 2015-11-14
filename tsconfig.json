@@ -29,6 +29,7 @@
     "custom_typings/inquirer.d.ts",
     "custom_typings/invariant.d.ts",
     "custom_typings/is-absolute.d.ts",
+    "custom_typings/lockfile.d.ts",
     "custom_typings/log-update.d.ts",
     "custom_typings/minimist.d.ts",
     "custom_typings/mkdirp.d.ts",
