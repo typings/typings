@@ -5,11 +5,7 @@
   "main": "dist/typings.js",
   "preferGlobal": true,
   "bin": {
-    "typings": "dist/bin/typings.js",
-    "typings-init": "dist/bin/typings-init.js",
-    "typings-install": "dist/bin/typings-install.js",
-    "typings-list": "dist/bin/typings-list.js",
-    "typings-uninstall": "dist/bin/typings-uninstall.js"
+    "typings": "dist/bin/typings.js"
   },
   "files": [
     "dist/",
