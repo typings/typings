@@ -48,7 +48,9 @@ if (argv.version) {
 const command = ALIASES[argv._[0]]
 
 if (command != null) {
-  spawn(`typings-${command}`, argv._.slice(1), { stdio: 'inherit' })
+  const args = argv._.slice(1)
+  args.unshift(join(__dirname, `typings-${command}.js`))
+  spawn(process.execPath, args, { stdio: 'inherit' })
 } else {
   const wrap = wordwrap(4, 80)
 
