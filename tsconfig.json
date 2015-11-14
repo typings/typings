@@ -27,6 +27,7 @@
     "custom_typings/graceful-fs.d.ts",
     "custom_typings/has.d.ts",
     "custom_typings/inquirer.d.ts",
+    "custom_typings/insight.d.ts",
     "custom_typings/invariant.d.ts",
     "custom_typings/is-absolute.d.ts",
     "custom_typings/lockfile.d.ts",

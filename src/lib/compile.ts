@@ -9,7 +9,7 @@ import { readFileFrom } from '../utils/fs'
 import { resolveFrom, relativeTo, isHttp, isModuleName, normalizeSlashes, fromDefinition, normalizeToDefinition } from '../utils/path'
 import { REFERENCE_REGEXP } from '../utils/references'
 import { PROJECT_NAME } from '../utils/config'
-import { version } from '../typings'
+import { VERSION } from '../typings'
 
 /**
  * Options interface. Supply a name and the current working directory.
@@ -259,7 +259,7 @@ function stringifyFile (path: string, contents: string, options: StringifyOption
 
   // Output information for the original type source.
   const source = isHttp(path) ? path : relative(options.cwd, path)
-  const prefix = options.meta ? `// Compiled using ${PROJECT_NAME}@${version()}${EOL}// Source: ${source}${EOL}` : ''
+  const prefix = options.meta ? `// Compiled using ${PROJECT_NAME}@${VERSION}${EOL}// Source: ${source}${EOL}` : ''
 
   // TODO(blakeembrey): Provide validation for ambient modules
   if (options.ambient) {

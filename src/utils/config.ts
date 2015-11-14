@@ -3,3 +3,4 @@ export const CONFIG_FILE = `${PROJECT_NAME}.json`
 export const TYPINGS_DIR = PROJECT_NAME
 export const DTS_MAIN_FILE = 'main.d.ts'
 export const DTS_BROWSER_FILE = 'browser.d.ts'
+export const TRACKING_CODE = 'UA-40161947-2'
