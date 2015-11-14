@@ -62,22 +62,33 @@ export function writeJson (path: string, json: any, indent: string | number = 2)
  * Read a configuration file.
  */
 export function readConfig (path: string): Promise<ConfigJson> {
-  return readJson(path)
+  return readJson(path).then(data => parseConfig(data, path))
 }
 
 /**
  * Read a configuration file from anywhere (HTTP or local).
  */
 export function readConfigFrom (path: string): Promise<ConfigJson> {
-  // TODO(blakeembrey): Provide more insightful errors from config.
-  return readJsonFrom(path)
+  return readJsonFrom(path).then(data => parseConfig(data, path))
+}
+
+export function parseConfig (config: ConfigJson, path: string): ConfigJson {
+  // TODO(blakeembrey): Validate config object.
+  return config
 }
 
 /**
  * Read a file over HTTP, using a file cache and status check.
  */
 export function readHttp (url: string): Promise<string> {
-  return popsicle(url)
+  return popsicle.get({
+    url,
+    use: [
+      popsicle.plugins.headers,
+      popsicle.plugins.unzip,
+      popsicle.plugins.concatStream
+    ]
+  })
     .use(requestFileCache)
     .use(popsicleStatus(200))
     .then(x => x.body)
@@ -131,7 +142,7 @@ export function transformFile (path: string, transform: (contents: string) => st
 /**
  * Transform a JSON file in a single operation.
  */
-export function transformJson (path: string, transform: (json: any) => any) {
+export function transformJson <T> (path: string, transform: (json: T) => T) {
   return transformFile(path, (contents) => {
     const indent = contents ? detectIndent(contents).indent : 2
     const json = contents ? parseJson(contents, path) : undefined
@@ -147,10 +158,8 @@ export function transformJson (path: string, transform: (json: any) => any) {
 export function transformConfig (cwd: string, transform: (config: ConfigJson) => ConfigJson) {
   const path = join(cwd, CONFIG_FILE)
 
-  return transformJson(path, (config = {}) => {
-    // TODO: TSD structure validation.
-
-    return Promise.resolve(transform(config))
+  return transformJson<ConfigJson>(path, (config = {}) => {
+    return Promise.resolve(transform(parseConfig(config, path)))
       .then(config => {
         if (config.dependencies) {
           config.dependencies = sortKeys(config.dependencies)
