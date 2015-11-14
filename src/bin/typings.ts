@@ -4,8 +4,9 @@ import minimist = require('minimist')
 import wordwrap = require('wordwrap')
 import { spawn } from 'child_process'
 import { join } from 'path'
-import { version } from '../typings'
+import { VERSION } from '../typings'
 import { PROJECT_NAME } from '../utils/config'
+import insight from '../utils/insight'
 
 const ALIASES: { [cmd: string]: string } = {
   // Install.
@@ -39,19 +40,38 @@ const argv = minimist<Argv>(process.argv.slice(2), {
   stopEarly: true
 })
 
-if (argv.version) {
-  console.log(version())
-
-  process.exit(0)
+if (insight.optOut == null) {
+  insight.track('downloaded')
+  insight.askPermission(null, function () {
+    return handle(argv)
+  })
+} else {
+  handle(argv)
 }
 
-const command = ALIASES[argv._[0]]
+/**
+ * Wrap CLI logic in a handler for the initial prompt.
+ */
+function handle (argv: Argv) {
+  const args = argv._
 
-if (command != null) {
-  const args = argv._.slice(1)
-  args.unshift(join(__dirname, `typings-${command}.js`))
-  spawn(process.execPath, args, { stdio: 'inherit' })
-} else {
+  // Track the first two CLI arguments.
+  insight.track.apply(insight, ['cli'].concat(args.slice(0, 2)))
+
+  if (argv.version) {
+    console.log(VERSION)
+
+    process.exit(0)
+  }
+
+  const command = ALIASES[args[0]]
+
+  if (typeof command === 'string') {
+    const args = argv._.slice(1)
+    args.unshift(join(__dirname, `typings-${command}.js`))
+    return spawn(process.execPath, args, { stdio: 'inherit' })
+  }
+
   const wrap = wordwrap(4, 80)
 
   console.log(`
@@ -60,8 +80,9 @@ Usage: ${PROJECT_NAME} <command>
 Commands:
 ${wrap(Object.keys(ALIASES).sort().join(', '))}
 
-${PROJECT_NAME} <cmd> -h     get help for <cmd>
+${PROJECT_NAME} <command> -h            Get help for <command>
+${PROJECT_NAME} <command> --no-insight  Disable insights for <command>
 
-${PROJECT_NAME}@${version()} ${join(__dirname, '../..')}
+${PROJECT_NAME}@${VERSION} ${join(__dirname, '../..')}
 `)
 }
