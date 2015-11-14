@@ -31,7 +31,7 @@ export interface InstallOptions {
 /**
  * Install all dependencies on the current project.
  */
-export function install (options: InstallOptions) {
+export function install (options: InstallOptions): Promise<DependencyTree> {
   return resolveTypeDependencies({ cwd: options.cwd, dev: true, ambient: true })
     .then(tree => {
       const cwd = dirname(tree.src)
@@ -47,19 +47,19 @@ export function install (options: InstallOptions) {
       addToQueue(tree.devDependencies, false)
       addToQueue(tree.ambientDependencies, true)
 
-      return queue.reduce(
-        function (result, [name, tree, ambient]) {
-          return result.then(() => installDependencyTree(tree, { cwd, name, ambient, meta: true }))
-        },
-        Promise.resolve()
-      )
+      // Install each dependency after each other.
+      function chain (result: Promise<DependencyTree>, [name, tree, ambient]) {
+        return result.then(() => installDependencyTree(tree, { cwd, name, ambient, meta: true }))
+      }
+
+      return queue.reduce(chain, Promise.resolve()).then(() => tree)
     })
 }
 
 /**
  * Install a dependency into the currect project.
  */
-export function installDependency (dependency: string, options: InstallDependencyOptions) {
+export function installDependency (dependency: string, options: InstallDependencyOptions): Promise<DependencyTree> {
   if (!options.name) {
     return Promise.reject(new Error('You must specify a name for the dependency'))
   }
@@ -79,7 +79,7 @@ export function installDependency (dependency: string, options: InstallDependenc
 /**
  * Install from a dependency string.
  */
-function installTo (location: string, options: InstallDependencyOptions) {
+function installTo (location: string, options: InstallDependencyOptions): Promise<DependencyTree> {
   const dependency = parseDependency(location)
 
   return resolveDependency(dependency, options)
@@ -94,8 +94,9 @@ function installTo (location: string, options: InstallDependencyOptions) {
         ambient: options.ambient || options.saveAmbient,
         meta: true
       })
+        .then(() => writeToConfig(dependency, options))
+        .then(() => tree)
     })
-    .then(() => writeToConfig(dependency, options))
 }
 
 /**

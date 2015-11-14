@@ -3,90 +3,63 @@
 // Definitions by: Diullei Gomes <https://github.com/Diullei>, Bart van der Schoor <https://github.com/Bartvds>
 // Definitions: https://github.com/borisyankov/DefinitelyTyped
 
-declare module Chalk {
-  export interface ChalkModule extends ChalkStyle {
+declare module "chalk" {
+  interface Styles <T> {
+    // General
+    reset: T;
+    bold: T;
+    italic: T;
+    underline: T;
+    inverse: T;
+    strikethrough: T;
+
+    // Text colors
+    black: T;
+    red: T;
+    green: T;
+    yellow: T;
+    blue: T;
+    magenta: T;
+    cyan: T;
+    white: T;
+    gray: T;
+    grey: T;
+
+    // Background colors
+    bgBlack: T;
+    bgRed: T;
+    bgGreen: T;
+    bgYellow: T;
+    bgBlue: T;
+    bgMagenta: T;
+    bgCyan: T;
+    bgWhite: T;
+  }
+
+  interface Chalk extends Styles<ChalkChain> {
     enabled: boolean;
-    supportsColor: boolean;
-    styles: ChalkStyleMap;
-
-    stripColor(value: string): any;
-    hasColor(str:  string): boolean;
   }
 
-  export interface ChalkChain extends ChalkStyle {
-    (...text: string[]): ChalkChain;
+  interface ChalkChain extends Chalk {
+    (value: string): string;
   }
 
-  export interface ChalkStyleElement {
+  interface StyleElement {
     open: string;
     close: string;
+    closeRe: RegExp;
   }
 
-  export interface ChalkStyle {
-    // General
-    reset: ChalkChain;
-    bold: ChalkChain;
-    italic: ChalkChain;
-    underline: ChalkChain;
-    inverse: ChalkChain;
-    strikethrough: ChalkChain;
+  interface ChalkExports extends Chalk {
+    constructor (options: { enabled: boolean }): Chalk;
 
-    // Text colors
-    black: ChalkChain;
-    red: ChalkChain;
-    green: ChalkChain;
-    yellow: ChalkChain;
-    blue: ChalkChain;
-    magenta: ChalkChain;
-    cyan: ChalkChain;
-    white: ChalkChain;
-    gray: ChalkChain;
-    grey: ChalkChain;
-
-    // Background colors
-    bgBlack: ChalkChain;
-    bgRed: ChalkChain;
-    bgGreen: ChalkChain;
-    bgYellow: ChalkChain;
-    bgBlue: ChalkChain;
-    bgMagenta: ChalkChain;
-    bgCyan: ChalkChain;
-    bgWhite: ChalkChain;
+    styles: Styles<StyleElement>;
+    supportsColor: boolean;
+    hasColor (value: string): boolean;
+    stripColor (value: string): string;
   }
 
-  export interface ChalkStyleMap {
-    // General
-    reset: ChalkStyleElement;
-    bold: ChalkStyleElement;
-    italic: ChalkStyleElement;
-    underline: ChalkStyleElement;
-    inverse: ChalkStyleElement;
-    strikethrough: ChalkStyleElement;
+  var chalk: ChalkExports;
 
-    // Text colors
-    black: ChalkStyleElement;
-    red: ChalkStyleElement;
-    green: ChalkStyleElement;
-    yellow: ChalkStyleElement;
-    blue: ChalkStyleElement;
-    magenta: ChalkStyleElement;
-    cyan: ChalkStyleElement;
-    white: ChalkStyleElement;
-    gray: ChalkStyleElement;
-
-    // Background colors
-    bgBlack: ChalkStyleElement;
-    bgRed: ChalkStyleElement;
-    bgGreen: ChalkStyleElement;
-    bgYellow: ChalkStyleElement;
-    bgBlue: ChalkStyleElement;
-    bgMagenta: ChalkStyleElement;
-    bgCyan: ChalkStyleElement;
-    bgWhite: ChalkStyleElement;
-  }
-}
-
-declare module "chalk" {
-  var ch: Chalk.ChalkModule;
-  export = ch;
+  export = chalk;
 }

@@ -6,12 +6,14 @@ import { install, installDependency } from '../typings'
 import { loader, inquire } from '../utils/cli'
 import { PROJECT_NAME } from '../utils/config'
 import { VALID_SOURCES, read, isRegistryPath, parseRegistryPath } from '../lib/registry'
+import { archifyDependencyTree } from '../utils/cli'
 
 interface Args {
   _: string[]
   save: boolean
   saveDev: boolean
   saveAmbient: boolean
+  ambient: boolean
   name?: string
   verbose: boolean
   help: boolean
@@ -91,3 +93,6 @@ function installer (args: Args) {
 }
 
 installer(args)
+  .then(function (tree) {
+    console.log(archifyDependencyTree(tree))
+  })
