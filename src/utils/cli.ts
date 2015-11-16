@@ -18,16 +18,20 @@ export interface ExecutionOptions {
  * Wrap async execution with a spinner.
  */
 export function loader <T> (promise: T | Promise<T>, options?: ExecutionOptions): Promise<T> {
-  const frame = spinner()
-  const update = () => logUpdate(frame())
-  const interval = setInterval(update, 50)
+  let end: () => void = () => undefined
 
-  function end () {
-    clearInterval(interval)
-    logUpdate.clear()
+  if ((<any> process.stdout).isTTY) {
+    const frame = spinner()
+    const update = () => logUpdate.stderr(frame())
+    const interval = setInterval(update, 50)
+
+    end = () => {
+      clearInterval(interval)
+      logUpdate.clear()
+    }
+
+    update()
   }
-
-  update()
 
   return promiseFinally(Promise.resolve(promise), end)
     .catch((error: Error) => {
