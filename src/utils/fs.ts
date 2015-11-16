@@ -86,7 +86,7 @@ export function readHttp (url: string): Promise<string> {
     use: [
       popsicle.plugins.headers,
       popsicle.plugins.unzip,
-      popsicle.plugins.concatStream
+      popsicle.plugins.concatStream('string')
     ]
   })
     .use(requestFileCache)
