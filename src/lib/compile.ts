@@ -12,6 +12,13 @@ import { PROJECT_NAME } from '../utils/config'
 import { VERSION } from '../typings'
 
 /**
+ * Define the separator between module paths. E.g. `foo~bar`.
+ *
+ * Note: This used to be `!`, but it appears that breaks in TypeScript 1.8+.
+ */
+const SEPARATOR = '~'
+
+/**
  * Options interface. Supply a name and the current working directory.
  */
 export interface Options {
@@ -229,7 +236,7 @@ function stringifyDependencyPath (path: string, options: StringifyOptions): Prom
 
         if (isModuleName(path)) {
           const [dependencyName, dependencyPath] = getModuleNameParts(path)
-          const moduleName = ambient ? dependencyName : `${name}!${dependencyName}`
+          const moduleName = ambient ? dependencyName : `${name}${SEPARATOR}${dependencyName}`
           const compileOptions = { cwd, browser, files, name: moduleName, ambient: false, meta }
           const stringifyOptions = cachedStringifyOptions(dependencyName, compileOptions, options)
 
@@ -305,7 +312,7 @@ function stringifyFile (path: string, contents: string, options: StringifyOption
         return name
       }
 
-      return `${options.name}!${name}`
+      return `${options.name}${SEPARATOR}${name}`
     }
 
     const relativePath = relativeTo(tree.src, resolveFrom(path, name))
@@ -450,5 +457,5 @@ function toDependencyPath (options: StringifyOptions) {
     parts.unshift(node.name)
   } while (node = node.parent)
 
-  return parts.join('~')
+  return parts.join(SEPARATOR)
 }
