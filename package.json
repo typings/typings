@@ -79,6 +79,7 @@
   "devDependencies": {
     "blue-tape": "^0.1.10",
     "istanbul": "blakeembrey/istanbul#transpiler-support",
+    "nock": "^3.0.0",
     "pre-commit": "^1.0.6",
     "tap-dot": "^1.0.0",
     "ts-node": "^0.5.0",

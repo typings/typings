@@ -45,7 +45,11 @@ interface CompileOptions extends Options {
 /**
  * Get stringify options for a dependency.
  */
-function getStringifyOptions (tree: DependencyTree, options: CompileOptions): StringifyOptions {
+function getStringifyOptions (
+  tree: DependencyTree,
+  options: CompileOptions,
+  parent: StringifyOptions
+): StringifyOptions {
   const overrides: Overrides = {}
   const isTypings = typeof tree.typings === 'string'
   const main = isTypings ? tree.typings : tree.main
@@ -87,15 +91,16 @@ function getStringifyOptions (tree: DependencyTree, options: CompileOptions): St
     overrides,
     imported,
     referenced,
-    dependencies
+    dependencies,
+    parent
   })
 }
 
 /**
  * Compile a dependency tree to a single definition.
  */
-function compileDependencyTree (tree: DependencyTree, options: CompileOptions): Promise<string> {
-  return compileDependencyPath(null, getStringifyOptions(tree, options))
+function compileDependencyTree (tree: DependencyTree, options: CompileOptions, parent?: StringifyOptions): Promise<string> {
+  return compileDependencyPath(null, getStringifyOptions(tree, options, parent))
 }
 
 /**
@@ -103,6 +108,12 @@ function compileDependencyTree (tree: DependencyTree, options: CompileOptions): 
  */
 function compileDependencyPath (path: string, options: StringifyOptions) {
   const { tree, entry } = options
+
+  if (tree.missing) {
+    return Promise.reject(new Error(
+      `Missing dependency "${toDependencyPath(options)}", unable to compile dependency tree`
+    ))
+  }
 
   return stringifyDependencyPath(resolveFrom(tree.src, path == null ? entry : path), options)
 }
@@ -118,6 +129,7 @@ interface StringifyOptions extends CompileOptions {
   referenced: ts.Map<boolean>
   dependencies: ts.Map<StringifyOptions>
   tree: DependencyTree
+  parent: StringifyOptions
 }
 
 /**
@@ -139,7 +151,7 @@ function cachedStringifyOptions (name: string, compileOptions: CompileOptions, o
 
   if (!has(options.dependencies, name)) {
     if (tree) {
-      options.dependencies[name] = getStringifyOptions(tree, compileOptions)
+      options.dependencies[name] = getStringifyOptions(tree, compileOptions, options)
     } else {
       options.dependencies[name] = null
     }
@@ -185,7 +197,13 @@ function stringifyDependencyPath (path: string, options: StringifyOptions): Prom
       }
 
       if (ambientModules.length && !ambient) {
-        return Promise.reject(new TypeError(`Attempted to compile ${name} as non-ambient when it contains external module declarations`))
+        return Promise.reject(
+          new TypeError(
+            `Attempted to compile ${toDependencyPath(options)} as a ` +
+            `dependency, but it contains ambient module declarations. Did ` +
+            `you want to specify "--ambient" instead?`
+          )
+        )
       }
 
       const importedFiles = info.importedFiles.map(x => isModuleName(x.fileName) ? x.fileName : resolveFrom(path, x.fileName))
@@ -264,7 +282,11 @@ function stringifyFile (path: string, contents: string, options: StringifyOption
   // TODO(blakeembrey): Provide validation for ambient modules
   if (options.ambient) {
     if ((<any> sourceFile).externalModuleIndicator) {
-      throw new TypeError(`Unable to compile "${path}" - looks like an external module`)
+      throw new TypeError(
+        `Attempted to compile ${toDependencyPath(options)} as an ambient ` +
+        `module declaration, but it has external module indicators. Did you ` +
+        `want to omit "--ambient"?`
+      )
     }
 
     return prefix + contents.trim()
@@ -415,4 +437,18 @@ function processTree (
   code += reader(position)
 
   return code
+}
+
+/**
+ * Stringify the dependency path to something useful in the error.
+ */
+function toDependencyPath (options: StringifyOptions) {
+  const parts: string[] = []
+  let node = options
+
+  do {
+    parts.unshift(node.name)
+  } while (node = node.parent)
+
+  return parts.join('~')
 }

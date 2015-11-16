@@ -1,5 +1,6 @@
 import test = require('blue-tape')
 import Promise = require('native-or-bluebird')
+import nock = require('nock')
 import { EOL } from 'os'
 import { join, relative } from 'path'
 import compile from './compile'
@@ -275,5 +276,51 @@ test('compile', t => {
           t.equal(`${result.browser}\n`, contents)
         })
     })
+  })
+
+  t.test('missing error', t => {
+    const node: DependencyTree = {
+      type: PROJECT_NAME,
+      src: 'http://example.com/typings/index.d.ts',
+      missing: true,
+      ambient: false,
+      typings: 'http://example.com/typings/index.d.ts',
+      dependencies: {},
+      devDependencies: {},
+      ambientDependencies: {}
+    }
+
+    t.plan(1)
+
+    return compile(node, { name: 'test', cwd: __dirname, ambient: false, meta: false })
+      .catch(function (result) {
+        t.equal(result.message, 'Missing dependency "test", unable to compile dependency tree')
+      })
+  })
+
+  t.test('resolve over http', t => {
+    const node: DependencyTree = {
+      type: PROJECT_NAME,
+      src: 'http://example.com/typings.json',
+      missing: false,
+      ambient: false,
+      typings: 'http://example.com/index.d.ts',
+      dependencies: {},
+      devDependencies: {},
+      ambientDependencies: {}
+    }
+
+    nock('http://example.com')
+      .get('/typings.json')
+      .reply(200, '{"main":"index.d.ts"}')
+
+      nock('http://example.com')
+        .get('/index.d.ts')
+        .reply(200, 'export const helloWorld: string')
+
+    return compile(node, { name: 'test', cwd: __dirname, ambient: false, meta: false })
+      .then(function (result) {
+        t.equal(result.main, "declare module 'test' {\nexport const helloWorld: string\n}")
+      })
   })
 })

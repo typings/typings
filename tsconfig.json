@@ -35,6 +35,7 @@
     "custom_typings/minimist.d.ts",
     "custom_typings/mkdirp.d.ts",
     "custom_typings/native-or-bluebird.d.ts",
+    "custom_typings/nock.d.ts",
     "custom_typings/node.d.ts",
     "custom_typings/parse-json.d.ts",
     "custom_typings/popsicle-cache.d.ts",
