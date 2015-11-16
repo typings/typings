@@ -1,6 +1,6 @@
 {
   "name": "typings",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "The TypeScript definition manager",
   "main": "dist/typings.js",
   "preferGlobal": true,
