@@ -70,7 +70,7 @@ function handle (args: Args & minimist.ParsedArgs) {
     process.exit(0)
   }
 
-  const command = ALIASES[args[0]]
+  const command = ALIASES[args._[0]]
 
   if (typeof command === 'string') {
     const argv = args._.slice(1)
