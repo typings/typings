@@ -27,10 +27,8 @@ export function loader <T> (promise: T | Promise<T>, options?: ExecutionOptions)
 
     end = () => {
       clearInterval(interval)
-      logUpdate.clear()
+      logUpdate.stderr.clear()
     }
-
-    update()
   }
 
   return promiseFinally(Promise.resolve(promise), end)
