@@ -144,6 +144,17 @@ Ambient dependencies are type definitions which provide information about an env
 
 Maybe. If you're relying on typings to provide the type dependencies, I recommend that you omit the `typings` entry for now. If you don't use the `typings.json` file, add `typings` in `package.json`. This is because TypeScript 1.6+ comes with node module resolution built-in, but unless all the packages in the NPM dependency tree have their own typings entry inline you'll be breaking TypeScript users of your library. Typings has complete support for the node module resolution strategy in TypeScript.
 
+#### Where do the type definitions install?
+
+Typings are compiled and written into the `typings/` directory alongside `typings.json`. More specifically, the structure looks like this:
+
+```sh
+typings/{ambient,definitions}/{main,browser}/{dependency}.d.ts
+typings/{main,browser}.d.ts
+```
+
+Where `typings/{main,browser}.d.ts` is a compilation of references to installed definitions. Main and browser typings are written to separate directories for `tsconfig.json` exclude support - you can completely exclude either the primary or browser typings.
+
 ## License
 
 MIT
