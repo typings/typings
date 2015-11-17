@@ -4,9 +4,12 @@ import minimist = require('minimist')
 import wordwrap = require('wordwrap')
 import { spawn } from 'child_process'
 import { join } from 'path'
+import updateNotifier = require('update-notifier')
 import { VERSION } from '../typings'
 import { PROJECT_NAME } from '../utils/config'
 import insight from '../utils/insight'
+
+const pkg = require('../../package.json')
 
 const ALIASES: { [cmd: string]: string } = {
   // Install.
@@ -40,6 +43,10 @@ const argv = minimist<Argv>(process.argv.slice(2), {
   stopEarly: true
 })
 
+// Notify the user of updates.
+updateNotifier({ pkg }).notify()
+
+// Prompt for insight tracking on the first execution.
 if (insight.optOut == null) {
   insight.track('downloaded')
   insight.askPermission(null, function () {
