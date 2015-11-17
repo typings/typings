@@ -10,10 +10,11 @@ interface Args {
   verbose: boolean
   help: boolean
   ambient: boolean
+  production: boolean
 }
 
 const args = minimist<Args>(process.argv.slice(2), {
-  boolean: ['verbose', 'help', 'ambient'],
+  boolean: ['verbose', 'help', 'ambient', 'production'],
   alias: {
     verbose: ['v'],
     ambient: ['a'],
@@ -23,7 +24,7 @@ const args = minimist<Args>(process.argv.slice(2), {
 
 if (args.help) {
   console.log(`
-${PROJECT_NAME} ls [--ambient]
+${PROJECT_NAME} ls [--ambient] [--production]
 
 Aliases: la, ll, list
 `)
@@ -34,7 +35,7 @@ Aliases: la, ll, list
 const cwd = process.cwd()
 const options = extend(args, { cwd })
 
-loader(resolveTypeDependencies({ cwd, ambient: true, dev: true }), options)
+loader(resolveTypeDependencies({ cwd, ambient: true, dev: !args.production }), options)
   .then(function (tree) {
     console.log(archifyDependencyTree(tree, options))
   })
