@@ -20,7 +20,7 @@ export interface ExecutionOptions {
 export function loader <T> (promise: T | Promise<T>, options?: ExecutionOptions): Promise<T> {
   let end: () => void = () => undefined
 
-  if ((<any> process.stdout).isTTY) {
+  if ((process.stdout as any).isTTY) {
     const frame = spinner()
     const update = () => logUpdate.stderr(frame())
     const interval = setInterval(update, 50)
@@ -38,7 +38,7 @@ export function loader <T> (promise: T | Promise<T>, options?: ExecutionOptions)
       console.log(chalk.red(`${error.name}: ${error.message}`))
 
       if (options.verbose && 'stack' in error) {
-        console.log((<any> error).stack)
+        console.log((error as any).stack)
       }
 
       process.exit(1)

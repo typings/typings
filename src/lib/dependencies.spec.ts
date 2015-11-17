@@ -93,12 +93,12 @@ test('dependencies', t => {
         ambientDependencies: {}
       }
 
-      ;(<any> expected).dependencies['bower-dep'] = bowerDep
-      ;(<any> expected).dependencies.dep = typedDep
-      ;(<any> expected).dependencies['npm-dep'] = npmDep
-      ;(<any> expected).devDependencies['dev-dep'] = typedDevDep
+      ;(expected as any).dependencies['bower-dep'] = bowerDep
+      ;(expected as any).dependencies.dep = typedDep
+      ;(expected as any).dependencies['npm-dep'] = npmDep
+      ;(expected as any).devDependencies['dev-dep'] = typedDevDep
 
-      ;(<any> bowerDep).dependencies.example = exampleDep
+      ;(bowerDep as any).dependencies.example = exampleDep
 
       return resolveDependencies({
         cwd: RESOLVE_FIXTURE_DIR,

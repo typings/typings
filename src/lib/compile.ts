@@ -67,11 +67,11 @@ function getStringifyOptions (
   if (options.browser && browser) {
     if (typeof browser === 'string') {
       const mainDefinition = resolveFrom(tree.src, normalizeToDefinition(main))
-      const browserDefinition = resolveFrom(tree.src, normalizeToDefinition(<string> browser))
+      const browserDefinition = resolveFrom(tree.src, normalizeToDefinition(browser))
 
       overrides[mainDefinition] = browserDefinition
     } else {
-      const browserOverrides = <Overrides> browser
+      const browserOverrides = browser
 
       for (const key of Object.keys(browserOverrides)) {
         if (!isModuleName(key)) {
@@ -288,7 +288,7 @@ function stringifyFile (path: string, contents: string, options: StringifyOption
 
   // TODO(blakeembrey): Provide validation for ambient modules
   if (options.ambient) {
-    if ((<any> sourceFile).externalModuleIndicator) {
+    if ((sourceFile as any).externalModuleIndicator) {
       throw new TypeError(
         `Attempted to compile ${toDependencyPath(options)} as an ambient ` +
         `module declaration, but it has external module indicators. Did you ` +
@@ -345,7 +345,7 @@ function stringifyFile (path: string, contents: string, options: StringifyOption
     }
 
     if (node.kind === ts.SyntaxKind.ExternalModuleReference) {
-      const path = importPath((<any> node).expression.text)
+      const path = importPath((node as any).expression.text)
 
       return ` require('${path}')`
     }

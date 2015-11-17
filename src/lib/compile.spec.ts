@@ -78,10 +78,10 @@ test('compile', t => {
         ambientDependencies: {}
       }
 
-      ;(<any> root).dependencies.a = a
-      ;(<any> root).dependencies.b = b
-      ;(<any> root).dependencies.dep = dep
-      ;(<any> root).dependencies.browser = browser
+      ;(root as any).dependencies.a = a
+      ;(root as any).dependencies.b = b
+      ;(root as any).dependencies.dep = dep
+      ;(root as any).dependencies.browser = browser
 
       return compile(root, { name: 'root', cwd: __dirname, ambient: false, meta: true })
         .then((result) => {
@@ -231,7 +231,7 @@ test('compile', t => {
         ambientDependencies: {}
       }
 
-      ;(<any> node).dependencies.fs = fs
+      ;(node as any).dependencies.fs = fs
 
       return compile(node, { name: 'name', cwd: __dirname, ambient: true, meta: false })
         .then(result => {
