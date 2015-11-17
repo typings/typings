@@ -26,13 +26,14 @@ export interface InstallDependencyOptions {
  */
 export interface InstallOptions {
   cwd: string
+  dev: boolean
 }
 
 /**
  * Install all dependencies on the current project.
  */
 export function install (options: InstallOptions): Promise<DependencyTree> {
-  return resolveTypeDependencies({ cwd: options.cwd, dev: true, ambient: true })
+  return resolveTypeDependencies({ cwd: options.cwd, dev: options.dev, ambient: true })
     .then(tree => {
       const cwd = dirname(tree.src)
       const queue: [string, DependencyTree, boolean][] = []

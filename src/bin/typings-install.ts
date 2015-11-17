@@ -13,6 +13,7 @@ interface Args {
   saveDev: boolean
   saveAmbient: boolean
   ambient: boolean
+  production: boolean
   name?: string
   verbose: boolean
   help: boolean
@@ -20,7 +21,7 @@ interface Args {
 }
 
 const args = minimist<Args>(process.argv.slice(2), {
-  boolean: ['save', 'saveAmbient', 'saveDev', 'ambient', 'verbose', 'help'],
+  boolean: ['save', 'saveAmbient', 'saveDev', 'ambient', 'verbose', 'help', 'production'],
   string: ['name', 'source'],
   alias: {
     save: ['S'],
@@ -44,7 +45,7 @@ ${PROJECT_NAME} install bitbucket:<bitbucket username>/<bitbucket project>[/<pat
 ${PROJECT_NAME} install <http:// url>
 
 Aliases: i, in
-Options: [--save|--save-dev|--save-ambient] [--ambient]
+Options: [--save|--save-dev|--save-ambient] [--ambient] [--production]
 `)
 
   process.exit(0)
@@ -54,7 +55,7 @@ Options: [--save|--save-dev|--save-ambient] [--ambient]
  * Install using CLI arguments.
  */
 function installer (args: Args & minimist.ParsedArgs) {
-  const options = extend(args, { cwd: process.cwd() })
+  const options = extend(args, { cwd: process.cwd(), dev: !args.production })
 
   if (!args._.length) {
     return loader(install(options), options)
