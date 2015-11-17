@@ -152,7 +152,7 @@ MIT
 [npm-url]: https://npmjs.org/package/typings
 [downloads-image]: https://img.shields.io/npm/dm/typings.svg?style=flat
 [downloads-url]: https://npmjs.org/package/typings
-[travis-image]: https://img.shields.io/travis/typings/cli.svg?style=flat
-[travis-url]: https://travis-ci.org/typings/cli
-[coveralls-image]: https://img.shields.io/coveralls/typings/cli.svg?style=flat
-[coveralls-url]: https://coveralls.io/r/typings/cli?branch=master
+[travis-image]: https://img.shields.io/travis/typings/typings.svg?style=flat
+[travis-url]: https://travis-ci.org/typings/typings
+[coveralls-image]: https://img.shields.io/coveralls/typings/typings.svg?style=flat
+[coveralls-url]: https://coveralls.io/r/typings/typings?branch=master

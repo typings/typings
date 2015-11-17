@@ -22,7 +22,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/typings/cli.git"
+    "url": "git://github.com/typings/typings.git"
   },
   "keywords": [
     "typescript",
@@ -39,9 +39,9 @@
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/typings/cli/issues"
+    "url": "https://github.com/typings/typings/issues"
   },
-  "homepage": "https://github.com/typings/cli",
+  "homepage": "https://github.com/typings/typings",
   "dependencies": {
     "archy": "^1.0.0",
     "array-uniq": "^1.0.2",
