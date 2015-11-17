@@ -71,6 +71,7 @@
     "strip-bom": "^2.0.0",
     "thenify": "^3.1.0",
     "typescript": "^1.6.2",
+    "update-notifier": "^0.5.0",
     "util-partial": "^1.0.0",
     "wordwrap": "^1.0.0",
     "xtend": "^4.0.0",

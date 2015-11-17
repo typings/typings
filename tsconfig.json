@@ -47,6 +47,7 @@
     "custom_typings/strip-bom.d.ts",
     "custom_typings/tape.d.ts",
     "custom_typings/thenify.d.ts",
+    "custom_typings/update-notifier.d.ts",
     "custom_typings/util-partial.d.ts",
     "custom_typings/wordwrap.d.ts",
     "custom_typings/xtend.d.ts",
