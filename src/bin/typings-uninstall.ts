@@ -7,7 +7,6 @@ import { loader } from '../utils/cli'
 import { PROJECT_NAME } from '../utils/config'
 
 interface Args {
-  _: string[]
   save: boolean
   saveDev: boolean
   saveAmbient: boolean

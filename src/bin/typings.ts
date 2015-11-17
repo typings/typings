@@ -30,12 +30,11 @@ const ALIASES: { [cmd: string]: string } = {
   list: 'list'
 }
 
-interface Argv {
-  _: string[]
+interface Args {
   version: boolean
 }
 
-const argv = minimist<Argv>(process.argv.slice(2), {
+const args = minimist<Args>(process.argv.slice(2), {
   boolean: ['version'],
   alias: {
     version: ['v']
@@ -50,22 +49,22 @@ updateNotifier({ pkg }).notify()
 if (insight.optOut == null) {
   insight.track('downloaded')
   insight.askPermission(null, function () {
-    return handle(argv)
+    return handle(args)
   })
 } else {
-  handle(argv)
+  handle(args)
 }
 
 /**
  * Wrap CLI logic in a handler for the initial prompt.
  */
-function handle (argv: Argv) {
-  const args = argv._
-
+function handle (args: Args & minimist.ParsedArgs) {
   // Track the first two CLI arguments.
-  insight.track.apply(insight, ['cli'].concat(args.slice(0, 2)))
+  insight.track.apply(insight, ['cli'].concat(
+    minimist(process.argv.slice(2))._.slice(0, 2)
+  ))
 
-  if (argv.version) {
+  if (args.version) {
     console.log(VERSION)
 
     process.exit(0)
@@ -74,9 +73,9 @@ function handle (argv: Argv) {
   const command = ALIASES[args[0]]
 
   if (typeof command === 'string') {
-    const args = argv._.slice(1)
-    args.unshift(join(__dirname, `typings-${command}.js`))
-    return spawn(process.execPath, args, { stdio: 'inherit' })
+    const argv = args._.slice(1)
+    argv.unshift(join(__dirname, `typings-${command}.js`))
+    return spawn(process.execPath, argv, { stdio: 'inherit' })
   }
 
   const wrap = wordwrap(4, 80)

@@ -1,5 +1,5 @@
 declare module 'minimist' {
-  function minimist <T extends minimist.Options> (args?: string[], opts?: minimist.Options): T;
+  function minimist <T> (args?: string[], opts?: minimist.Options): minimist.ParsedArgs & T;
 
   module minimist {
     export interface Options {

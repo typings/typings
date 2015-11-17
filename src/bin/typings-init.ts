@@ -6,12 +6,12 @@ import { init } from '../typings'
 import { loader } from '../utils/cli'
 import { PROJECT_NAME } from '../utils/config'
 
-interface ArgvOptions {
+interface Args {
   verbose: boolean
   help: boolean
 }
 
-const args = minimist<ArgvOptions>(process.argv.slice(2), {
+const args = minimist<Args>(process.argv.slice(2), {
   boolean: ['verbose', 'help'],
   alias: {
     verbose: ['v'],

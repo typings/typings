@@ -6,13 +6,13 @@ import { loader, archifyDependencyTree } from '../utils/cli'
 import { PROJECT_NAME } from '../utils/config'
 import { resolveTypeDependencies } from '../lib/dependencies'
 
-interface ArgvOptions {
+interface Args {
   verbose: boolean
   help: boolean
   ambient: boolean
 }
 
-const args = minimist<ArgvOptions>(process.argv.slice(2), {
+const args = minimist<Args>(process.argv.slice(2), {
   boolean: ['verbose', 'help', 'ambient'],
   alias: {
     verbose: ['v'],

@@ -9,7 +9,6 @@ import { VALID_SOURCES, read, isRegistryPath, parseRegistryPath } from '../lib/r
 import { archifyDependencyTree } from '../utils/cli'
 
 interface Args {
-  _: string[]
   save: boolean
   saveDev: boolean
   saveAmbient: boolean
@@ -54,7 +53,7 @@ Options: [--save|--save-dev|--save-ambient] [--ambient]
 /**
  * Install using CLI arguments.
  */
-function installer (args: Args) {
+function installer (args: Args & minimist.ParsedArgs) {
   const options = extend(args, { cwd: process.cwd() })
 
   if (!args._.length) {
