@@ -13,15 +13,30 @@
 npm install typings --global
 ```
 
+## Why?
+
+* Typings are always external modules, not ambient modules (E.g. no `declare module "x"` in normal dependencies)
+  * External module declarations are more portable and understandable
+  * Ambient modules suffer from exposing implementation details, such as global interfaces that don't actually exist at runtime
+  * External module declarations are supported using the TypeScript compiler "moduleResolution" - you contribute your typings back directly to the module author
+* Typings should represent the module structure
+  * For example, support for the `browser` field in node which can produce different typings at runtime
+  * What about typings on a per-file basis? Some modules promote requiring into the dependencies for "add-ons"
+* TypeScript modules should be publish-able on any package manager
+  * Ambient modules can not be published on a package manager as other packages may rely on the same ambient module declaration which results in `declare module "x"` conflicts
+* Typings are decentralized
+  * Anyone can write and install a missing type definition without friction
+  * The author of a type definition can maintain their type definition in isolation from other typings
+
 ## Usage
 
-**Typings** is a simple way for type dependencies to be installed and maintained. It uses a `typings.json` file that can resolve  from GitHub, NPM, Bower, HTTP and from local files. Packages can use type definitions with different sources and versions, and know they will _never_ cause a conflict.
+**Typings** exposes a simple way for TypeScript definitions to be installed and maintained. It uses a `typings.json` file that can resolve to GitHub, NPM, Bower, HTTP and from local files. Packages can use type definitions from different sources and with different versions, and know they will _never_ cause a conflict for the user.
 
 ```sh
 typings install debug --save
 ```
 
-There's an [open registry](https://github.com/typings/registry) maintained by the community, which is used to resolve to the official typing for a package.
+There's a [public registry](https://github.com/typings/registry) maintained by the community, which is used to resolve the official type definition for a package.
 
 ### Init
 
