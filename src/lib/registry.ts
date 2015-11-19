@@ -28,7 +28,7 @@ export interface ReadOptions {
  * The registry JSON format.
  */
 export interface RegistryJson {
-  version: {
+  versions: {
     [version: string]: string | string[]
   }
 }
@@ -69,10 +69,10 @@ export function read (options: ReadOptions) {
  */
 export function select (entry: RegistryJson, options: ReadOptions) {
   const { version, name } = options
-  const versions = Object.keys(entry.version).sort(semver.compare)
+  const versions = Object.keys(entry.versions).sort(semver.compare)
 
   if (version == null) {
-    return arrify(entry.version[versions.pop()])
+    return arrify(entry.versions[versions.pop()])
   }
 
   let match: string
@@ -84,10 +84,10 @@ export function select (entry: RegistryJson, options: ReadOptions) {
   }
 
   if (match == null) {
-    throw new TypeError(`Unable to find "${name}@${version}". Available: ${versions.join(', ')}`)
+    throw new TypeError(`Unable to find "${name}@${version}". Available versions: ${versions.join(', ')}`)
   }
 
-  return arrify(entry.version[match])
+  return arrify(entry.versions[match])
 }
 
 /**
