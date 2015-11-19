@@ -107,6 +107,26 @@ Print the `typings` dependency tree. (This command resolves on demand and is not
 
 ## FAQ
 
+### `main.d.ts` and `browser.d.ts`?
+
+To simplify integration with TypeScript, two files - `typings/main.d.ts` and `typings/browser.d.ts` - are generated which reference all typings installed in the current project. To use this, you can add the reference to `tsconfig.json` files:
+
+```json
+{
+  "files": [
+    "typings/main.d.ts"
+  ]
+}
+```
+
+Or as a reference to the top of TypeScript files:
+
+```ts
+/// <reference path="../typings/main.d.ts" />
+```
+
+If you're building a front-end package it's recommended you use `typings/browser.d.ts` instead. The browser typings are compiled using the `browser` field overrides.
+
 ### How Do I Use Typings With Git and Continuous Integration?
 
 If you're already publishing your module with TypeScript, you're probably using NPM scripts to automate the build. To integrate **typings** into this flow, I recommend you run it as part of the `prepublish` or `build` steps. For example:
