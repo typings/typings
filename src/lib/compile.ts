@@ -73,7 +73,8 @@ interface CompileOptions extends Options {
  */
 function getStringifyOptions (
   tree: DependencyTree,
-  options: CompileOptions
+  options: CompileOptions,
+  parent: StringifyOptions
 ): StringifyOptions {
   const overrides: Overrides = {}
   const isTypings = typeof tree.typings === 'string'
@@ -116,7 +117,8 @@ function getStringifyOptions (
     overrides,
     imported,
     referenced,
-    dependencies
+    dependencies,
+    parent
   })
 }
 
@@ -124,7 +126,7 @@ function getStringifyOptions (
  * Compile a dependency tree to a single definition.
  */
 function compileDependencyTree (tree: DependencyTree, options: CompileOptions): Promise<string> {
-  return compileDependencyPath(null, getStringifyOptions(tree, options))
+  return compileDependencyPath(null, getStringifyOptions(tree, options, undefined))
 }
 
 /**
@@ -165,6 +167,7 @@ interface StringifyOptions extends CompileOptions {
   referenced: ts.Map<boolean>
   dependencies: ts.Map<StringifyOptions>
   tree: DependencyTree
+  parent: StringifyOptions
 }
 
 /**
@@ -186,7 +189,7 @@ function cachedStringifyOptions (name: string, compileOptions: CompileOptions, o
 
   if (!has(options.dependencies, name)) {
     if (tree) {
-      options.dependencies[name] = getStringifyOptions(tree, compileOptions)
+      options.dependencies[name] = getStringifyOptions(tree, compileOptions, options)
     } else {
       options.dependencies[name] = null
     }
@@ -292,18 +295,20 @@ function stringifyDependencyPath (path: string, options: StringifyOptions): Prom
           })
       },
       function () {
+        const authorPhrase = options.parent ? `The author of "${options.parent.name}" needs` : 'You need'
+
         // Provide better errors for the entry path.
         if (path === entry) {
           return Promise.reject(new Error(
-            `Unable to read typings in "${options.name}". The ` +
-            `author needs to add an entry to "${CONFIG_FILE}" with the typings location`
+            `Unable to read typings in "${options.name}". ` +
+            `${authorPhrase} to add an entry to "${CONFIG_FILE}" with the typings`
           ))
         }
 
         return Promise.reject(new Error(
           `Unable to read ${relativeTo(tree.src, path)} from "${options.name}". ` +
-          `The author needs to check that the entry in "${CONFIG_FILE}" is complete ` +
-          `(the path "${relativeTo(tree.src, path)}" appears to be missing)`
+          `${authorPhrase} to check that the entry in "${CONFIG_FILE}" is ` +
+          `complete (the path "${relativeTo(tree.src, path)}" appears to be missing)`
         ))
       }
     )
