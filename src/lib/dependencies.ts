@@ -74,13 +74,18 @@ export function resolveDependency (dependency: Dependency, options: Options, par
  */
 function resolveNpmDependency (name: string, options: Options, parent?: DependencyTree) {
   return findUp(options.cwd, join('node_modules', name))
-    .then(function (modulePath: string) {
-      if (isDefinition(modulePath)) {
-        return resolveFileDependency(modulePath, options, parent)
-      }
+    .then(
+      function (modulePath: string) {
+        if (isDefinition(modulePath)) {
+          return resolveFileDependency(modulePath, options, parent)
+        }
 
-      return resolveNpmDependencyFrom(modulePath, options, parent)
-    })
+        return resolveNpmDependencyFrom(modulePath, options, parent)
+      },
+      function () {
+        return extend(MISSING_DEPENDENCY, { type: 'npm' })
+      }
+    )
 }
 
 /**
@@ -88,15 +93,20 @@ function resolveNpmDependency (name: string, options: Options, parent?: Dependen
  */
 function resolveBowerDependency (name: string, options: Options, parent?: DependencyTree) {
   return resolveBowerComponentPath(options.cwd)
-    .then(function (componentPath: string) {
-      const modulePath = resolve(componentPath, name)
+    .then(
+      function (componentPath: string) {
+        const modulePath = resolve(componentPath, name)
 
-      if (isDefinition(modulePath)) {
-        return resolveFileDependency(modulePath, options, parent)
+        if (isDefinition(modulePath)) {
+          return resolveFileDependency(modulePath, options, parent)
+        }
+
+        return resolveBowerDependencyFrom(modulePath, componentPath, options, parent)
+      },
+      function () {
+        return extend(MISSING_DEPENDENCY, { type: 'bower' })
       }
-
-      return resolveBowerDependencyFrom(modulePath, componentPath, options, parent)
-    })
+    )
 }
 
 /**
@@ -139,7 +149,7 @@ export function resolveBowerDependencies (options: Options): Promise<DependencyT
           })
       },
       function () {
-        return extend(MISSING_DEPENDENCY)
+        return extend(MISSING_DEPENDENCY, { type: 'bower' })
       }
     )
 }
@@ -200,12 +210,14 @@ function resolveBowerDependencyFrom (
  */
 function resolveBowerComponentPath (path: string): Promise<string> {
   return readJson(resolve(path, '.bowerrc'))
-    .then(function (bowerrc: any = {}) {
-      return resolve(path, bowerrc.directory || 'bower_components')
-    })
-    .catch(function () {
-      return resolve(path, 'bower_components')
-    })
+    .then(
+      function (bowerrc: any = {}) {
+        return resolve(path, bowerrc.directory || 'bower_components')
+      },
+      function () {
+        return resolve(path, 'bower_components')
+      }
+    )
 }
 
 /**
@@ -237,7 +249,7 @@ export function resolveNpmDependencies (options: Options): Promise<DependencyTre
         return resolveNpmDependencyFrom(packgeJsonPath, options)
       },
       function () {
-        return extend(MISSING_DEPENDENCY)
+        return extend(MISSING_DEPENDENCY, { type: 'npm' })
       }
     )
 }

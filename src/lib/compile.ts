@@ -8,7 +8,7 @@ import { DependencyTree, Overrides } from '../interfaces/main'
 import { readFileFrom } from '../utils/fs'
 import { resolveFrom, relativeTo, isHttp, isModuleName, normalizeSlashes, fromDefinition, normalizeToDefinition } from '../utils/path'
 import { REFERENCE_REGEXP } from '../utils/references'
-import { PROJECT_NAME } from '../utils/config'
+import { PROJECT_NAME, CONFIG_FILE } from '../utils/config'
 import { VERSION } from '../typings'
 
 /**
@@ -73,8 +73,7 @@ interface CompileOptions extends Options {
  */
 function getStringifyOptions (
   tree: DependencyTree,
-  options: CompileOptions,
-  parent: StringifyOptions
+  options: CompileOptions
 ): StringifyOptions {
   const overrides: Overrides = {}
   const isTypings = typeof tree.typings === 'string'
@@ -108,7 +107,7 @@ function getStringifyOptions (
   const imported: ts.Map<boolean> = {}
   const referenced: ts.Map<boolean> = {}
   const dependencies: ts.Map<StringifyOptions> = {}
-  const entry = resolveFrom(tree.src, normalizeToDefinition(main))
+  const entry = main == null ? main : resolveFrom(tree.src, normalizeToDefinition(main))
 
   return extend(options, {
     tree,
@@ -117,16 +116,15 @@ function getStringifyOptions (
     overrides,
     imported,
     referenced,
-    dependencies,
-    parent
+    dependencies
   })
 }
 
 /**
  * Compile a dependency tree to a single definition.
  */
-function compileDependencyTree (tree: DependencyTree, options: CompileOptions, parent?: StringifyOptions): Promise<string> {
-  return compileDependencyPath(null, getStringifyOptions(tree, options, parent))
+function compileDependencyTree (tree: DependencyTree, options: CompileOptions): Promise<string> {
+  return compileDependencyPath(null, getStringifyOptions(tree, options))
 }
 
 /**
@@ -137,11 +135,23 @@ function compileDependencyPath (path: string, options: StringifyOptions) {
 
   if (tree.missing) {
     return Promise.reject(new Error(
-      `Missing dependency "${toDependencyPath(options)}", unable to compile dependency tree`
+      `Missing dependency "${options.name}", unable to compile dependency tree`
     ))
   }
 
-  return stringifyDependencyPath(resolveFrom(tree.src, path == null ? entry : path), options)
+  // Fallback to resolving the entry file.
+  if (path == null) {
+    if (entry == null) {
+      return Promise.reject(new Error(
+        `Unable to resolve entry .d.ts file for "${options.name}", ` +
+        'please make sure the module has a main or typings field'
+      ))
+    }
+
+    return stringifyDependencyPath(resolveFrom(tree.src, entry), options)
+  }
+
+  return stringifyDependencyPath(resolveFrom(tree.src, path), options)
 }
 
 /**
@@ -155,7 +165,6 @@ interface StringifyOptions extends CompileOptions {
   referenced: ts.Map<boolean>
   dependencies: ts.Map<StringifyOptions>
   tree: DependencyTree
-  parent: StringifyOptions
 }
 
 /**
@@ -177,7 +186,7 @@ function cachedStringifyOptions (name: string, compileOptions: CompileOptions, o
 
   if (!has(options.dependencies, name)) {
     if (tree) {
-      options.dependencies[name] = getStringifyOptions(tree, compileOptions, options)
+      options.dependencies[name] = getStringifyOptions(tree, compileOptions)
     } else {
       options.dependencies[name] = null
     }
@@ -206,81 +215,98 @@ function getDependency (name: string, options: StringifyOptions) {
  */
 function stringifyDependencyPath (path: string, options: StringifyOptions): Promise<string> {
   let definitionPath = normalizeToDefinition(path)
+  const { tree, ambient, cwd, browser, name, files, meta, entry } = options
 
   if (has(options.overrides, definitionPath)) {
     definitionPath = options.overrides[definitionPath]
   }
 
   return cachedReadFileFrom(definitionPath, options)
-    .then(rawContents => {
-      const info = ts.preProcessFile(rawContents)
-      const { tree, ambient, cwd, browser, name, files, meta } = options
-      const ambientModules = info.ambientExternalModules || []
+    .then(
+      function (rawContents) {
+        const info = ts.preProcessFile(rawContents)
+        const ambientModules = info.ambientExternalModules || []
 
-      // Skip output of lib files.
-      if (info.isLibFile) {
-        return
-      }
+        // Skip output of lib files.
+        if (info.isLibFile) {
+          return
+        }
 
-      if (ambientModules.length && !ambient) {
-        return Promise.reject(
-          new TypeError(
-            `Attempted to compile ${toDependencyPath(options)} as a ` +
-            `dependency, but it contains ambient module declarations. Did ` +
-            `you want to specify "--ambient" instead?`
+        if (ambientModules.length && !ambient) {
+          return Promise.reject(
+            new TypeError(
+              `Attempted to compile ${options.name} as a ` +
+              `dependency, but it contains ambient module declarations. Did ` +
+              `you want to specify "--ambient" instead?`
+            )
           )
-        )
-      }
-
-      const importedFiles = info.importedFiles.map(x => isModuleName(x.fileName) ? x.fileName : resolveFrom(path, x.fileName))
-
-      // All dependencies MUST be imported for ambient modules.
-      if (ambient) {
-        Object.keys(tree.dependencies).forEach(x => importedFiles.push(x))
-      }
-
-      const imports = importedFiles.map(path => {
-        // Return `null` to skip the dependency writing, could have the same import twice.
-        if (has(options.imported, path)) {
-          return
         }
 
-        // Support inline ambient module declarations.
-        if (ambientModules.indexOf(path) > -1) {
-          return
+        const importedFiles = info.importedFiles.map(x => isModuleName(x.fileName) ? x.fileName : resolveFrom(path, x.fileName))
+
+        // All dependencies MUST be imported for ambient modules.
+        if (ambient) {
+          Object.keys(tree.dependencies).forEach(x => importedFiles.push(x))
         }
 
-        // Set the file to "already imported" to avoid duplication.
-        options.imported[path] = true
-
-        if (isModuleName(path)) {
-          const [dependencyName, dependencyPath] = getModuleNameParts(path)
-          const moduleName = ambient ? dependencyName : `${name}${SEPARATOR}${dependencyName}`
-          const compileOptions = { cwd, browser, files, name: moduleName, ambient: false, meta }
-          const stringifyOptions = cachedStringifyOptions(dependencyName, compileOptions, options)
-
-          // When no options are returned, the dependency is missing.
-          if (!stringifyOptions) {
+        const imports = importedFiles.map(path => {
+          // Return `null` to skip the dependency writing, could have the same import twice.
+          if (has(options.imported, path)) {
             return
           }
 
-          return compileDependencyPath(dependencyPath, stringifyOptions)
+          // Support inline ambient module declarations.
+          if (ambientModules.indexOf(path) > -1) {
+            return
+          }
+
+          // Set the file to "already imported" to avoid duplication.
+          options.imported[path] = true
+
+          if (isModuleName(path)) {
+            const [dependencyName, dependencyPath] = getModuleNameParts(path)
+            const moduleName = ambient ? dependencyName : `${name}${SEPARATOR}${dependencyName}`
+            const compileOptions = { cwd, browser, files, name: moduleName, ambient: false, meta }
+            const stringifyOptions = cachedStringifyOptions(dependencyName, compileOptions, options)
+
+            // When no options are returned, the dependency is missing.
+            if (!stringifyOptions) {
+              return
+            }
+
+            return compileDependencyPath(dependencyPath, stringifyOptions)
+          }
+
+          return stringifyDependencyPath(path, options)
+        })
+
+        return Promise.all(imports)
+          .then(files => {
+            const stringifyOptions = extend(options, { originalPath: path })
+            const contents = rawContents.replace(REFERENCE_REGEXP, '')
+
+            files.push(stringifyFile(definitionPath, contents, stringifyOptions))
+
+            // Filter skipped dependencies.
+            return files.filter(x => x != null).join(EOL + EOL)
+          })
+      },
+      function () {
+        // Provide better errors for the entry path.
+        if (path === entry) {
+          return Promise.reject(new Error(
+            `Unable to read typings in "${options.name}". The ` +
+            `author needs to add an entry to "${CONFIG_FILE}" with the typings location`
+          ))
         }
 
-        return stringifyDependencyPath(path, options)
-      })
-
-      return Promise.all(imports)
-        .then(files => {
-          const stringifyOptions = extend(options, { originalPath: path })
-          const contents = rawContents.replace(REFERENCE_REGEXP, '')
-
-          files.push(stringifyFile(definitionPath, contents, stringifyOptions))
-
-          // Filter skipped dependencies.
-          return files.filter(x => x != null).join(EOL + EOL)
-        })
-    })
+        return Promise.reject(new Error(
+          `Unable to read ${relativeTo(tree.src, path)} from "${options.name}". ` +
+          `The author needs to check that the entry in "${CONFIG_FILE}" is complete ` +
+          `(the path "${relativeTo(tree.src, path)}" appears to be missing)`
+        ))
+      }
+    )
 }
 
 /**
@@ -343,7 +369,7 @@ function stringifyFile (path: string, contents: string, options: StringifyOption
   if (options.ambient) {
     if ((sourceFile as any).externalModuleIndicator) {
       throw new TypeError(
-        `Attempted to compile ${toDependencyPath(options)} as an ambient ` +
+        `Attempted to compile ${options.name} as an ambient ` +
         `module declaration, but it has external module indicators. Did you ` +
         `want to omit "--ambient"?`
       )
@@ -497,18 +523,4 @@ function processTree (
   code += reader(position)
 
   return code
-}
-
-/**
- * Stringify the dependency path to something useful in the error.
- */
-function toDependencyPath (options: StringifyOptions) {
-  const parts: string[] = []
-  let node = options
-
-  do {
-    parts.unshift(node.name)
-  } while (node = node.parent)
-
-  return parts.join(SEPARATOR)
 }

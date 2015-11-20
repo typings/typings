@@ -55,22 +55,24 @@ Options: [--save|--save-dev|--save-ambient] [--ambient] [--production]
  * Install using CLI arguments.
  */
 function installer (args: Args & minimist.ParsedArgs) {
-  const options = extend(args, { cwd: process.cwd(), dev: !args.production })
+  const options = extend(args, { cwd: process.cwd() })
 
   if (!args._.length) {
-    return loader(install(options), options)
+    const dev = !args.production
+
+    return loader(install(extend(options, { dev })), args)
   }
 
   const dependency = args._[0]
   const source = args.source || 'npm'
 
   if (!isRegistryPath(dependency)) {
-    return loader(installDependency(dependency, options), options)
+    return loader(installDependency(dependency, options), args)
   }
 
-  const { name, version } = parseRegistryPath(dependency)
+  const registryOptions = parseRegistryPath(dependency)
 
-  return loader(read({ source, name, version }), options)
+  return loader(read(extend(registryOptions, { source })), args)
     .then(function (locations) {
       if (locations.length === 1) {
         return locations[0]
@@ -88,7 +90,7 @@ function installer (args: Args & minimist.ParsedArgs) {
     .then(function (location) {
       const installation = installDependency(location, extend({ name }, options))
 
-      return loader(installation, options)
+      return loader(installation, args)
     })
 }
 

@@ -301,6 +301,64 @@ test('compile', t => {
       })
   })
 
+  t.test('no main or typings error', t => {
+    const FIXTURE_DIR = join(FIXTURES_DIR, 'main-resolve-error')
+
+    const main: DependencyTree = {
+      type: 'npm',
+      src: join(FIXTURE_DIR, 'package.json'),
+      missing: false,
+      ambient: false,
+      dependencies: {},
+      devDependencies: {},
+      ambientDependencies: {}
+    }
+
+    t.plan(1)
+
+    return compile(main, { name: 'main', cwd: __dirname, ambient: false, meta: false })
+      .catch(function (error) {
+        t.ok(/^Unable to resolve entry \.d\.ts file for "main"/.test(error.message))
+      })
+  })
+
+  t.test('no module dts file error', t => {
+    const FIXTURE_DIR = join(FIXTURES_DIR, 'node-resolve-error')
+
+    const main: DependencyTree = {
+      type: 'npm',
+      src: join(FIXTURE_DIR, 'package.json'),
+      main: 'index.js',
+      missing: false,
+      ambient: false,
+      dependencies: {},
+      devDependencies: {},
+      ambientDependencies: {}
+    }
+
+    const dependency: DependencyTree = {
+      type: 'npm',
+      main: 'index.js',
+      src: join(FIXTURE_DIR, 'node_modules/test/package.json'),
+      missing: false,
+      ambient: false,
+      dependencies: {},
+      devDependencies: {},
+      ambientDependencies: {}
+    }
+
+    ;(main as any).dependencies.test = dependency
+
+    t.plan(1)
+
+    return compile(main, { name: 'main', cwd: __dirname, ambient: false, meta: false })
+      .catch(function (error) {
+        console.log(error.message)
+
+        t.ok(/^Unable to read typings in "main~test"/.test(error.message))
+      })
+  })
+
   t.test('resolve over http', t => {
     const node: DependencyTree = {
       type: PROJECT_NAME,
