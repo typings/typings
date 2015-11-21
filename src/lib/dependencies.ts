@@ -233,8 +233,9 @@ function resolveBowerDependencyMap (
 
   return Promise.all(keys.map(function (name) {
     const modulePath = resolve(componentPath, name, 'bower.json')
+    const resolveOptions = extend(options, { dev: false, ambient: false })
 
-    return resolveBowerDependencyFrom(modulePath, componentPath, extend(options, { dev: false }), parent)
+    return resolveBowerDependencyFrom(modulePath, componentPath, resolveOptions, parent)
   }))
     .then(partial(zipObject, keys))
 }
@@ -308,7 +309,9 @@ function resolveNpmDependencyMap (src: string, dependencies: any, options: Optio
   const keys = Object.keys(dependencies)
 
   return Promise.all(keys.map(function (name) {
-    return resolveNpmDependency(join(name, 'package.json'), extend(options, { dev: false, cwd }), parent)
+    const resolveOptions = extend(options, { dev: false, ambient: false, cwd })
+
+    return resolveNpmDependency(join(name, 'package.json'), resolveOptions, parent)
   }))
     .then(partial(zipObject, keys))
 }
@@ -391,11 +394,9 @@ function resolveTypeDependencyMap (src: string, dependencies: any, options: Opti
           return result.then(function (tree) {
             // Continue trying to resolve when the dependency is missing.
             if (tree.missing) {
-              return resolveDependency(
-                parseDependency(dependency),
-                extend(options, { dev: false, cwd }),
-                parent
-              )
+              const resolveOptions = extend(options, { dev: false, ambient: false, cwd })
+
+              return resolveDependency(parseDependency(dependency), resolveOptions, parent)
             }
 
             return tree
