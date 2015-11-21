@@ -52,46 +52,54 @@ export function inquire (questions: inquirer.Questions) {
   })
 }
 
+export interface ArchifyOptions {
+  name?: string
+  dev?: boolean
+  ambient?: boolean
+}
+
 /**
  * Convert a dependency tree for "archy" to render.
  */
-export function archifyDependencyTree (tree: DependencyTree, options: { ambient?: boolean } = {}) {
+export function archifyDependencyTree (tree: DependencyTree, options: ArchifyOptions = {}) {
   const result: archy.Tree = {
-    label: tree.name,
+    label: options.name,
     nodes: []
   }
 
   function traverse (result: archy.Tree, tree: DependencyTree) {
     const { nodes } = result
 
-    if (options.ambient) {
-      for (const name of Object.keys(tree.ambientDependencies)) {
-        nodes.push(traverse(
-          {
-            label: name,
-            nodes: []
-          },
-          tree.ambientDependencies[name]
-        ))
-      }
-    } else {
+    for (const name of Object.keys(tree.dependencies)) {
+      nodes.push(traverse(
+        {
+          label: name,
+          nodes: []
+        },
+        tree.dependencies[name]
+      ))
+    }
+
+    if (options.dev) {
       for (const name of Object.keys(tree.devDependencies)) {
         nodes.push(traverse(
           {
-            label: name,
+            label: `${name} ${chalk.gray('(dev)')}`,
             nodes: []
           },
           tree.devDependencies[name]
         ))
       }
+    }
 
-      for (const name of Object.keys(tree.dependencies)) {
+    if (options.ambient) {
+      for (const name of Object.keys(tree.ambientDependencies)) {
         nodes.push(traverse(
           {
-            label: name,
+            label: `${name} ${chalk.gray('(ambient)')}`,
             nodes: []
           },
-          tree.dependencies[name]
+          tree.ambientDependencies[name]
         ))
       }
     }
@@ -103,7 +111,7 @@ export function archifyDependencyTree (tree: DependencyTree, options: { ambient?
 
   // Print "no dependencies" on empty tree.
   if (archyTree.nodes.length === 0) {
-    archyTree.nodes.push(chalk.cyan('No dependencies'))
+    archyTree.nodes.push(chalk.gray('(No dependencies)'))
   }
 
   return archy(archyTree)

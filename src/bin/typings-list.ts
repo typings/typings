@@ -37,5 +37,5 @@ const options = extend(args, { cwd })
 
 loader(resolveTypeDependencies({ cwd, ambient: true, dev: !args.production }), options)
   .then(function (tree) {
-    console.log(archifyDependencyTree(tree, options))
+    console.log(archifyDependencyTree(tree, { ambient: true, dev: true }))
   })

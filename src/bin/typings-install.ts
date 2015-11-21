@@ -58,9 +58,10 @@ function installer (args: Args & minimist.ParsedArgs) {
   const options = extend(args, { cwd: process.cwd() })
 
   if (!args._.length) {
-    const dev = !args.production
-
-    return loader(install(extend(options, { dev })), args)
+    return loader(install(options), args)
+      .then(function (tree) {
+        console.log(archifyDependencyTree(tree, { ambient: true, dev: true }))
+      })
   }
 
   const dependency = args._[0]
@@ -68,11 +69,14 @@ function installer (args: Args & minimist.ParsedArgs) {
 
   if (!isRegistryPath(dependency)) {
     return loader(installDependency(dependency, options), args)
+      .then(function (tree) {
+        console.log(archifyDependencyTree(tree, { name: options.name }))
+      })
   }
 
-  const registryOptions = parseRegistryPath(dependency)
+  const { name, version } = parseRegistryPath(dependency)
 
-  return loader(read(extend(registryOptions, { source })), args)
+  return loader(read({ name, version, source }), args)
     .then(function (locations) {
       if (locations.length === 1) {
         return locations[0]
@@ -92,9 +96,9 @@ function installer (args: Args & minimist.ParsedArgs) {
 
       return loader(installation, args)
     })
+    .then(function (tree) {
+      console.log(archifyDependencyTree(tree, { name }))
+    })
 }
 
 installer(args)
-  .then(function (tree) {
-    console.log(archifyDependencyTree(tree))
-  })
