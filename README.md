@@ -50,7 +50,7 @@ Initialize a new `typings.json` file.
 
 ```sh
 typings install # (with no arguments, in package directory)
-typings install <pkg>[@<version>] --source [npm | github | bower | ambient | common]
+typings install <pkg>[@<version>] [ --source [npm | github | bower | ambient | common] ]
 typings install file:<path>
 typings install github:<github username>/<github project>[/<path>][#<commit>]
 typings install bitbucket:<bitbucket username>/<bitbucket project>[/<path>][#<commit>]
@@ -81,6 +81,16 @@ Where `path` can be a `typings.json` file, a `.d.ts` file, or empty (it will aut
 #### Registry
 
 Package installation without a location will be looked up in the [registry](https://github.com/typings/registry). For example, `typings install debug` will resolve to [this entry](https://github.com/typings/registry/blob/master/npm/debug.json) in the registry. Anyone can contribute their own typings to the registry, just open a pull request.
+
+#### Example
+
+Installing the `node` typing from DefinitelyTyped:
+
+```
+typings install github:DefinitelyTyped/DefinitelyTyped/node/node.d.ts#4ad9bef6cc075c904e034e73e1c993b9ad1ba81b --save-ambient --name node
+```
+
+The name is used in `typings.json` and for non-ambient module declarations, it is always required (it's inferred when using the registry though). We use `--save-ambient` to write it into `typings.json`, which other people can then use to replicate your environment. We prefer a commit hash for immutability, there's nothing worse than someone coming into the project and the compiler explodes because the type definition on `master` has changed.
 
 ### Uninstall
 
