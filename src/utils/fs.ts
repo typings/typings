@@ -12,13 +12,15 @@ import uniq = require('array-uniq')
 import Promise = require('native-or-bluebird')
 import lockfile = require('lockfile')
 import { join, dirname } from 'path'
-import { CONFIG_FILE, TYPINGS_DIR, DTS_MAIN_FILE, DTS_BROWSER_FILE } from './config'
+import { CONFIG_FILE, TYPINGS_DIR, DTS_MAIN_FILE, DTS_BROWSER_FILE, CACHE_DIR } from './config'
 import { isHttp, toDefinition } from './path'
 import { parseReferences, stringifyReferences } from './references'
 import { ConfigJson } from '../interfaces/main'
 
 // Create a file cache for popsicle.
-const requestFileCache = popsicleCache()
+const requestFileCache = popsicleCache({
+  store: new popsicleCache.Store({ path: join(CACHE_DIR, 'http') })
+})
 
 const mainTypingsDir = join(TYPINGS_DIR, 'definitions/main')
 const browserTypingsDir = join(TYPINGS_DIR, 'definitions/browser')

@@ -6,7 +6,7 @@ import { spawn } from 'child_process'
 import { join } from 'path'
 import updateNotifier = require('update-notifier')
 import { VERSION } from '../typings'
-import { PROJECT_NAME } from '../utils/config'
+import { PROJECT_NAME, CACHE_DIR } from '../utils/config'
 import insight from '../utils/insight'
 
 const pkg = require('../../package.json')
@@ -32,12 +32,14 @@ const ALIASES: { [cmd: string]: string } = {
 
 interface Args {
   version: boolean
+  cache: boolean
 }
 
 const args = minimist<Args>(process.argv.slice(2), {
-  boolean: ['version'],
+  boolean: ['version', 'cache'],
   alias: {
-    version: ['v']
+    version: ['v'],
+    cache: ['c']
   },
   stopEarly: true
 })
@@ -66,7 +68,11 @@ function handle (args: Args & minimist.ParsedArgs) {
 
   if (args.version) {
     console.log(VERSION)
+    process.exit(0)
+  }
 
+  if (args.cache) {
+    console.log(CACHE_DIR)
     process.exit(0)
   }
 
@@ -88,6 +94,9 @@ ${wrap(Object.keys(ALIASES).sort().join(', '))}
 
 ${PROJECT_NAME} <command> -h            Get help for <command>
 ${PROJECT_NAME} <command> --no-insight  Disable insights for <command>
+
+${PROJECT_NAME} --version               Print the CLI version
+${PROJECT_NAME} --cache                 Print the path to the cache directory
 
 ${PROJECT_NAME}@${VERSION} ${join(__dirname, '../..')}
 `)
