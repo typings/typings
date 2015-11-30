@@ -16,7 +16,7 @@
     "lint": "tslint src/**/*.ts",
     "build": "rm -rf dist/ && tsc",
     "test-spec": "ts-node node_modules/blue-tape/bin/blue-tape.js test/**/*.ts src/**/*.spec.ts | tap-dot",
-    "test-cov": "ts-node node_modules/istanbul/lib/cli.js cover -e .ts --print none -x \"*.spec.ts\" blue-tape -- test/**/*.ts src/**/*.spec.ts | tap-dot",
+    "test-cov": "ts-node node_modules/istanbul/lib/cli.js cover -e .ts --print none -x \"*.d.ts\" -x \"*.spec.ts\" blue-tape -- test/**/*.ts src/**/*.spec.ts | tap-dot",
     "test": "npm run lint && npm run test-cov",
     "prepublish": "npm run build"
   },
@@ -79,7 +79,7 @@
   },
   "devDependencies": {
     "blue-tape": "^0.1.10",
-    "istanbul": "blakeembrey/istanbul#transpiler-support",
+    "istanbul": "1.0.0-alpha.2",
     "nock": "^3.0.0",
     "pre-commit": "^1.0.6",
     "tap-dot": "^1.0.0",
