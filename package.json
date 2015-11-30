@@ -70,7 +70,7 @@
     "sort-keys": "^1.0.0",
     "strip-bom": "^2.0.0",
     "thenify": "^3.1.0",
-    "typescript": "^1.6.2",
+    "typescript": "1.7.3",
     "update-notifier": "^0.5.0",
     "util-partial": "^1.0.0",
     "wordwrap": "^1.0.0",
