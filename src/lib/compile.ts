@@ -33,6 +33,7 @@ const formattingOptions: ts.FormatCodeOptions = {
   PlaceOpenBraceOnNewLineForControlBlocks: false,
   IndentSize: 2,
   TabSize: 4,
+  IndentStyle: ts.IndentStyle.Smart,
   NewLineCharacter: EOL,
   ConvertTabsToSpaces: true
 }
