@@ -23,7 +23,8 @@ const DEFAULT_DEPENDENCY: DependencyTree = {
   src: undefined,
   dependencies: {},
   devDependencies: {},
-  ambientDependencies: {}
+  ambientDependencies: {},
+  ambientDevDependencies: {}
 }
 
 /**
@@ -352,19 +353,24 @@ function resolveTypeDependencyFrom (src: string, options: Options, parent?: Depe
           parent
         })
 
+        const { ambient, dev } = options
+
         const dependencyMap = extend(config.dependencies)
-        const devDependencyMap = extend(options.dev ? config.devDependencies : {})
-        const ambientDependencyMap = extend(options.ambient ? config.ambientDependencies : {})
+        const devDependencyMap = extend(dev ? config.devDependencies : {})
+        const ambientDependencyMap = extend(ambient ? config.ambientDependencies : {})
+        const ambientDevDependencyMap = extend(ambient && dev ? config.ambientDevDependencies : {})
 
         return Promise.all<any>([
           resolveTypeDependencyMap(src, dependencyMap, options, tree),
           resolveTypeDependencyMap(src, devDependencyMap, options, tree),
-          resolveTypeDependencyMap(src, ambientDependencyMap, options, tree)
+          resolveTypeDependencyMap(src, ambientDependencyMap, options, tree),
+          resolveTypeDependencyMap(src, ambientDevDependencyMap, options, tree),
         ])
-          .then(function ([dependencies, devDependencies, ambientDependencies]) {
+          .then(function ([dependencies, devDependencies, ambientDependencies, ambientDevDependencies]) {
             tree.dependencies = dependencies
             tree.devDependencies = devDependencies
             tree.ambientDependencies = ambientDependencies
+            tree.ambientDevDependencies = ambientDevDependencies
 
             return tree
           })

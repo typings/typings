@@ -11,6 +11,7 @@ import mdp = require('mkdirp')
 import uniq = require('array-uniq')
 import Promise = require('native-or-bluebird')
 import lockfile = require('lockfile')
+import promiseFinally from 'promise-finally'
 import { join, dirname } from 'path'
 import { CONFIG_FILE, TYPINGS_DIR, DTS_MAIN_FILE, DTS_BROWSER_FILE, CACHE_DIR } from './config'
 import { isHttp, toDefinition } from './path'
@@ -34,7 +35,7 @@ export const readFile = thenify<string, string, string>(fs.readFile)
 export const writeFile = thenify<string, string | Buffer, void>(fs.writeFile)
 export const mkdirp = thenify<string, void>(mdp)
 export const unlink = thenify<string, void>(fs.unlink)
-export const lock = thenify(lockfile.lock)
+export const lock = thenify<string, lockfile.Options, void>(lockfile.lock)
 export const unlock = thenify(lockfile.unlock)
 
 /**
@@ -129,8 +130,9 @@ export function transformFile (path: string, transform: (contents: string) => st
   }
 
   const lockfile = `${path}.lock`
+  const lockOptions = { wait: 250, retries: 25, stale: 60000 }
 
-  return lock(lockfile)
+  const result = lock(lockfile, lockOptions)
     .then(() => {
       return readFile(path, 'utf8')
     })
@@ -138,7 +140,8 @@ export function transformFile (path: string, transform: (contents: string) => st
       (contents) => handle(contents),
       () => handle(undefined)
     )
-    .then(() => unlock(lockfile))
+
+  return promiseFinally(result, () => unlock(lockfile))
 }
 
 /**
