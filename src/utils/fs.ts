@@ -22,10 +22,10 @@ const requestFileCache = popsicleCache({
   store: new popsicleCache.Store({ path: join(CACHE_DIR, 'http') })
 })
 
-const mainTypingsDir = join(TYPINGS_DIR, 'definitions/main')
-const browserTypingsDir = join(TYPINGS_DIR, 'definitions/browser')
-const ambientMainTypingsDir = join(TYPINGS_DIR, 'ambient/main')
-const ambientBrowserTypingsDir = join(TYPINGS_DIR, 'ambient/browser')
+const mainTypingsDir = join(TYPINGS_DIR, 'main/definitions')
+const browserTypingsDir = join(TYPINGS_DIR, 'browser/definitions')
+const ambientMainTypingsDir = join(TYPINGS_DIR, 'main/ambient')
+const ambientBrowserTypingsDir = join(TYPINGS_DIR, 'browser/ambient')
 
 export type Stats = fs.Stats
 
@@ -253,8 +253,8 @@ function getDependencyLocation (options: DefinitionOptions) {
   const browserDtsFile = join(typingsDir, DTS_BROWSER_FILE)
   const mainDir = options.ambient ? ambientMainTypingsDir : mainTypingsDir
   const browserDir = options.ambient ? ambientBrowserTypingsDir : browserTypingsDir
-  const mainFile = join(options.cwd, mainDir, toDefinition(options.name))
-  const browserFile = join(options.cwd, browserDir, toDefinition(options.name))
+  const mainFile = join(options.cwd, mainDir, options.name, toDefinition(options.name))
+  const browserFile = join(options.cwd, browserDir, options.name, toDefinition(options.name))
 
   return { mainFile, browserFile, mainDtsFile, browserDtsFile }
 }
