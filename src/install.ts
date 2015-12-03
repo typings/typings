@@ -6,7 +6,7 @@ import compile, { Options as CompileOptions } from './lib/compile'
 import { findProject } from './utils/find'
 import { writeDependency, transformConfig } from './utils/fs'
 import { parseDependency } from './utils/parse'
-import { DependencyTree, Dependency } from './interfaces/main'
+import { DependencyTree, Dependency, DependencyBranch } from './interfaces/main'
 
 /**
  * Options for installing a new dependency.
@@ -15,6 +15,7 @@ export interface InstallDependencyOptions {
   save?: boolean
   saveDev?: boolean
   saveAmbient?: boolean
+  saveAmbientDev?: boolean
   ambient?: boolean
   name?: string
   cwd: string
@@ -38,7 +39,7 @@ export function install (options: InstallOptions): Promise<DependencyTree> {
       const cwd = dirname(tree.src)
       const queue: [string, DependencyTree, boolean][] = []
 
-      function addToQueue (deps: { [key: string]: DependencyTree }, ambient: boolean) {
+      function addToQueue (deps: DependencyBranch, ambient: boolean) {
         for (const key of Object.keys(deps)) {
           queue.push([key, deps[key], ambient])
         }
@@ -47,6 +48,7 @@ export function install (options: InstallOptions): Promise<DependencyTree> {
       addToQueue(tree.dependencies, false)
       addToQueue(tree.devDependencies, false)
       addToQueue(tree.ambientDependencies, true)
+      addToQueue(tree.ambientDevDependencies, true)
 
       // Install each dependency after each other.
       function chain (result: Promise<DependencyTree>, [name, tree, ambient]) {
@@ -84,10 +86,15 @@ function installTo (location: string, options: InstallDependencyOptions): Promis
         return Promise.reject(new TypeError(`Unable to resolve "${location}"`))
       }
 
+      // Use the ambient option, but override when saving as ambient.
+      const ambient = options.ambient || (
+        !options.save && !options.saveDev && (options.saveAmbient || options.saveAmbientDev)
+      )
+
       return installDependencyTree(tree, {
         cwd: options.cwd,
         name: options.name,
-        ambient: options.ambient || options.saveAmbient,
+        ambient,
         meta: true
       })
         .then(() => writeToConfig(dependency, options))
@@ -107,22 +114,22 @@ function installDependencyTree (tree: DependencyTree, options: CompileOptions) {
  * Write a dependency to the configuration file.
  */
 function writeToConfig (dependency: Dependency, options: InstallDependencyOptions) {
-  if (!options.save && !options.saveDev && !options.saveAmbient) {
-    return
+  if (options.save || options.saveDev || options.saveAmbient || options.saveAmbientDev) {
+    const { raw } = dependency
+
+    return transformConfig(options.cwd, config => {
+      // Extend different fields depending on the option passed in.
+      if (options.save) {
+        config.dependencies = extend(config.dependencies, { [options.name]: raw })
+      } else if (options.saveDev) {
+        config.devDependencies = extend(config.devDependencies, { [options.name]: raw })
+      } else if (options.saveAmbient) {
+        config.ambientDependencies = extend(config.ambientDependencies, { [options.name]: raw })
+      } else if (options.saveAmbientDev) {
+        config.ambientDevDependencies = extend(config.ambientDevDependencies, { [options.name]: raw })
+      }
+
+      return config
+    })
   }
-
-  const { raw } = dependency
-
-  return transformConfig(options.cwd, config => {
-    // Extend different fields depending on the option passed in.
-    if (options.save) {
-      config.dependencies = extend(config.dependencies, { [options.name]: raw })
-    } else if (options.saveDev) {
-      config.devDependencies = extend(config.devDependencies, { [options.name]: raw })
-    } else if (options.saveAmbient) {
-      config.ambientDependencies = extend(config.ambientDependencies, { [options.name]: raw })
-    }
-
-    return config
-  })
 }

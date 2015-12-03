@@ -21,7 +21,8 @@ test('dependencies', t => {
         browserTypings: undefined,
         dependencies: {},
         devDependencies: {},
-        ambientDependencies: {}
+        ambientDependencies: {},
+        ambientDevDependencies: {}
       }
 
       const bowerDep: DependencyTree = {
@@ -34,6 +35,7 @@ test('dependencies', t => {
         dependencies: {},
         devDependencies: {},
         ambientDependencies: {},
+        ambientDevDependencies: {},
         name: 'bower-dep',
         version: undefined,
         main: 'index.js',
@@ -53,7 +55,8 @@ test('dependencies', t => {
         name: 'example',
         dependencies: {},
         devDependencies: {},
-        ambientDependencies: {}
+        ambientDependencies: {},
+        ambientDevDependencies: {}
       }
 
       const typedDep: DependencyTree = {
@@ -64,7 +67,8 @@ test('dependencies', t => {
         typings: join(RESOLVE_FIXTURE_DIR, 'typings/dep.d.ts'),
         dependencies: {},
         devDependencies: {},
-        ambientDependencies: {}
+        ambientDependencies: {},
+        ambientDevDependencies: {}
       }
 
       const npmDep: DependencyTree = {
@@ -80,7 +84,8 @@ test('dependencies', t => {
         name: 'npm-dep',
         dependencies: {},
         devDependencies: {},
-        ambientDependencies: {}
+        ambientDependencies: {},
+        ambientDevDependencies: {}
       }
 
       const typedDevDep: DependencyTree = {
@@ -90,7 +95,8 @@ test('dependencies', t => {
         src: join(RESOLVE_FIXTURE_DIR, 'bower_components/dep/bower.json'),
         dependencies: {},
         devDependencies: {},
-        ambientDependencies: {}
+        ambientDependencies: {},
+        ambientDevDependencies: {}
       }
 
       ;(expected as any).dependencies['bower-dep'] = bowerDep

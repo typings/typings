@@ -25,7 +25,8 @@ test('compile', t => {
         },
         dependencies: {},
         devDependencies: {},
-        ambientDependencies: {}
+        ambientDependencies: {},
+        ambientDevDependencies: {}
       }
 
       const a: DependencyTree = {
@@ -38,7 +39,8 @@ test('compile', t => {
         browserTypings: 'typed.browser.d.ts',
         dependencies: {},
         devDependencies: {},
-        ambientDependencies: {}
+        ambientDependencies: {},
+        ambientDevDependencies: {}
       }
 
       const b: DependencyTree = {
@@ -50,7 +52,8 @@ test('compile', t => {
         typings: 'typings/b.d.ts',
         dependencies: {},
         devDependencies: {},
-        ambientDependencies: {}
+        ambientDependencies: {},
+        ambientDevDependencies: {}
       }
 
       const browser: DependencyTree = {
@@ -62,7 +65,8 @@ test('compile', t => {
         typings: 'browser.d.ts',
         dependencies: {},
         devDependencies: {},
-        ambientDependencies: {}
+        ambientDependencies: {},
+        ambientDevDependencies: {}
       }
 
       const dep: DependencyTree = {
@@ -73,7 +77,8 @@ test('compile', t => {
         main: 'dep/main.d.ts',
         dependencies: {},
         devDependencies: {},
-        ambientDependencies: {}
+        ambientDependencies: {},
+        ambientDevDependencies: {}
       }
 
       ;(root as any).dependencies.a = a
@@ -176,7 +181,8 @@ test('compile', t => {
         main: 'file.d.ts',
         dependencies: {},
         devDependencies: {},
-        ambientDependencies: {}
+        ambientDependencies: {},
+        ambientDevDependencies: {}
       }
 
       return compile(file, { name: 'foobar', cwd: __dirname, ambient: false, meta: false })
@@ -214,7 +220,8 @@ test('compile', t => {
         typings: join(FIXTURE_DIR, 'node.d.ts'),
         dependencies: {},
         devDependencies: {},
-        ambientDependencies: {}
+        ambientDependencies: {},
+        ambientDevDependencies: {}
       }
 
       const fs: DependencyTree = {
@@ -226,7 +233,8 @@ test('compile', t => {
         typings: join(FIXTURE_DIR, 'fs.d.ts'),
         dependencies: {},
         devDependencies: {},
-        ambientDependencies: {}
+        ambientDependencies: {},
+        ambientDevDependencies: {}
       }
 
       ;(node as any).dependencies.fs = fs
@@ -256,7 +264,8 @@ test('compile', t => {
         typings,
         dependencies: {},
         devDependencies: {},
-        ambientDependencies: {}
+        ambientDependencies: {},
+        ambientDevDependencies: {}
       }
 
       return compile(node, { name: 'name', cwd: __dirname, ambient: true, meta: true })
@@ -290,7 +299,8 @@ test('compile', t => {
       typings: 'http://example.com/typings/index.d.ts',
       dependencies: {},
       devDependencies: {},
-      ambientDependencies: {}
+      ambientDependencies: {},
+      ambientDevDependencies: {}
     }
 
     t.plan(1)
@@ -311,7 +321,8 @@ test('compile', t => {
       ambient: false,
       dependencies: {},
       devDependencies: {},
-      ambientDependencies: {}
+      ambientDependencies: {},
+      ambientDevDependencies: {}
     }
 
     t.plan(1)
@@ -333,7 +344,8 @@ test('compile', t => {
       ambient: false,
       dependencies: {},
       devDependencies: {},
-      ambientDependencies: {}
+      ambientDependencies: {},
+      ambientDevDependencies: {}
     }
 
     const dependency: DependencyTree = {
@@ -344,7 +356,8 @@ test('compile', t => {
       ambient: false,
       dependencies: {},
       devDependencies: {},
-      ambientDependencies: {}
+      ambientDependencies: {},
+      ambientDevDependencies: {}
     }
 
     ;(main as any).dependencies.test = dependency
@@ -366,7 +379,8 @@ test('compile', t => {
       typings: 'http://example.com/index.d.ts',
       dependencies: {},
       devDependencies: {},
-      ambientDependencies: {}
+      ambientDependencies: {},
+      ambientDevDependencies: {}
     }
 
     nock('http://example.com')
