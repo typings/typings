@@ -193,8 +193,8 @@ Maybe. If you're relying on typings to provide the type dependencies, I recommen
 
 Typings are compiled and written into the `typings/` directory alongside `typings.json`. More specifically, the structure looks like this:
 
-```sh
-typings/{ambient,definitions}/{main,browser}/{dependency}.d.ts
+```
+typings/{main,browser}/{ambient,definitions}/{dependency}/*
 typings/{main,browser}.d.ts
 ```
 
