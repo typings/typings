@@ -65,15 +65,10 @@ export function installDependency (dependency: string, options: InstallDependenc
     return Promise.reject(new Error('You must specify a name for the dependency'))
   }
 
-  // Install dependency.
-  function install (options: InstallDependencyOptions) {
-    return installTo(dependency, options)
-  }
-
   return findProject(options.cwd)
     .then(
-      (cwd) => install(extend(options, { cwd })),
-      () => install(options)
+      (cwd) => installTo(dependency, extend(options, { cwd })),
+      () => installTo(dependency, options)
     )
 }
 
