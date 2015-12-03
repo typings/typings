@@ -1,8 +1,9 @@
 import test = require('tape')
 import { EOL } from 'os'
-import { join } from 'path'
+import { join, relative } from 'path'
 import { install } from './install'
 import { readFile } from './utils/fs'
+import { VERSION } from './typings'
 
 const pkg = require('../package.json')
 
@@ -12,7 +13,6 @@ test('install', t => {
 
     return install({
       cwd: FIXTURE_DIR,
-      meta: false,
       production: false
     })
       .then(function () {
@@ -28,7 +28,15 @@ test('install', t => {
         t.equal(browserDts, `/// <reference path="browser/definitions/test/test.d.ts" />${EOL}`)
 
         t.equal(mainFile, browserFile)
-        t.equal(mainFile, `declare module \'test\' {${EOL}  function test(): boolean${EOL}${EOL}  export default test${EOL}}`)
+        t.equal(mainFile, [
+          `// Compiled using typings@${VERSION}`,
+          `// Source: ${relative(FIXTURE_DIR, join(FIXTURE_DIR, 'custom_typings/test.d.ts'))}`,
+          `declare module \'test\' {`,
+          `  function test(): boolean`,
+          ``,
+          `  export default test`,
+          `}`
+        ].join(EOL))
       })
   })
 })
