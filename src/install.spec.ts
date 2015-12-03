@@ -1,4 +1,5 @@
 import test = require('blue-tape')
+import Promise = require('native-or-bluebird')
 import { EOL } from 'os'
 import { join, relative } from 'path'
 import { install } from './install'
