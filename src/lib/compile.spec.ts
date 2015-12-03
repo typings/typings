@@ -353,8 +353,6 @@ test('compile', t => {
 
     return compile(main, { name: 'main', cwd: __dirname, ambient: false, meta: false })
       .catch(function (error) {
-        console.log(error.message)
-
         t.ok(/^Unable to read typings in "main~test"/.test(error.message))
       })
   })
