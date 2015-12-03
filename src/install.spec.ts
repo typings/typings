@@ -1,4 +1,4 @@
-import test = require('tape')
+import test = require('blue-tape')
 import { EOL } from 'os'
 import { join, relative } from 'path'
 import { install } from './install'
