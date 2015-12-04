@@ -104,6 +104,18 @@ export function archifyDependencyTree (tree: DependencyTree, options: ArchifyOpt
       }
     }
 
+    if (options.dev && options.ambient) {
+      for (const name of Object.keys(tree.ambientDevDependencies)) {
+        nodes.push(traverse(
+          {
+            label: `${name} ${chalk.gray('(ambient dev)')}`,
+            nodes: []
+          },
+          tree.ambientDevDependencies[name]
+        ))
+      }
+    }
+
     return result
   }
 
