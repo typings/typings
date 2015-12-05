@@ -6,6 +6,7 @@ import compile, { Options as CompileOptions } from './lib/compile'
 import { findProject } from './utils/find'
 import { writeDependency, transformConfig } from './utils/fs'
 import { parseDependency } from './utils/parse'
+import { isAmbientInstall } from './utils/options'
 import { DependencyTree, Dependency, DependencyBranch } from './interfaces/main'
 
 /**
@@ -13,8 +14,8 @@ import { DependencyTree, Dependency, DependencyBranch } from './interfaces/main'
  */
 export interface InstallDependencyOptions {
   save?: boolean
-  saveDev?: boolean
   saveAmbient?: boolean
+  saveDev?: boolean
   saveAmbientDev?: boolean
   ambient?: boolean
   name?: string
@@ -87,9 +88,7 @@ function installTo (location: string, options: InstallDependencyOptions): Promis
       }
 
       // Use the ambient option, but override when saving as ambient.
-      const ambient = options.ambient || (
-        !options.save && !options.saveDev && (options.saveAmbient || options.saveAmbientDev)
-      )
+      const ambient = isAmbientInstall(options)
 
       return installDependencyTree(tree, {
         cwd: options.cwd,
