@@ -70,7 +70,8 @@ test('install', t => {
       }),
       installDependency(AMBIENT_DEPENDENCY, {
         cwd: FIXTURE_DIR,
-        saveAmbientDev: true,
+        saveDev: true,
+        ambient: true,
         name: 'ambient-test'
       })
     ])

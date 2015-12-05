@@ -58,11 +58,9 @@ Install a dependency into the `typings` directory, and optionally write it into 
 #### Flags
 
 * **--save, -S** Save as a dependency in `typings.json`
-* **--save-ambient, -A** Save as an ambient dependency in `typings.json`
 * **--save-dev, -D** Save as a dev dependency in `typings.json`
-* **--save-ambient-dev** Save as an ambient dependency in `typings.json`
-* **--ambient** Write as an ambient dependency (enabled when using `--save-ambient`)
-* **--name** The name of the dependency (required for non-registry dependencies)
+* **--ambient, -A** Write as an ambient dependency (use with `--save` and `--save-dev`)
+* **--name, -n** The name of the dependency (required for non-registry dependencies)
 
 #### Possible Locations
 
@@ -84,15 +82,15 @@ Typings installations without a location will be looked up in the [registry](htt
 Install the `node` typings from DefinitelyTyped:
 
 ```
-typings install github:DefinitelyTyped/DefinitelyTyped/node/node.d.ts#4ad9bef6cc075c904e034e73e1c993b9ad1ba81b --save-ambient --name node
+typings install github:DefinitelyTyped/DefinitelyTyped/node/node.d.ts#4ad9bef6cc075c904e034e73e1c993b9ad1ba81b --save --ambient --name node
 ```
 
-The name is used in `typings.json` and for external module definitions, and it is always required (but inferred when using the registry). We used `--save-ambient` to write it into `typings.json`, which you can then use to re-install your typings later. We use the commit hash for code immutability, there's nothing worse than someone coming into the project and the compiler explodes because the type definition on `master` has changed.
+The name is used in `typings.json` and for external module definitions, and it is always required (but inferred when using the registry). The `--save` flag is used to write to `typings.json`, which you can use to re-install your typings later. The `--ambient` flag is used to specify that we know that this dependency is ambient. We use the commit hash in the location for code immutability, since there's nothing worse than someone coming into the project and the compiler explodes because the type definition on `master` has changed.
 
 ### Uninstall
 
 ```sh
-typings uninstall <pkg> [--ambient] [--save|--save-dev|--save-ambient]
+typings uninstall <pkg> [--ambient] [--save|--save-dev]
 ```
 
 Remove a dependency from the `typings/` directory, and optionally remove from `typings.json`.
@@ -100,10 +98,8 @@ Remove a dependency from the `typings/` directory, and optionally remove from `t
 #### Flags
 
 * **--save, -S** Remove from dependencies in `typings.json`
-* **--save-ambient, -A** Remove from ambient dependencies in `typings.json`
 * **--save-dev, -D** Remove from dev dependencies in `typings.json`
-* **--save-ambient-dev** Remove from ambient deb dependencies in `typings.json`
-* **--ambient** Remove as an ambient dependency (enabled when using `--save-ambient`)
+* **--ambient, -A** Remove as an ambient dependency (use with `--save` and `--save-dev`)
 
 ### List
 

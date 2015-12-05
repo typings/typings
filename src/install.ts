@@ -6,7 +6,6 @@ import compile, { Options as CompileOptions } from './lib/compile'
 import { findProject } from './utils/find'
 import { writeDependency, transformConfig } from './utils/fs'
 import { parseDependency } from './utils/parse'
-import { isAmbientInstall } from './utils/options'
 import { DependencyTree, Dependency, DependencyBranch } from './interfaces/main'
 
 /**
@@ -14,9 +13,7 @@ import { DependencyTree, Dependency, DependencyBranch } from './interfaces/main'
  */
 export interface InstallDependencyOptions {
   save?: boolean
-  saveAmbient?: boolean
   saveDev?: boolean
-  saveAmbientDev?: boolean
   ambient?: boolean
   name?: string
   cwd: string
@@ -87,13 +84,10 @@ function installTo (location: string, options: InstallDependencyOptions): Promis
         return Promise.reject(new TypeError(`Unable to resolve "${location}"`))
       }
 
-      // Use the ambient option, but override when saving as ambient.
-      const ambient = isAmbientInstall(options)
-
       return installDependencyTree(tree, {
         cwd: options.cwd,
         name: options.name,
-        ambient,
+        ambient: options.ambient,
         meta: true
       })
         .then(() => writeToConfig(dependency, options))
@@ -113,19 +107,23 @@ function installDependencyTree (tree: DependencyTree, options: CompileOptions) {
  * Write a dependency to the configuration file.
  */
 function writeToConfig (dependency: Dependency, options: InstallDependencyOptions) {
-  if (options.save || options.saveDev || options.saveAmbient || options.saveAmbientDev) {
+  if (options.save || options.saveDev) {
     const { raw } = dependency
 
     return transformConfig(options.cwd, config => {
       // Extend different fields depending on the option passed in.
       if (options.save) {
-        config.dependencies = extend(config.dependencies, { [options.name]: raw })
+        if (options.ambient) {
+          config.ambientDependencies = extend(config.ambientDependencies, { [options.name]: raw })
+        } else {
+          config.dependencies = extend(config.dependencies, { [options.name]: raw })
+        }
       } else if (options.saveDev) {
-        config.devDependencies = extend(config.devDependencies, { [options.name]: raw })
-      } else if (options.saveAmbient) {
-        config.ambientDependencies = extend(config.ambientDependencies, { [options.name]: raw })
-      } else if (options.saveAmbientDev) {
-        config.ambientDevDependencies = extend(config.ambientDevDependencies, { [options.name]: raw })
+        if (options.ambient) {
+          config.ambientDevDependencies = extend(config.ambientDevDependencies, { [options.name]: raw })
+        } else {
+          config.devDependencies = extend(config.devDependencies, { [options.name]: raw })
+        }
       }
 
       return config

@@ -178,6 +178,10 @@ export function transformConfig (cwd: string, transform: (config: ConfigJson) =>
           config.ambientDependencies = sortKeys(config.ambientDependencies)
         }
 
+        if (config.ambientDevDependencies) {
+          config.ambientDevDependencies = sortKeys(config.ambientDevDependencies)
+        }
+
         return config
       })
   })

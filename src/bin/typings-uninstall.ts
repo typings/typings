@@ -8,23 +8,19 @@ import { PROJECT_NAME } from '../utils/config'
 
 interface Args {
   save: boolean
-  saveAmbient: boolean
   saveDev: boolean
-  saveAmbientDev: boolean
   ambient: boolean
   verbose: boolean
   help: boolean
 }
 
 const args = minimist<Args>(process.argv.slice(2), {
-  boolean: ['save', 'saveAmbient', 'saveDev', 'saveAmbientDev', 'ambient', 'verbose', 'help'],
+  boolean: ['save', 'saveDev', 'ambient', 'verbose', 'help'],
   alias: {
     save: ['S'],
-    saveAmbient: ['A', 'save-ambient'],
     saveDev: ['D', 'save-dev'],
-    saveAmbientDev: ['save-ambient-dev'],
     name: ['n'],
-    ambient: ['a'],
+    ambient: ['A'],
     verbose: ['v'],
     help: ['h']
   }
@@ -32,7 +28,7 @@ const args = minimist<Args>(process.argv.slice(2), {
 
 if (args.help) {
   console.log(`
-${PROJECT_NAME} uninstall <pkg> [--ambient] [--save|--save-dev|--save-ambient|--save-ambient-dev]
+${PROJECT_NAME} uninstall <pkg> [--save|--save-dev] [--ambient]
 
 Aliases: r, rm, remove, un
 `)

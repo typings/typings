@@ -16,8 +16,7 @@ export interface Options {
  */
 const DEFAULT_CONFIG: ConfigJson = {
   dependencies: {},
-  devDependencies: {},
-  ambientDependencies: {}
+  devDependencies: {}
 }
 
 /**

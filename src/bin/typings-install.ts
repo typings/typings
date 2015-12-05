@@ -10,9 +10,7 @@ import { archifyDependencyTree } from '../utils/cli'
 
 interface Args {
   save: boolean
-  saveAmbient: boolean
   saveDev: boolean
-  saveAmbientDev: boolean
   ambient: boolean
   production: boolean
   name?: string
@@ -22,15 +20,13 @@ interface Args {
 }
 
 const args = minimist<Args>(process.argv.slice(2), {
-  boolean: ['save', 'saveAmbient', 'saveDev', 'saveAmbientDev', 'ambient', 'verbose', 'help', 'production'],
+  boolean: ['save', 'saveDev', 'ambient', 'verbose', 'help', 'production'],
   string: ['name', 'source'],
   alias: {
     save: ['S'],
-    saveAmbient: ['A', 'save-ambient'],
     saveDev: ['save-dev', 'D'],
-    saveAmbientDev: ['save-ambient-dev'],
     name: ['n'],
-    ambient: ['a'],
+    ambient: ['A'],
     verbose: ['v'],
     help: ['h'],
     source: ['s']
@@ -47,7 +43,7 @@ ${PROJECT_NAME} install bitbucket:<bitbucket username>/<bitbucket project>[/<pat
 ${PROJECT_NAME} install <http:// url>
 
 Aliases: i, in
-Options: [--save|--save-dev|--save-ambient|--save-ambient-dev] [--ambient] [--production]
+Options: [--save|--save-dev] [--ambient] [--production]
 `)
 
   process.exit(0)
