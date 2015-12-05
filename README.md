@@ -13,30 +13,26 @@
 npm install typings --global
 ```
 
-## Why?
+## Features
 
-* Typings are always external modules, not ambient modules (E.g. no `declare module "x"` in normal dependencies)
-  * External module declarations are more portable and understandable
-  * Ambient modules suffer from exposing implementation details, such as global interfaces that don't actually exist at runtime
-  * External module declarations are supported using the TypeScript compiler "moduleResolution" - you contribute your typings back directly to the module author
-* Typings should represent the module structure
-  * For example, support for the `browser` field in node which can produce different typings at runtime
-  * What about typings on a per-file basis? Some modules promote requiring into the dependencies for "add-ons"
-* TypeScript modules should be publish-able on any package manager
-  * Ambient modules can not be published on a package manager as other packages may rely on the same ambient module declaration which results in `declare module "x"` conflicts
-* Typings are decentralized
-  * Anyone can write and install a missing type definition without friction
-  * The author of a type definition can maintain their type definition in isolation from other typings
+* Package manager parity
+  * `init`, `install`, `rm`, `ls`, etc.
+* Installation over GitHub, BitBucket, NPM, Bower and HTTP(s)
+  * Dependencies will also be resolved the same way
+* Simple typings package file
+  * Specify dependencies in `typings.json` and everyone on the project can install it
+* Name-spaced dependencies
+  * TypeScript definitions will be name-spaced and properly contained from leaking type information irrelevant to the runtime
 
 ## Usage
 
-**Typings** exposes a simple way for TypeScript definitions to be installed and maintained. It uses a `typings.json` file that can resolve to GitHub, NPM, Bower, HTTP and from local files. Packages can use type definitions from different sources and with different versions, and know they will _never_ cause a conflict for the user.
+**Typings** is the simple way for TypeScript definitions to be installed and maintained. It uses `typings.json`, which can resolve to GitHub, NPM, Bower, HTTP and from local files. Every packages can use type definitions from different sources and with different versions, and know they will _never_ cause a conflict for their users.
 
 ```sh
 typings install debug --save
 ```
 
-There's a [public registry](https://github.com/typings/registry) maintained by the community, which is used to resolve the official type definition for a package.
+The [public registry](https://github.com/typings/registry) is maintained by the community, and is used to resolve the official type definition for a JavaScript package.
 
 ### Init
 
@@ -57,13 +53,14 @@ typings install bitbucket:<bitbucket username>/<bitbucket project>[/<path>][#<co
 typings install <http:// url>
 ```
 
-Install a dependency into the `typings` directory, and optionally save it in the configuration file.
+Install a dependency into the `typings` directory, and optionally write it into `typings.json`.
 
 #### Flags
 
 * **--save, -S** Save as a dependency in `typings.json`
-* **--save-dev, -D** Save as a dev dependency in `typings.json`
 * **--save-ambient, -A** Save as an ambient dependency in `typings.json`
+* **--save-dev, -D** Save as a dev dependency in `typings.json`
+* **--save-ambient-dev** Save as an ambient dependency in `typings.json`
 * **--ambient** Write as an ambient dependency (enabled when using `--save-ambient`)
 * **--name** The name of the dependency (required for non-registry dependencies)
 
@@ -76,21 +73,21 @@ Install a dependency into the `typings` directory, and optionally save it in the
 * `npm:<package>/<path>`
 * `bower:<package>/<path>`
 
-Where `path` can be a `typings.json` file, a `.d.ts` file, or empty (it will automatically append `typings.json` to the path when it is not a `.d.ts` file).
+Where `path` can be a `typings.json` file, a `.d.ts` file, or empty. When the path is empty, or not a `d.ts` file, `typings.json` will be automatically appended to the path.
 
 #### Registry
 
-Package installation without a location will be looked up in the [registry](https://github.com/typings/registry). For example, `typings install debug` will resolve to [this entry](https://github.com/typings/registry/blob/master/npm/debug.json) in the registry. Anyone can contribute their own typings to the registry, just open a pull request.
+Typings installations without a location will be looked up in the [registry](https://github.com/typings/registry). For example, `typings install debug` will resolve to [this entry](https://github.com/typings/registry/blob/master/npm/debug.json) in the public registry. Anyone can contribute typings to the registry, just make a pull request.
 
 #### Example
 
-Installing the `node` typing from DefinitelyTyped:
+Install the `node` typings from DefinitelyTyped:
 
 ```
 typings install github:DefinitelyTyped/DefinitelyTyped/node/node.d.ts#4ad9bef6cc075c904e034e73e1c993b9ad1ba81b --save-ambient --name node
 ```
 
-The name is used in `typings.json` and for non-ambient module declarations, it is always required (it's inferred when using the registry though). We use `--save-ambient` to write it into `typings.json`, which other people can then use to replicate your environment. We prefer a commit hash for immutability, there's nothing worse than someone coming into the project and the compiler explodes because the type definition on `master` has changed.
+The name is used in `typings.json` and for external module definitions, and it is always required (but inferred when using the registry). We used `--save-ambient` to write it into `typings.json`, which you can then use to re-install your typings later. We use the commit hash for code immutability, there's nothing worse than someone coming into the project and the compiler explodes because the type definition on `master` has changed.
 
 ### Uninstall
 
@@ -98,13 +95,14 @@ The name is used in `typings.json` and for non-ambient module declarations, it i
 typings uninstall <pkg> [--ambient] [--save|--save-dev|--save-ambient]
 ```
 
-Remove a dependency from the `typings` directory, and optionally remove from the configuration file.
+Remove a dependency from the `typings/` directory, and optionally remove from `typings.json`.
 
 #### Flags
 
-* **--save** Remove from dependencies in `typings.json`
-* **--save-dev** Remove from dev dependencies in `typings.json`
-* **--save-ambient** Remove from ambient dependencies in `typings.json`
+* **--save, -S** Remove from dependencies in `typings.json`
+* **--save-ambient, -A** Remove from ambient dependencies in `typings.json`
+* **--save-dev, -D** Remove from dev dependencies in `typings.json`
+* **--save-ambient-dev** Remove from ambient deb dependencies in `typings.json`
 * **--ambient** Remove as an ambient dependency (enabled when using `--save-ambient`)
 
 ### List
@@ -116,6 +114,22 @@ typings ls [--ambient]
 Print the `typings` dependency tree. (This command resolves on demand and is not cached)
 
 ## FAQ
+
+### Why?
+
+* Typings uses external modules, not ambient modules (E.g. no `declare module "x"` in normal dependencies)
+  * External module declarations are more portable and understandable
+    * Ambient modules suffer from exposing implementation details, such as global interfaces that don't actually exist at runtime
+  * External module declarations are used by the TypeScript compiler's "moduleResolution"
+    * You contribute your typings directly back to the module author!
+* Typings should cleanly represent the module structure
+  * For example, support for the `browser` field (Webpack, Browserify, etc.) can produce different types at runtime
+  * What about type definitions for every file? Some modules promote requiring into the dependencies for "add-ons"
+* TypeScript modules should be publish-able to any package manager
+  * Ambient modules can not be published to a package manager as other packages may rely on the same ambient module declaration which results in declaration conflicts
+* Typings are decentralized
+  * Anyone can write and install a missing type definition without friction
+  * The author of a type definition can maintain their type definition in isolation from other typings
 
 ### `main.d.ts` and `browser.d.ts`?
 
