@@ -1,0 +1,6 @@
+{
+  "main": "index.d.ts",
+  "dependencies": {
+    "test": "file:custom_typings/test.d.ts"
+  }
+}

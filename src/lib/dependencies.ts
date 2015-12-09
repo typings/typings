@@ -46,7 +46,7 @@ export interface Options {
 /**
  * Resolve all dependencies at the current path.
  */
-export default function resolveDependencies (options: Options): Promise<DependencyTree> {
+export function resolveDependencies (options: Options): Promise<DependencyTree> {
   return Promise.all([
     resolveBowerDependencies(options),
     resolveNpmDependencies(options),
@@ -434,11 +434,22 @@ function mergeDependencies (trees: DependencyTree[]): DependencyTree {
   const dependency = extend(DEFAULT_DEPENDENCY)
 
   trees.forEach(function (dependencyTree) {
-    overrideProperty('name', dependency, dependencyTree)
-    overrideProperty('main', dependency, dependencyTree)
-    overrideProperty('browser', dependency, dependencyTree)
-    overrideProperty('typings', dependency, dependencyTree)
-    overrideProperty('browserTypings', dependency, dependencyTree)
+    const { name, src, main, browser, typings, browserTypings } = dependencyTree
+
+    // Handle `main` and `typings` overrides all together.
+    if (
+      typeof main === 'string' ||
+      typeof browser === 'string' ||
+      typeof typings === 'string' ||
+      typeof browserTypings === 'string'
+    ) {
+      dependency.name = name
+      dependency.src = src
+      dependency.main = main
+      dependency.browser = browser
+      dependency.typings = typings
+      dependency.browserTypings = browserTypings
+    }
 
     dependency.dependencies = extend(dependency.dependencies, dependencyTree.dependencies)
     dependency.devDependencies = extend(dependency.devDependencies, dependencyTree.devDependencies)
@@ -446,13 +457,4 @@ function mergeDependencies (trees: DependencyTree[]): DependencyTree {
   })
 
   return dependency
-}
-
-/**
- * Extend a single property from one object to another.
- */
-function overrideProperty (property: string, to: any, from: any) {
-  if (from.hasOwnProperty(property)) {
-    to[property] = from[property]
-  }
 }

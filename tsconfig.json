@@ -11,6 +11,7 @@
   },
   "files": [
     "src/bin/typings.ts",
+    "src/bin/typings-bundle.ts",
     "src/bin/typings-init.ts",
     "src/bin/typings-install.ts",
     "src/bin/typings-list.ts",

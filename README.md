@@ -109,6 +109,16 @@ typings ls [--ambient]
 
 Print the `typings` dependency tree. (This command resolves on demand and is not cached)
 
+### Bundle
+
+```sh
+typings bundle --name [string]
+
+Options: [--browser] [--out] [--source]
+```
+
+Bundle the current projects typings into an ambient module.
+
 ## FAQ
 
 ### Why?

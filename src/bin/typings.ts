@@ -27,7 +27,9 @@ const ALIASES: { [cmd: string]: string } = {
   ls: 'list',
   ll: 'list',
   la: 'list',
-  list: 'list'
+  list: 'list',
+  // Bundle.
+  bundle: 'bundle'
 }
 
 interface Args {
