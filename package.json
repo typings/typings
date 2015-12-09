@@ -25,11 +25,12 @@
     "url": "git://github.com/typings/typings.git"
   },
   "keywords": [
+    "typings",
     "typescript",
     "definition",
+    "declaration",
     "package",
     "manager",
-    "writer",
     "typed"
   ],
   "author": {
