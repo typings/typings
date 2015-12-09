@@ -7,8 +7,6 @@ import { readFile, readConfig } from './utils/fs'
 import { CONFIG_FILE } from './utils/config'
 import { VERSION } from './typings'
 
-const pkg = require('../package.json')
-
 test('install', t => {
   t.test('install everything', t => {
     const FIXTURE_DIR = join(__dirname, '__test__/install-fixture')

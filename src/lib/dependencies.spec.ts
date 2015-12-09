@@ -1,6 +1,6 @@
 import test = require('blue-tape')
 import { join } from 'path'
-import resolveDependencies from './dependencies'
+import { resolveDependencies } from './dependencies'
 import { PROJECT_NAME } from '../utils/config'
 import { DependencyTree, DependencyBranch } from '../interfaces/main'
 
@@ -13,9 +13,9 @@ test('dependencies', t => {
         type: undefined,
         ambient: false,
         missing: false,
-        name: undefined,
-        src: undefined,
-        main: undefined,
+        name: 'foobar',
+        src: join(RESOLVE_FIXTURE_DIR, 'package.json'),
+        main: 'index.js',
         browser: undefined,
         typings: undefined,
         browserTypings: undefined,

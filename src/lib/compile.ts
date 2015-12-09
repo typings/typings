@@ -49,9 +49,17 @@ export interface Options {
 }
 
 /**
+ * The compiled output data.
+ */
+export interface CompiledOutput {
+  main: string
+  browser: string
+}
+
+/**
  * Compile a dependency tree using a root name.
  */
-export default function compile (tree: DependencyTree, options: Options) {
+export default function compile (tree: DependencyTree, options: Options): Promise<CompiledOutput> {
   const files: ts.Map<Promise<string>> = {}
 
   return Promise.all([
