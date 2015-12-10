@@ -247,9 +247,9 @@ function stringifyDependencyPath (path: string, options: StringifyOptions): Prom
         if (ambientModules.length && !ambient) {
           return Promise.reject(
             new TypeError(
-              `Attempted to compile ${options.name} as a ` +
-              `dependency, but it contains ambient module declarations. Did ` +
-              `you want to specify "--ambient" instead?`
+              `Attempted to compile "${options.name}" as a dependency, but ` +
+              `it contains ambient modules: ${ambientModules.join(', ')}. ` +
+              `Did you want to specify "--ambient" instead?`
             )
           )
         }

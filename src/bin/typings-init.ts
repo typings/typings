@@ -9,19 +9,23 @@ import { PROJECT_NAME } from '../utils/config'
 interface Args {
   verbose: boolean
   help: boolean
+  upgrade: boolean
 }
 
 const args = minimist<Args>(process.argv.slice(2), {
-  boolean: ['verbose', 'help'],
+  boolean: ['verbose', 'help', 'upgrade'],
   alias: {
     verbose: ['v'],
-    help: ['h']
+    help: ['h'],
+    upgrade: ['u']
   }
 })
 
 if (args.help) {
   console.log(`
 ${PROJECT_NAME} init
+
+Options: [--upgrade]
 `)
 
   process.exit(0)
