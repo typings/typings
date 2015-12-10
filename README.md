@@ -38,9 +38,11 @@ The [public registry](https://github.com/typings/registry) is maintained by the 
 
 ```sh
 typings init
+
+Options: [--upgrade]
 ```
 
-Initialize a new `typings.json` file.
+Initialize a new `typings.json` file. If you're currently using TSD, you can specify `--upgrade` to convert your current project to `typings.json`.
 
 ### Install
 

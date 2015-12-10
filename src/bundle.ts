@@ -2,11 +2,17 @@ import Promise = require('native-or-bluebird')
 import { resolveDependencies } from './lib/dependencies'
 import compile, { CompiledOutput } from './lib/compile'
 
+/**
+ * Bundle configuration options.
+ */
 export interface Options {
   name?: string
   source: string
 }
 
+/**
+ * Bundle the current typings project into a single ambient definition.
+ */
 export function bundle (options: Options): Promise<CompiledOutput> {
   const { source: cwd } = options
 
