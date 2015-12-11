@@ -67,6 +67,7 @@
     "popsicle-cache": "^1.0.0",
     "popsicle-status": "^0.2.0",
     "promise-finally": "^2.0.1",
+    "rimraf": "^2.4.4",
     "semver": "^5.0.1",
     "sort-keys": "^1.0.0",
     "strip-bom": "^2.0.0",

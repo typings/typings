@@ -11,6 +11,7 @@ import mdp = require('mkdirp')
 import uniq = require('array-uniq')
 import Promise = require('native-or-bluebird')
 import lockfile = require('lockfile')
+import rmrf = require('rimraf')
 import promiseFinally from 'promise-finally'
 import { join, dirname } from 'path'
 import { CONFIG_FILE, TYPINGS_DIR, DTS_MAIN_FILE, DTS_BROWSER_FILE, CACHE_DIR } from './config'
@@ -37,6 +38,7 @@ export const mkdirp = thenify<string, void>(mdp)
 export const unlink = thenify<string, void>(fs.unlink)
 export const lock = thenify<string, lockfile.Options, void>(lockfile.lock)
 export const unlock = thenify(lockfile.unlock)
+export const rimraf = thenify(rmrf)
 
 /**
  * Verify a path exists and is a file.
@@ -211,57 +213,63 @@ export interface DefinitionOptions {
  * Write a dependency to the filesytem.
  */
 export function writeDependency (contents: { main: string; browser: string }, options: DefinitionOptions): Promise<boolean> {
-  const { mainFile, browserFile, mainDtsFile, browserDtsFile } = getDependencyLocation(options)
+  const location = getDependencyLocation(options)
 
+  // Execute the dependency creation flow.
+  function create (path: string, file: string, contents: string, dtsFile: string) {
+    return mkdirp(path)
+      .then(() => writeFile(file, contents))
+      .then(() => transformDtsFile(dtsFile, typings => typings.concat([file])))
+  }
+
+  // Create both typings concurrently.
   return Promise.all([
-    mkdirp(dirname(mainFile)),
-    mkdirp(dirname(browserFile))
-  ])
-    .then(() => {
-      return Promise.all([
-        writeFile(mainFile, contents.main || ''),
-        writeFile(browserFile, contents.browser || '')
-      ])
-    })
-    .then(() => {
-      return Promise.all([
-        transformDtsFile(mainDtsFile, typings => typings.concat([mainFile])),
-        transformDtsFile(browserDtsFile, typings => typings.concat([browserFile]))
-      ])
-    })
-    .then(() => undefined)
+    create(location.mainPath, location.mainFile, contents.main, location.mainDtsFile),
+    create(location.browserPath, location.browserFile, contents.browser, location.browserDtsFile)
+  ]).then(() => undefined)
 }
 
 /**
  * Remove a dependency from the filesystem.
  */
 export function removeDependency (options: DefinitionOptions) {
-  const { mainFile, browserFile, mainDtsFile, browserDtsFile } = getDependencyLocation(options)
+  const location = getDependencyLocation(options)
 
-  return Promise.all([
-    unlink(mainFile).catch(() => false),
-    unlink(browserFile).catch(() => false)
-  ])
-    .then(() => {
-      return Promise.all([
-        transformDtsFile(mainDtsFile, typings => typings.filter(x => x !== mainFile)),
-        transformDtsFile(browserDtsFile, typings => typings.filter(x => x !== browserFile))
-      ])
+  // Remove the dependency from typings.
+  function remove (path: string, file: string, dtsFile: string) {
+    return promiseFinally(rimraf(path), () => {
+      return transformDtsFile(dtsFile, typings => typings.filter(x => x !== file))
     })
-    .then(() => undefined)
+  }
+
+  // Remove dependencies concurrently.
+  return Promise.all([
+    remove(location.mainPath, location.mainFile, location.mainDtsFile),
+    remove(location.browserPath, location.browserFile, location.browserDtsFile)
+  ]).then(() => undefined)
 }
 
 /**
  * Return the dependency output locations based on definition options.
  */
 function getDependencyLocation (options: DefinitionOptions) {
+  const mainDir = options.ambient ? ambientMainTypingsDir : mainTypingsDir
+  const browserDir = options.ambient ? ambientBrowserTypingsDir : browserTypingsDir
+
   const typingsDir = join(options.cwd, TYPINGS_DIR)
   const mainDtsFile = join(typingsDir, DTS_MAIN_FILE)
   const browserDtsFile = join(typingsDir, DTS_BROWSER_FILE)
-  const mainDir = options.ambient ? ambientMainTypingsDir : mainTypingsDir
-  const browserDir = options.ambient ? ambientBrowserTypingsDir : browserTypingsDir
-  const mainFile = join(options.cwd, mainDir, options.name, toDefinition(options.name))
-  const browserFile = join(options.cwd, browserDir, options.name, toDefinition(options.name))
+  const mainPath = join(options.cwd, mainDir, options.name)
+  const browserPath = join(options.cwd, browserDir, options.name)
+  const mainFile = join(mainPath, toDefinition(options.name))
+  const browserFile = join(browserPath, toDefinition(options.name))
 
-  return { mainFile, browserFile, mainDtsFile, browserDtsFile }
+  return {
+    mainFile,
+    browserFile,
+    mainPath,
+    browserPath,
+    mainDtsFile,
+    browserDtsFile
+  }
 }
