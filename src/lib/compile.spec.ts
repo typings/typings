@@ -92,41 +92,41 @@ test('compile', t => {
             `// Compiled using typings@${VERSION}`,
             `// Source: ${relative(__dirname, join(FIXTURE_DIR, 'a/typed.d.ts'))}`,
             'declare module \'root~a\' {',
-            '  export interface ITest {',
-            '    foo: string',
-            '    bar: boolean',
-            '  }',
-            '  export default function (): ITest',
+            'export interface ITest {',
+            '  foo: string',
+            '  bar: boolean',
+            '}',
+            'export default function (): ITest',
             '}',
             '',
             `// Compiled using typings@${VERSION}`,
             `// Source: ${relative(__dirname, join(FIXTURE_DIR, 'typings/b.d.ts'))}`,
             'declare module \'root~b\' {',
-            '  export const foo: number',
+            'export const foo: number',
             '}',
             '',
             `// Compiled using typings@${VERSION}`,
             `// Source: ${relative(__dirname, join(FIXTURE_DIR, 'dep/path.d.ts'))}`,
             'declare module \'root~dep/path\' {',
-            '  export const isDep: boolean',
+            'export const isDep: boolean',
             '}',
             '',
             `// Compiled using typings@${VERSION}`,
             `// Source: ${relative(__dirname, join(FIXTURE_DIR, 'root-import.d.ts'))}`,
             'declare module \'root/root-import\' {',
-            '  export const test: string',
+            'export const test: string',
             '}',
             '',
             `// Compiled using typings@${VERSION}`,
             `// Source: ${relative(__dirname, join(FIXTURE_DIR, 'root.d.ts'))}`,
             'declare module \'root/root\' {',
-            '  import a from \'root~a\'',
-            '  import b = require(\'root~b\')',
-            '  import { isDep } from \'root~dep/path\'',
-            '  export * from \'root/root-import\'',
+            'import a from \'root~a\'',
+            'import b = require(\'root~b\')',
+            'import { isDep } from \'root~dep/path\'',
+            'export * from \'root/root-import\'',
             '}',
             'declare module \'root\' {',
-            '  export * from \'root/root\';',
+            'export * from \'root/root\';',
             '}'
           ].join(EOL))
 
@@ -134,37 +134,37 @@ test('compile', t => {
             `// Compiled using typings@${VERSION}`,
             `// Source: ${relative(__dirname, join(FIXTURE_DIR, 'a/typed.browser.d.ts'))}`,
             'declare module \'root~a\' {',
-            '  export function browser(): boolean',
+            'export function browser (): boolean',
             '}',
             '',
             `// Compiled using typings@${VERSION}`,
             `// Source: ${relative(__dirname, join(FIXTURE_DIR, 'browser.d.ts'))}`,
             'declare module \'root~b\' {',
-            '  export const bar: boolean',
+            'export const bar: boolean',
             '}',
             '',
             `// Compiled using typings@${VERSION}`,
             `// Source: ${relative(__dirname, join(FIXTURE_DIR, 'dep/path.d.ts'))}`,
             'declare module \'root~dep/path\' {',
-            '  export const isDep: boolean',
+            'export const isDep: boolean',
             '}',
             '',
             `// Compiled using typings@${VERSION}`,
             `// Source: ${relative(__dirname, join(FIXTURE_DIR, 'root-import.d.ts'))}`,
             'declare module \'root/root-import\' {',
-            '  export const test: string',
+            'export const test: string',
             '}',
             '',
             `// Compiled using typings@${VERSION}`,
             `// Source: ${relative(__dirname, join(FIXTURE_DIR, 'root.d.ts'))}`,
             'declare module \'root/root\' {',
-            '  import a from \'root~a\'',
-            '  import b = require(\'root~b\')',
-            '  import { isDep } from \'root~dep/path\'',
-            '  export * from \'root/root-import\'',
+            'import a from \'root~a\'',
+            'import b = require(\'root~b\')',
+            'import { isDep } from \'root~dep/path\'',
+            'export * from \'root/root-import\'',
             '}',
             'declare module \'root\' {',
-            '  export * from \'root/root\';',
+            'export * from \'root/root\';',
             '}'
           ].join(EOL))
         })
@@ -189,21 +189,21 @@ test('compile', t => {
         .then(results => {
           t.equal(results.main, [
             'declare module \'foobar/file\' {',
-            '  function foo(value: string): foo.Bar;',
+            'function foo (value: string): foo.Bar;',
             '',
-            '  module foo {',
-            '    export interface Bar {',
-            '      (message: any, ...args: any[]): void;',
-            '      enabled: boolean;',
-            '      namespace: string;',
-            '    }',
+            'module foo {',
+            '  export interface Bar {',
+            '    (message: any, ...args: any[]): void;',
+            '    enabled: boolean;',
+            '    namespace: string;',
             '  }',
+            '}',
             '',
-            '  export = foo;',
+            'export = foo;',
             '}',
             'declare module \'foobar\' {',
-            '  import main = require(\'foobar/file\');',
-            '  export = main;',
+            'import main = require(\'foobar/file\');',
+            'export = main;',
             '}'
           ].join(EOL))
         })
@@ -243,8 +243,8 @@ test('compile', t => {
         .then(result => {
           t.equal(result.main, [
             'declare module \'fs\' {',
-            '  export function readFileSync(path: string, encoding: string): string',
-            '  export function readFileSync(path: string): Buffer',
+            'export function readFileSync (path: string, encoding: string): string',
+            'export function readFileSync (path: string): Buffer',
             '}',
             '',
             'declare var __dirname: string'
@@ -276,11 +276,11 @@ test('compile', t => {
             'declare const require: (module: string) => any;',
             '',
             'declare module "events" {',
-            '  export const test: boolean;',
+            '\texport const test: boolean;',
             '}',
             '',
             'declare module "fs" {',
-            '  import * as events from "events";',
+            '\timport * as events from "events";',
             '}'
           ].join(EOL)
 
@@ -387,13 +387,13 @@ test('compile', t => {
       .get('/typings.json')
       .reply(200, '{"main":"index.d.ts"}')
 
-      nock('http://example.com')
-        .get('/index.d.ts')
-        .reply(200, 'export const helloWorld: string')
+    nock('http://example.com')
+      .get('/index.d.ts')
+      .reply(200, 'export const helloWorld: string')
 
     return compile(node, { name: 'test', cwd: __dirname, ambient: false, meta: false })
       .then(function (result) {
-        t.equal(result.main, "declare module 'test' {\n  export const helloWorld: string\n}")
+        t.equal(result.main, "declare module 'test' {\nexport const helloWorld: string\n}")
       })
   })
 })

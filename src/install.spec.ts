@@ -41,16 +41,16 @@ test('install', t => {
           `// Compiled using typings@${VERSION}`,
           `// Source: ${relative(FIXTURE_DIR, join(FIXTURE_DIR, 'custom_typings/definition.d.ts'))}`,
           `declare module \'test\' {`,
-          `  function test(): boolean`,
+          `function test (): boolean`,
           ``,
-          `  export default test`,
+          `export default test`,
           `}`
         ].join(EOL))
 
         t.equal(ambientMainFile, [
           `// Compiled using typings@${VERSION}`,
           `// Source: ${relative(FIXTURE_DIR, join(FIXTURE_DIR, 'custom_typings/ambient.d.ts'))}`,
-          `declare module "x" { }`
+          `declare module "x" {}`
         ].join(EOL))
       })
   })

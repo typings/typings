@@ -19,16 +19,16 @@ test('bundle', t => {
           `// Compiled using ${PROJECT_NAME}@${VERSION}`,
           `// Source: custom_typings/test.d.ts`,
           `declare module \'example~test\' {`,
-          `  export function test(): string;`,
+          `export function test (): string;`,
           `}`,
           ``,
           `// Compiled using ${PROJECT_NAME}@${VERSION}`,
           `// Source: index.d.ts`,
           `declare module \'example/index\' {`,
-          `  import { test } from \'example~test\'`,
+          `import { test } from \'example~test\'`,
           `}`,
           `declare module \'example\' {`,
-          `  export * from \'example/index\';`,
+          `export * from \'example/index\';`,
           `}`
         ].join(EOL))
       })
