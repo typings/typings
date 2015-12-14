@@ -19,26 +19,6 @@ import { VERSION } from '../typings'
 const SEPARATOR = '~'
 
 /**
- * Standard formatting of compiled TypeScript declarations.
- */
-const formattingOptions: ts.FormatCodeOptions = {
-  InsertSpaceAfterCommaDelimiter: true,
-  InsertSpaceAfterSemicolonInForStatements: true,
-  InsertSpaceBeforeAndAfterBinaryOperators: true,
-  InsertSpaceAfterKeywordsInControlFlowStatements: true,
-  InsertSpaceAfterFunctionKeywordForAnonymousFunctions: true,
-  InsertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets: false,
-  InsertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis: false,
-  PlaceOpenBraceOnNewLineForFunctions: false,
-  PlaceOpenBraceOnNewLineForControlBlocks: false,
-  IndentSize: 2,
-  TabSize: 4,
-  IndentStyle: ts.IndentStyle.Smart,
-  NewLineCharacter: EOL,
-  ConvertTabsToSpaces: true
-}
-
-/**
  * Options interface. Supply a name and the current working directory.
  */
 export interface Options {
@@ -248,7 +228,7 @@ function stringifyDependencyPath (path: string, options: StringifyOptions): Prom
           return Promise.reject(
             new TypeError(
               `Attempted to compile "${options.name}" as a dependency, but ` +
-              `it contains ambient modules: ${ambientModules.join(', ')}. ` +
+              `it contains ambient modules: ${ambientModules.map(JSON.stringify).join(', ')}. ` +
               `Did you want to specify "--ambient" instead?`
             )
           )
@@ -335,40 +315,6 @@ function getModuleNameParts (moduleName: string): [string, string] {
 }
 
 /**
- * Re-format a TypeScript file.
- */
-function format (text: string): string {
-  const sourceFile = ts.createSourceFile('file.ts', text, ts.ScriptTarget.Latest, true)
-  const ruleProvider = getRuleProvider(formattingOptions)
-  const edits = (<any>ts).formatting.formatDocument(sourceFile, ruleProvider, formattingOptions)
-  return applyEdits(text, edits)
-}
-
-/**
- * Apply a range of edits on a text document.
- */
-function applyEdits (text: string, edits: ts.TextChange[]): string {
-  let result = text
-  let length = edits.length
-  while (length--) {
-    const change = edits[length]
-    const head = result.slice(0, change.span.start)
-    const tail = result.slice(change.span.start + change.span.length)
-    result = head + change.newText + tail
-  }
-  return result
-}
-
-/**
- * Create a rule provider instance.
- */
-function getRuleProvider (options: ts.FormatCodeOptions) {
-  const ruleProvider = new (<any>ts).formatting.RulesProvider()
-  ruleProvider.ensureUpToDate(options)
-  return ruleProvider
-}
-
-/**
  * Stringify a dependency file contents.
  */
 function stringifyFile (path: string, contents: string, options: StringifyOptions & { originalPath: string }) {
@@ -389,7 +335,7 @@ function stringifyFile (path: string, contents: string, options: StringifyOption
       )
     }
 
-    return format(prefix + contents.trim())
+    return `${prefix}${contents.trim()}`
   }
 
   let isES6Export = true
@@ -473,21 +419,21 @@ function stringifyFile (path: string, contents: string, options: StringifyOption
 
   // Direct usage of definition/typings. This is *not* a psuedo-module.
   if (isEntry && options.isTypings) {
-    return format(prefix + declareText(name, moduleText))
+    return prefix + declareText(name, moduleText)
   }
 
   const moduleName = `${name}/${normalizeSlashes(relativeTo(tree.src, fromDefinition(path)))}`
   const declared = declareText(moduleName, moduleText)
 
   if (!isEntry) {
-    return format(prefix + declared)
+    return prefix + declared
   }
 
   const importText = isES6Export ?
     `export * from '${moduleName}';` :
     `import main = require('${moduleName}');${EOL}export = main;`
 
-  return format(prefix + declared + EOL + declareText(name, importText))
+  return prefix + declared + EOL + declareText(name, importText)
 }
 
 /**
