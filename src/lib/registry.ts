@@ -1,13 +1,22 @@
 import invariant = require('invariant')
+import Promise = require('native-or-bluebird')
 import semver = require('semver')
 import arrify = require('arrify')
+import { stringify } from 'querystring'
+import pick = require('object-pick')
 import { readJsonFrom } from '../utils/fs'
 import { normalizeSlashes } from '../utils/path'
+
+/**
+ * The registry base URL.
+ */
+const REGISTRY_URL = 'https://api.typings.org'
 
 /**
  * Valid sources in the registry.
  */
 export const VALID_SOURCES = [
+  'dt',
   'npm',
   'github',
   'bower',
@@ -16,78 +25,61 @@ export const VALID_SOURCES = [
 ]
 
 /**
- * Registry installation options.
+ * Query parameters used for searching.
  */
-export interface ReadOptions {
-  name: string
-  source: string
-  version: string
+export interface SearchOptions {
+  query?: string
+  name?: string
+  source?: string
+  offset?: string
+  limit?: string
 }
 
 /**
- * The registry JSON format.
+ * API search query response.
  */
-export interface RegistryJson {
-  versions: {
-    [version: string]: string | string[]
+export interface SearchResults {
+  total: number
+  results: Array<{ name: string; source: string; homepage: string; description: string; }>
+}
+
+/**
+ * Search the typings registry.
+ */
+export function search (options: SearchOptions): Promise<SearchResults> {
+  if (options.source) {
+    invariantSource(options.source)
   }
+
+  const query = stringify(pick(options, ['query', 'name', 'source', 'offset', 'limit']))
+
+  return readJsonFrom(`${REGISTRY_URL}/search?${query}`)
 }
 
 /**
- * Read a dependency from the registry.
+ * A project version from the registry.
  */
-export function read (options: ReadOptions) {
-  const { source, name } = options
-  const path = `${normalizeSlashes(name)}.json`
-  const url = `https://raw.githubusercontent.com/typings/registry/master/${source}/${path}`
-
-  invariant(
-    VALID_SOURCES.indexOf(source) > -1,
-    `Source should be one of: ${VALID_SOURCES.join(', ')}`
-  )
-
-  return readJsonFrom(url)
-    .then(
-      function (entry: RegistryJson) {
-        return select(entry, options)
-      },
-      function (error: any) {
-        if (error.type === 'EINVALIDSTATUS') {
-          return Promise.reject(new TypeError(
-            `Unable to find "${name}" from "${source}" in the registry. ` +
-            `If you can contribute this typing, please help us out - https://github.com/typings/registry`
-          ))
-        }
-
-        return Promise.reject(error)
-      }
-    )
+export interface ProjectVersion {
+  version: string
+  description: string
+  compiler: string
+  location: string
 }
 
 /**
- * Select a version from the registry entry.
+ * Get matching project versions.
  */
-export function select (entry: RegistryJson, options: ReadOptions) {
-  const { version, name } = options
-  const versions = Object.keys(entry.versions).sort(semver.compare)
+export function getVersions (source: string, name: string, version?: string): Promise<{ versions: ProjectVersion[] }> {
+  invariantSource(source)
+
+  const sourceParam = encodeURIComponent(source)
+  const nameParam = encodeURIComponent(name)
 
   if (version == null) {
-    return arrify(entry.versions[versions.pop()])
+    return readJsonFrom(`${REGISTRY_URL}/versions/${sourceParam}/${nameParam}`)
   }
 
-  let match: string
-
-  for (const value of versions) {
-    if (semver.satisfies(value, version)) {
-      match = value
-    }
-  }
-
-  if (match == null) {
-    throw new TypeError(`Unable to find "${name}@${version}". Available versions: ${versions.join(', ')}`)
-  }
-
-  return arrify(entry.versions[match])
+  return readJsonFrom(`${REGISTRY_URL}/versions/${sourceParam}/${nameParam}/${encodeURIComponent(version)}`)
 }
 
 /**
@@ -104,4 +96,11 @@ export function parseRegistryPath (dep: string) {
   const [name, version] = dep.split('@')
 
   return { name, version }
+}
+
+/**
+ * Invariant source check.
+ */
+function invariantSource (source: string) {
+  invariant(VALID_SOURCES.indexOf(source) > -1, 'Invalid source: %s', source)
 }

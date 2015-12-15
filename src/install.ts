@@ -62,7 +62,7 @@ export function install (options: InstallOptions): Promise<DependencyTree> {
  */
 export function installDependency (dependency: string, options: InstallDependencyOptions): Promise<DependencyTree> {
   if (!options.name) {
-    return Promise.reject(new Error('You must specify a name for the dependency'))
+    return Promise.reject(new TypeError('You must specify a name for the dependency'))
   }
 
   return findProject(options.cwd)

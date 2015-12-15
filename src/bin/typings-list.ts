@@ -18,6 +18,7 @@ const args = minimist<Args>(process.argv.slice(2), {
   alias: {
     verbose: ['v'],
     ambient: ['a'],
+    production: ['p'],
     help: ['h']
   }
 })

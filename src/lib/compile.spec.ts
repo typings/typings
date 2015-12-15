@@ -329,7 +329,7 @@ test('compile', t => {
 
     return compile(main, { name: 'main', cwd: __dirname, ambient: false, meta: false })
       .catch(function (error) {
-        t.ok(/^Unable to resolve entry \.d\.ts file for "main"/.test(error.message))
+        t.ok(/^Unable to resolve entry "\.d\.ts" file for "main"/.test(error.message))
       })
   })
 
@@ -366,7 +366,7 @@ test('compile', t => {
 
     return compile(main, { name: 'main', cwd: __dirname, ambient: false, meta: false })
       .catch(function (error) {
-        t.ok(/^Unable to read typings in "main~test"/.test(error.message))
+        t.ok(/^Unable to read typings for "main~test"/.test(error.message))
       })
   })
 

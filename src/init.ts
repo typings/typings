@@ -86,7 +86,7 @@ export function init (options: Options) {
   return isFile(path)
     .then<ConfigJson>(exists => {
       if (exists) {
-        return Promise.reject(new Error(`A ${CONFIG_FILE} file already exists`))
+        return Promise.reject(new TypeError(`A ${CONFIG_FILE} file already exists`))
       }
 
       if (options.upgrade) {
