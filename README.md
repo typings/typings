@@ -111,6 +111,16 @@ typings ls [--ambient]
 
 Print the `typings` dependency tree. (This command resolves on demand and is not cached)
 
+### Search
+
+```sh
+typings search [query]
+
+Options: [--name] [--source] [--offset] [--limit]
+```
+
+Search the registry for available typings.
+
 ### Bundle
 
 ```sh

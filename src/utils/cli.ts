@@ -33,7 +33,7 @@ export function loader <T> (promise: T | Promise<T>, options?: ExecutionOptions)
 
   return promiseFinally(Promise.resolve(promise), end)
     .catch((error: Error) => {
-      console.log(chalk.red(`${error.name}: ${error.message}`))
+      console.log(chalk.red(error.toString()))
 
       if (options.verbose && 'stack' in error) {
         console.log((error as any).stack)
@@ -46,12 +46,18 @@ export function loader <T> (promise: T | Promise<T>, options?: ExecutionOptions)
     })
 }
 
+/**
+ * Run a CLI query using inquirer.
+ */
 export function inquire (questions: inquirer.Questions) {
   return new Promise(resolve => {
     inquirer.prompt(questions, resolve)
   })
 }
 
+/**
+ * Options for archifying the dependency tree.
+ */
 export interface ArchifyOptions {
   name?: string
   dev?: boolean

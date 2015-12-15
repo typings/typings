@@ -5,7 +5,7 @@ import extend = require('xtend')
 import { install, installDependency } from '../typings'
 import { loader, inquire } from '../utils/cli'
 import { PROJECT_NAME } from '../utils/config'
-import { VALID_SOURCES, read, isRegistryPath, parseRegistryPath } from '../lib/registry'
+import { VALID_SOURCES, isRegistryPath, parseRegistryPath, search, getVersions } from '../lib/registry'
 import { archifyDependencyTree } from '../utils/cli'
 
 interface Args {
@@ -29,7 +29,8 @@ const args = minimist<Args>(process.argv.slice(2), {
     ambient: ['A'],
     verbose: ['v'],
     help: ['h'],
-    source: ['s']
+    source: ['s'],
+    production: ['p']
   }
 })
 
@@ -43,7 +44,7 @@ ${PROJECT_NAME} install bitbucket:<bitbucket username>/<bitbucket project>[/<pat
 ${PROJECT_NAME} install <http:// url>
 
 Aliases: i, in
-Options: [--save|--save-dev] [--ambient] [--production]
+Options: [--name] [--save|--save-dev] [--ambient] [--production]
 `)
 
   process.exit(0)
@@ -63,7 +64,6 @@ function installer (args: Args & minimist.ParsedArgs) {
   }
 
   const dependency = args._[0]
-  const source = args.source || 'npm'
 
   if (!isRegistryPath(dependency)) {
     return loader(installDependency(dependency, options), args)
@@ -74,28 +74,74 @@ function installer (args: Args & minimist.ParsedArgs) {
 
   const { name, version } = parseRegistryPath(dependency)
 
-  return loader(read({ name, version, source }), args)
-    .then(function (locations) {
-      if (locations.length === 1) {
-        return locations[0]
+  // Install a dependency from a specific source.
+  function installFrom (source: string) {
+    const installationName = args.name || name
+
+    return getVersions(source, name, version)
+      .then(function (project) {
+        const { versions } = project
+
+        if (versions.length === 1) {
+          return versions[0]
+        }
+
+        return inquire([{
+          name: 'version',
+          type: 'list',
+          message: 'Select a version',
+          choices: versions.map((x, i) => ({ name: x.version, value: String(i) }))
+        }])
+          .then((answers: any) => versions[answers.version])
+      })
+      .then(function (version) {
+        const installation = installDependency(version.location, extend(options, { name: installationName }))
+
+        console.log(`Installing ${name}@${version.version} from ${source}...`)
+
+        return loader(installation, args)
+      })
+      .then(function (tree) {
+        console.log(archifyDependencyTree(tree, { name: installationName }))
+      })
+  }
+
+  // User provided a source.
+  if (args.source) {
+    return installFrom(args.source)
+  }
+
+  // Search all sources for the project name.
+  return loader(search({ name }), args)
+    .then(function (result) {
+      const { results } = result
+
+      if (results.length === 0) {
+        return Promise.reject(new Error(`Unable to find "${name}" in the registry`))
       }
 
-      // Ask the user what they want to install.
-      return inquire([{
-        name: 'location',
-        type: 'list',
-        message: 'Select the type definition to install',
-        choices: locations
-      }])
-        .then((answers: any) => answers.location)
-    })
-    .then(function (location) {
-      const installation = installDependency(location, extend({ name }, options))
+      if (results.length === 1) {
+        const item = results[0]
 
-      return loader(installation, args)
-    })
-    .then(function (tree) {
-      console.log(archifyDependencyTree(tree, { name }))
+        return inquire([{
+          type: 'confirm',
+          name: 'ok',
+          message: `Found "${name}" in the registry from "${item.source}". Ok?`
+        }])
+          .then(function (answers: any) {
+            if (answers.ok) {
+              return installFrom(item.source)
+            }
+          })
+      }
+
+      return inquire([{
+        type: 'list',
+        name: 'source',
+        message: `Found "${name}" in the registry from multiple sources`,
+        choices: results.map(x => x.source)
+      }])
+        .then((answers: any) => installFrom(answers.source))
     })
 }
 

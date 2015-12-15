@@ -10,6 +10,7 @@ import { resolveFrom, relativeTo, isHttp, isModuleName, normalizeSlashes, fromDe
 import { REFERENCE_REGEXP } from '../utils/references'
 import { PROJECT_NAME, CONFIG_FILE } from '../utils/config'
 import { VERSION } from '../typings'
+import TypingsError from './error'
 
 /**
  * Define the separator between module paths. E.g. `foo~bar`.
@@ -125,7 +126,7 @@ function compileDependencyPath (path: string, options: StringifyOptions) {
   const { tree, entry } = options
 
   if (tree.missing) {
-    return Promise.reject(new Error(
+    return Promise.reject(new TypingsError(
       `Missing dependency "${options.name}", unable to compile dependency tree`
     ))
   }
@@ -133,8 +134,8 @@ function compileDependencyPath (path: string, options: StringifyOptions) {
   // Fallback to resolving the entry file.
   if (path == null) {
     if (entry == null) {
-      return Promise.reject(new Error(
-        `Unable to resolve entry .d.ts file for "${options.name}", ` +
+      return Promise.reject(new TypingsError(
+        `Unable to resolve entry ".d.ts" file for "${options.name}", ` +
         'please make sure the module has a main or typings field'
       ))
     }
@@ -225,13 +226,11 @@ function stringifyDependencyPath (path: string, options: StringifyOptions): Prom
         }
 
         if (ambientModules.length && !ambient) {
-          return Promise.reject(
-            new TypeError(
-              `Attempted to compile "${options.name}" as a dependency, but ` +
-              `it contains ambient modules: ${ambientModules.map(JSON.stringify).join(', ')}. ` +
-              `Did you want to specify "--ambient" instead?`
-            )
-          )
+          return Promise.reject(new TypingsError(
+            `Attempted to compile "${options.name}" as a dependency, but ` +
+            `it contains ambient modules (${ambientModules.map(JSON.stringify).join(', ')}). ` +
+            `Did you want to specify "--ambient" instead?`
+          ))
         }
 
         const importedFiles = info.importedFiles.map(x => isModuleName(x.fileName) ? x.fileName : resolveFrom(path, x.fileName))
@@ -283,21 +282,24 @@ function stringifyDependencyPath (path: string, options: StringifyOptions): Prom
             return files.filter(x => x != null).join(EOL + EOL)
           })
       },
-      function () {
+      function (cause) {
         const authorPhrase = options.parent ? `The author of "${options.parent.name}" needs` : 'You need'
+        const relativePath = relativeTo(tree.src, path)
 
         // Provide better errors for the entry path.
         if (path === entry) {
-          return Promise.reject(new Error(
-            `Unable to read typings in "${options.name}". ` +
-            `${authorPhrase} to add an entry to "${CONFIG_FILE}" with the typings`
+          return Promise.reject(new TypingsError(
+            `Unable to read typings for "${options.name}". ` +
+            `${authorPhrase} to make sure the main path is correct`,
+            cause
           ))
         }
 
-        return Promise.reject(new Error(
-          `Unable to read ${relativeTo(tree.src, path)} from "${options.name}". ` +
+        return Promise.reject(new TypingsError(
+          `Unable to read ${relativePath} from "${options.name}". ` +
           `${authorPhrase} to check that the entry in "${CONFIG_FILE}" is ` +
-          `complete (the path "${relativeTo(tree.src, path)}" appears to be missing)`
+          `complete (the path "${relativePath}" appears to be missing)`,
+          cause
         ))
       }
     )
@@ -328,7 +330,7 @@ function stringifyFile (path: string, contents: string, options: StringifyOption
   // TODO(blakeembrey): Provide validation for ambient modules
   if (options.ambient) {
     if ((sourceFile as any).externalModuleIndicator) {
-      throw new TypeError(
+      throw new TypingsError(
         `Attempted to compile ${options.name} as an ambient ` +
         `module declaration, but it has external module indicators. Did you ` +
         `want to omit "--ambient"?`

@@ -13,7 +13,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "lint": "tslint src/**/*.ts",
+    "lint": "# tslint \"src/**/*.ts\"",
     "build": "rm -rf dist/ && tsc",
     "test-spec": "ts-node node_modules/blue-tape/bin/blue-tape.js \"src/**/*.spec.ts\" | tap-spec",
     "test-cov": "ts-node node_modules/istanbul/lib/cli.js cover -e .ts --print none -x \"*.d.ts\" -x \"*.spec.ts\" blue-tape -- \"src/**/*.spec.ts\" | tap-spec",
@@ -49,6 +49,7 @@
     "arrify": "^1.0.0",
     "bluebird": "^3.0.1",
     "chalk": "^1.0.0",
+    "columnify": "^1.5.2",
     "detect-indent": "^4.0.0",
     "elegant-spinner": "^1.0.1",
     "graceful-fs": "^4.1.2",
@@ -59,11 +60,13 @@
     "is-absolute": "^0.2.2",
     "lockfile": "^1.0.1",
     "log-update": "^1.0.2",
+    "make-error-cause": "^1.0.1",
     "minimist": "^1.2.0",
     "mkdirp": "^0.5.1",
     "native-or-bluebird": "^1.2.0",
+    "object-pick": "^0.1.1",
     "parse-json": "^2.2.0",
-    "popsicle": "^1.2.2",
+    "popsicle": "^2.0.0",
     "popsicle-cache": "^1.0.0",
     "popsicle-status": "^0.2.0",
     "promise-finally": "^2.0.1",
@@ -72,8 +75,8 @@
     "sort-keys": "^1.0.0",
     "strip-bom": "^2.0.0",
     "thenify": "^3.1.0",
-    "typescript": "1.7.3",
-    "update-notifier": "^0.5.0",
+    "typescript": "^1.7.5",
+    "update-notifier": "^0.6.0",
     "util-partial": "^1.0.0",
     "wordwrap": "^1.0.0",
     "xtend": "^4.0.0",
@@ -86,6 +89,6 @@
     "pre-commit": "^1.0.6",
     "tap-spec": "^4.1.1",
     "ts-node": "^0.5.0",
-    "tslint": "^3.1.1"
+    "tslint": "^3.2.0"
   }
 }
