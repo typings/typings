@@ -90,7 +90,14 @@ function installer (args: Args & minimist.ParsedArgs) {
           name: 'version',
           type: 'list',
           message: 'Select a version',
-          choices: versions.map((x, i) => ({ name: x.version, value: String(i) }))
+          choices: versions.map((x, i) => {
+            const { version, compiler } = x
+
+            return {
+              name: version + (compiler ? ` (TypeScript >= ${compiler})` : ''),
+              value: String(i)
+            }
+          })
         }])
           .then((answers: any) => versions[answers.version])
       })
