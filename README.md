@@ -55,7 +55,7 @@ typings install bitbucket:<bitbucket username>/<bitbucket project>[/<path>][#<co
 typings install <http:// url>
 ```
 
-Install a dependency into the `typings` directory, and optionally write it into `typings.json`.
+Write a dependency to the `typings/` directory, and optionally persist it in `typings.json`.
 
 #### Flags
 

@@ -37,7 +37,7 @@ const args = minimist<Args>(process.argv.slice(2), {
 if (args.help) {
   console.log(`
 ${PROJECT_NAME} install (with no arguments, in package directory)
-${PROJECT_NAME} install <pkg>[@<version>] --source [${VALID_SOURCES.join(' | ')}]
+${PROJECT_NAME} install <pkg>[@<version>] [ --source [${VALID_SOURCES.join(' | ')}] ]
 ${PROJECT_NAME} install file:<path>
 ${PROJECT_NAME} install github:<github username>/<github project>[/<path>][#<commit>]
 ${PROJECT_NAME} install bitbucket:<bitbucket username>/<bitbucket project>[/<path>][#<commit>]
