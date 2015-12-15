@@ -28,6 +28,7 @@ export function loader <T> (promise: T | Promise<T>, options?: ExecutionOptions)
     end = () => {
       clearInterval(interval)
       logUpdate.stderr.clear()
+      logUpdate.stderr.done()
     }
   }
 
