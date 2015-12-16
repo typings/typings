@@ -4,8 +4,8 @@ import { search as searchRegistry, SearchResults } from './lib/registry'
 export interface Options {
   name?: string
   source?: string
-  offset?: number
-  limit?: number
+  offset?: number | string
+  limit?: number | string
 }
 
 /**

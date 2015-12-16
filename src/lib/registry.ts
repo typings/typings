@@ -15,14 +15,14 @@ const REGISTRY_URL = 'https://api.typings.org'
 /**
  * Valid sources in the registry.
  */
-export const VALID_SOURCES = [
-  'dt',
-  'npm',
-  'github',
-  'bower',
-  'ambient',
-  'common'
-]
+export const VALID_SOURCES: { [source: string]: string } = {
+  dt: 'DefinitelyTyped',
+  npm: 'NPM',
+  github: 'GitHub',
+  bower: 'Bower',
+  ambient: 'Ambient',
+  common: 'Common'
+}
 
 /**
  * Query parameters used for searching.
@@ -102,5 +102,5 @@ export function parseRegistryPath (dep: string) {
  * Invariant source check.
  */
 function invariantSource (source: string) {
-  invariant(VALID_SOURCES.indexOf(source) > -1, 'Invalid source: %s', source)
+  invariant(VALID_SOURCES.hasOwnProperty(source), 'Invalid source: %s', source)
 }

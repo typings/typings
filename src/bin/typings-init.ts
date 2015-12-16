@@ -31,6 +31,7 @@ Options: [--upgrade]
   process.exit(0)
 }
 
+const { verbose } = args
 const options = extend(args, { cwd: process.cwd() })
 
-loader(init(options), options)
+loader(init(options), { verbose })

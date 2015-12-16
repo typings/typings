@@ -17,7 +17,7 @@ export interface PrintOptions {
 /**
  * Wrap async execution with a spinner.
  */
-export function loader <T> (promise: T | Promise<T>, options?: PrintOptions): Promise<T> {
+export function loader <T> (promise: T | Promise<T>, options: PrintOptions): Promise<T> {
   let end: () => void = () => undefined
 
   if ((process.stdout as any).isTTY) {
@@ -63,8 +63,6 @@ export function inquire (questions: inquirer.Questions) {
  */
 export interface ArchifyOptions {
   name?: string
-  dev?: boolean
-  ambient?: boolean
 }
 
 /**
@@ -89,40 +87,34 @@ export function archifyDependencyTree (tree: DependencyTree, options: ArchifyOpt
       ))
     }
 
-    if (options.dev) {
-      for (const name of Object.keys(tree.devDependencies)) {
-        nodes.push(traverse(
-          {
-            label: `${name} ${chalk.gray('(dev)')}`,
-            nodes: []
-          },
-          tree.devDependencies[name]
-        ))
-      }
+    for (const name of Object.keys(tree.devDependencies)) {
+      nodes.push(traverse(
+        {
+          label: `${name} ${chalk.gray('(dev)')}`,
+          nodes: []
+        },
+        tree.devDependencies[name]
+      ))
     }
 
-    if (options.ambient) {
-      for (const name of Object.keys(tree.ambientDependencies)) {
-        nodes.push(traverse(
-          {
-            label: `${name} ${chalk.gray('(ambient)')}`,
-            nodes: []
-          },
-          tree.ambientDependencies[name]
-        ))
-      }
+    for (const name of Object.keys(tree.ambientDependencies)) {
+      nodes.push(traverse(
+        {
+          label: `${name} ${chalk.gray('(ambient)')}`,
+          nodes: []
+        },
+        tree.ambientDependencies[name]
+      ))
     }
 
-    if (options.dev && options.ambient) {
-      for (const name of Object.keys(tree.ambientDevDependencies)) {
-        nodes.push(traverse(
-          {
-            label: `${name} ${chalk.gray('(ambient dev)')}`,
-            nodes: []
-          },
-          tree.ambientDevDependencies[name]
-        ))
-      }
+    for (const name of Object.keys(tree.ambientDevDependencies)) {
+      nodes.push(traverse(
+        {
+          label: `${name} ${chalk.gray('(ambient dev)')}`,
+          nodes: []
+        },
+        tree.ambientDevDependencies[name]
+      ))
     }
 
     return result

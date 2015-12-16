@@ -38,7 +38,7 @@ const args = minimist<Args>(process.argv.slice(2), {
 if (args.help) {
   console.log(`
 ${PROJECT_NAME} install (with no arguments, in package directory)
-${PROJECT_NAME} install <pkg>[@<version>] [ --source [${VALID_SOURCES.join(' | ')}] ]
+${PROJECT_NAME} install <pkg>[@<version>] [ --source [${Object.keys(VALID_SOURCES).join(' | ')}] ]
 ${PROJECT_NAME} install file:<path>
 ${PROJECT_NAME} install github:<github username>/<github project>[/<path>][#<commit>]
 ${PROJECT_NAME} install bitbucket:<bitbucket username>/<bitbucket project>[/<path>][#<commit>]
@@ -55,12 +55,14 @@ Options: [--name] [--save|--save-dev] [--ambient] [--production]
  * Install using CLI arguments.
  */
 function installer (args: Args & minimist.ParsedArgs) {
-  const options = extend(args, { cwd: process.cwd() })
+  const cwd = process.cwd()
+  const { verbose, save, saveDev, name, ambient, source, production } = args
+  const options = { save, saveDev, name, ambient, cwd, production }
 
   if (!args._.length) {
     return loader(install(options), args)
       .then(function (tree) {
-        console.log(archifyDependencyTree(tree, { ambient: true, dev: true }))
+        console.log(archifyDependencyTree(tree))
       })
   }
 
@@ -69,17 +71,18 @@ function installer (args: Args & minimist.ParsedArgs) {
   if (!isRegistryPath(dependency)) {
     return loader(installDependency(dependency, options), args)
       .then(function (tree) {
-        console.log(archifyDependencyTree(tree, { name: options.name }))
+        console.log(archifyDependencyTree(tree, { name }))
       })
   }
 
-  const { name, version } = parseRegistryPath(dependency)
+  const { name: dependencyName, version } = parseRegistryPath(dependency)
 
   // Install a dependency from a specific source.
   function installFrom (source: string) {
-    const installationName = args.name || name
+    const saveName = name || dependencyName
+    const sourceName = VALID_SOURCES[source]
 
-    return getVersions(source, name, version)
+    return getVersions(source, dependencyName, version)
       .then(function (project) {
         const { versions } = project
 
@@ -103,14 +106,20 @@ function installer (args: Args & minimist.ParsedArgs) {
           .then((answers: any) => versions[answers.version])
       })
       .then(function (version) {
-        const installation = installDependency(version.location, extend(options, { name: installationName }))
+        const installOptions = extend(options, { name: saveName })
+        const installation = installDependency(version.location, installOptions)
 
-        console.log(`Installing ${name}@${version.version} from ${source}...`)
+        console.log(`Installing ${dependencyName}@${version.version} for ${sourceName}...`)
+
+        // Log extra info when the installation name is different to the registry.
+        if (name != null && name !== saveName) {
+          console.log(`Writing as "${saveName}"...`)
+        }
 
         return loader(installation, args)
       })
       .then(function (tree) {
-        console.log(archifyDependencyTree(tree, { name: installationName }))
+        console.log(archifyDependencyTree(tree, { name: saveName }))
       })
   }
 
@@ -120,24 +129,25 @@ function installer (args: Args & minimist.ParsedArgs) {
   }
 
   // Search all sources for the project name.
-  return loader(search({ name }), args)
+  return loader(search({ name: dependencyName }), { verbose })
     .then(function (result) {
       const { results } = result
 
       if (results.length === 0) {
         return Promise.reject(new TypingsError(
-          `Unable to find "${name}" in the registry. If you can contribute ` +
+          `Unable to find "${dependencyName}" in the registry. If you can contribute ` +
           `this typing, please help us out: https://github.com/typings/registry`
         ))
       }
 
       if (results.length === 1) {
         const item = results[0]
+        const source = VALID_SOURCES[item.source]
 
         return inquire([{
           type: 'confirm',
           name: 'ok',
-          message: `Found typings for "${name}" in "${item.source}". Ok?`
+          message: `Found typings for ${dependencyName} from ${source}. Ok?`
         }])
           .then(function (answers: any) {
             if (answers.ok) {
@@ -149,12 +159,18 @@ function installer (args: Args & minimist.ParsedArgs) {
       return inquire([{
         type: 'list',
         name: 'source',
-        message: `Found typings for "${name}" in multiple registries`,
-        choices: results.map(x => x.source)
+        message: `Found typings for ${name} in multiple registries`,
+        choices: results.map(result => {
+          return {
+            name: VALID_SOURCES[result.source],
+            value: result.source
+          }
+        })
       }])
         .then((answers: any) => installFrom(answers.source))
     })
-    .catch(err => handleError(err, options))
+    .catch(err => handleError(err, { verbose }))
 }
 
+// Execute the installer, which has many different code flows.
 installer(args)

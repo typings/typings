@@ -36,8 +36,9 @@ Aliases: r, rm, remove, un
   process.exit(0)
 }
 
-const options = extend(args, { cwd: process.cwd() })
+const cwd = process.cwd()
+const { save, saveDev, ambient, verbose } = args
 
 if (args._.length) {
-  loader(uninstallDependency(args._[0], options), options)
+  loader(uninstallDependency(args._[0], { cwd, save, saveDev, ambient }), { verbose })
 }

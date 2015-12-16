@@ -38,7 +38,9 @@ Options: [--name] [--source] [--offset] [--limit]
   process.exit(0)
 }
 
-loader(search(args._[0], args))
+const { verbose, name, source, limit, offset } = args
+
+loader(search(args._[0], { name, source, limit, offset }), { verbose })
   .then(function (result) {
     const { results, total } = result
 

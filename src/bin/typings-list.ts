@@ -34,9 +34,10 @@ Aliases: la, ll, list
 }
 
 const cwd = process.cwd()
-const options = extend(args, { cwd })
+const { verbose } = args
+const dev = !args.production
 
-loader(resolveTypeDependencies({ cwd, ambient: true, dev: !args.production }), options)
+loader(resolveTypeDependencies({ cwd, ambient: true, dev }), { verbose })
   .then(function (tree) {
-    console.log(archifyDependencyTree(tree, { ambient: true, dev: true }))
+    console.log(archifyDependencyTree(tree))
   })

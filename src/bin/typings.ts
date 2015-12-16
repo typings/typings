@@ -54,9 +54,7 @@ updateNotifier({ pkg }).notify()
 // Prompt for insight tracking on the first execution.
 if (insight.optOut == null) {
   insight.track('downloaded')
-  insight.askPermission(null, function () {
-    return handle(args)
-  })
+  insight.askPermission(null, () => handle(args))
 } else {
   handle(args)
 }

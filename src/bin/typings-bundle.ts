@@ -41,15 +41,16 @@ Options: [--browser] [--out] [--source]
 }
 
 const cwd = process.cwd()
+const { verbose } = args
 const options = extend({ source: cwd }, args)
 
-loader(bundle(options), options)
+loader(bundle(options), { verbose })
   .then(function (data) {
     const file = options.browser ? data.browser : data.main
 
     if (options.out) {
       return loader(writeFile(resolve(cwd, options.out), file), options)
-    } else {
-      process.stdout.write(file)
     }
+
+    process.stdout.write(file)
   })
