@@ -113,7 +113,7 @@ function installer (args: Args & minimist.ParsedArgs) {
 
         // Log extra info when the installation name is different to the registry.
         if (name != null && name !== saveName) {
-          console.log(`Writing as "${saveName}"...`)
+          console.log(`Writing dependency as "${saveName}"...`)
         }
 
         return loader(installation, args)
@@ -147,7 +147,7 @@ function installer (args: Args & minimist.ParsedArgs) {
         return inquire([{
           type: 'confirm',
           name: 'ok',
-          message: `Found typings for ${dependencyName} from ${source}. Ok?`
+          message: `Found typings for ${dependencyName} in ${source}. Ok?`
         }])
           .then(function (answers: any) {
             if (answers.ok) {
@@ -159,7 +159,7 @@ function installer (args: Args & minimist.ParsedArgs) {
       return inquire([{
         type: 'list',
         name: 'source',
-        message: `Found typings for ${name} in multiple registries`,
+        message: `Found typings for ${dependencyName} in multiple registries`,
         choices: results.map(result => {
           return {
             name: VALID_SOURCES[result.source],
