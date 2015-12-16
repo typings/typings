@@ -10,14 +10,14 @@ import { DependencyTree } from '../interfaces/main'
 /**
  * Options for the execution.
  */
-export interface ExecutionOptions {
+export interface PrintOptions {
   verbose: boolean
 }
 
 /**
  * Wrap async execution with a spinner.
  */
-export function loader <T> (promise: T | Promise<T>, options?: ExecutionOptions): Promise<T> {
+export function loader <T> (promise: T | Promise<T>, options?: PrintOptions): Promise<T> {
   let end: () => void = () => undefined
 
   if ((process.stdout as any).isTTY) {
@@ -33,18 +33,20 @@ export function loader <T> (promise: T | Promise<T>, options?: ExecutionOptions)
   }
 
   return promiseFinally(Promise.resolve(promise), end)
-    .catch((error: Error) => {
-      console.log(chalk.red(error.toString()))
+    .catch(err => handleError(err, options))
+}
 
-      if (options.verbose && 'stack' in error) {
-        console.log((error as any).stack)
-      }
+/**
+ * Final error handling for the CLI.
+ */
+export function handleError (error: Error, options: PrintOptions): any {
+  console.log(chalk.red(error.toString()))
 
-      process.exit(1)
+  if (options.verbose && 'stack' in error) {
+    console.log((error as any).stack)
+  }
 
-      // TODO(blakeembrey): Fix type inference, we'll never reach here.
-      return Promise.reject(error)
-    })
+  process.exit(1)
 }
 
 /**

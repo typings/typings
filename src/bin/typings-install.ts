@@ -6,7 +6,8 @@ import { install, installDependency } from '../typings'
 import { loader, inquire } from '../utils/cli'
 import { PROJECT_NAME } from '../utils/config'
 import { VALID_SOURCES, isRegistryPath, parseRegistryPath, search, getVersions } from '../lib/registry'
-import { archifyDependencyTree } from '../utils/cli'
+import { archifyDependencyTree, handleError } from '../utils/cli'
+import TypingsError from '../lib/error'
 
 interface Args {
   save: boolean
@@ -124,7 +125,10 @@ function installer (args: Args & minimist.ParsedArgs) {
       const { results } = result
 
       if (results.length === 0) {
-        return Promise.reject(new Error(`Unable to find "${name}" in the registry`))
+        return Promise.reject(new TypingsError(
+          `Unable to find "${name}" in the registry. If you can contribute ` +
+          `this typing, please help us out: https://github.com/typings/registry`
+        ))
       }
 
       if (results.length === 1) {
@@ -133,7 +137,7 @@ function installer (args: Args & minimist.ParsedArgs) {
         return inquire([{
           type: 'confirm',
           name: 'ok',
-          message: `Found "${name}" in the registry from "${item.source}". Ok?`
+          message: `Found typings for "${name}" in "${item.source}". Ok?`
         }])
           .then(function (answers: any) {
             if (answers.ok) {
@@ -145,11 +149,12 @@ function installer (args: Args & minimist.ParsedArgs) {
       return inquire([{
         type: 'list',
         name: 'source',
-        message: `Found "${name}" in the registry from multiple sources`,
+        message: `Found typings for "${name}" in multiple registries`,
         choices: results.map(x => x.source)
       }])
         .then((answers: any) => installFrom(answers.source))
     })
+    .catch(err => handleError(err, options))
 }
 
 installer(args)
