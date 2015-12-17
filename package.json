@@ -70,6 +70,8 @@
     "popsicle-cache": "^1.0.0",
     "popsicle-status": "^0.2.0",
     "promise-finally": "^2.0.1",
+    "proxy-agent": "^2.0.0",
+    "rc": "^1.1.5",
     "rimraf": "^2.4.4",
     "semver": "^5.0.1",
     "sort-keys": "^1.0.0",

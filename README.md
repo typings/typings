@@ -149,6 +149,12 @@ Bundle the current projects typings into an ambient module.
   * Anyone can write and install a missing type definition without friction
   * The author of a type definition can maintain their type definition in isolation from other typings
 
+### Configuration
+
+Supports configuration using [`rc`](https://github.com/dominictarr/rc). The configuration can come from CLI arguments, environment variables prefixed with `typings_` or `.typingsrc`.
+
+* **proxy** A HTTP(s) proxy URI for outgoing requests
+
 ### `main.d.ts` and `browser.d.ts`?
 
 To simplify integration with TypeScript, two files - `typings/main.d.ts` and `typings/browser.d.ts` - are generated which reference all typings installed in the current project. To use this, you can add the reference to `tsconfig.json` files:
