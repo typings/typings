@@ -44,10 +44,15 @@ loader(search(args._[0], { name, source, limit, offset }), { verbose })
   .then(function (result) {
     const { results, total } = result
 
+    if (total === 0) {
+      console.log('No results found')
+      return
+    }
+
     if (results.length === total) {
-      console.log(`Showing ${total} matches...`)
+      console.log(`Showing ${total} results...`)
     } else {
-      console.log(`Showing ${results.length} of ${total} matches...`)
+      console.log(`Showing ${results.length} of ${total} results...`)
     }
 
     console.log()
