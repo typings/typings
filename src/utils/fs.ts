@@ -12,12 +12,14 @@ import uniq = require('array-uniq')
 import Promise = require('native-or-bluebird')
 import lockfile = require('lockfile')
 import rmrf = require('rimraf')
+import ProxyAgent = require('proxy-agent')
 import promiseFinally from 'promise-finally'
 import { join, dirname } from 'path'
 import { CONFIG_FILE, TYPINGS_DIR, DTS_MAIN_FILE, DTS_BROWSER_FILE, CACHE_DIR } from './config'
 import { isHttp, toDefinition } from './path'
 import { parseReferences, stringifyReferences } from './references'
 import { ConfigJson } from '../interfaces/main'
+import rc from './rc'
 
 // Create a file cache for popsicle.
 const requestFileCache = popsicleCache({
@@ -86,8 +88,13 @@ export function parseConfig (config: ConfigJson, path: string): ConfigJson {
  * Read a file over HTTP, using a file cache and status check.
  */
 export function readHttp (url: string): Promise<string> {
+  const agent = rc.proxy ? new ProxyAgent(rc.proxy) : null
+
   return popsicle.get({
     url,
+    options: {
+      agent
+    },
     use: [
       popsicle.plugins.headers,
       popsicle.plugins.unzip,
