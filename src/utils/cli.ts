@@ -77,7 +77,7 @@ export function archifyDependencyTree (tree: DependencyTree, options: ArchifyOpt
   function traverse (result: archy.Tree, tree: DependencyTree) {
     const { nodes } = result
 
-    for (const name of Object.keys(tree.dependencies)) {
+    for (const name of Object.keys(tree.dependencies).sort()) {
       nodes.push(traverse(
         {
           label: name,
@@ -87,7 +87,7 @@ export function archifyDependencyTree (tree: DependencyTree, options: ArchifyOpt
       ))
     }
 
-    for (const name of Object.keys(tree.devDependencies)) {
+    for (const name of Object.keys(tree.devDependencies).sort()) {
       nodes.push(traverse(
         {
           label: `${name} ${chalk.gray('(dev)')}`,
@@ -97,7 +97,7 @@ export function archifyDependencyTree (tree: DependencyTree, options: ArchifyOpt
       ))
     }
 
-    for (const name of Object.keys(tree.ambientDependencies)) {
+    for (const name of Object.keys(tree.ambientDependencies).sort()) {
       nodes.push(traverse(
         {
           label: `${name} ${chalk.gray('(ambient)')}`,
@@ -107,7 +107,7 @@ export function archifyDependencyTree (tree: DependencyTree, options: ArchifyOpt
       ))
     }
 
-    for (const name of Object.keys(tree.ambientDevDependencies)) {
+    for (const name of Object.keys(tree.ambientDevDependencies).sort()) {
       nodes.push(traverse(
         {
           label: `${name} ${chalk.gray('(ambient dev)')}`,
