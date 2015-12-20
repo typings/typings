@@ -14,6 +14,7 @@ import lockfile = require('lockfile')
 import rmrf = require('rimraf')
 import ProxyAgent = require('proxy-agent')
 import promiseFinally from 'promise-finally'
+import tch = require('touch')
 import { join, dirname } from 'path'
 import { CONFIG_FILE, TYPINGS_DIR, DTS_MAIN_FILE, DTS_BROWSER_FILE, CACHE_DIR } from './config'
 import { isHttp, toDefinition } from './path'
@@ -33,6 +34,7 @@ const ambientBrowserTypingsDir = join(TYPINGS_DIR, 'browser/ambient')
 
 export type Stats = fs.Stats
 
+export const touch = thenify(tch)
 export const stat = thenify(fs.stat)
 export const readFile = thenify<string, string, string>(fs.readFile)
 export const writeFile = thenify<string, string | Buffer, void>(fs.writeFile)
@@ -257,15 +259,25 @@ export function removeDependency (options: DefinitionOptions) {
 }
 
 /**
- * Return the dependency output locations based on definition options.
+ * Get definition installation paths.
  */
-function getDependencyLocation (options: DefinitionOptions) {
-  const mainDir = options.ambient ? ambientMainTypingsDir : mainTypingsDir
-  const browserDir = options.ambient ? ambientBrowserTypingsDir : browserTypingsDir
-
+export function getTypingsLocation (options: { cwd: string }) {
   const typingsDir = join(options.cwd, TYPINGS_DIR)
   const mainDtsFile = join(typingsDir, DTS_MAIN_FILE)
   const browserDtsFile = join(typingsDir, DTS_BROWSER_FILE)
+
+  return { typingsDir, mainDtsFile, browserDtsFile }
+}
+
+/**
+ * Return the dependency output locations based on definition options.
+ */
+export function getDependencyLocation (options: DefinitionOptions) {
+  const mainDir = options.ambient ? ambientMainTypingsDir : mainTypingsDir
+  const browserDir = options.ambient ? ambientBrowserTypingsDir : browserTypingsDir
+
+  const { typingsDir, mainDtsFile, browserDtsFile } = getTypingsLocation(options)
+
   const mainPath = join(options.cwd, mainDir, options.name)
   const browserPath = join(options.cwd, browserDir, options.name)
   const mainFile = join(mainPath, toDefinition(options.name))

@@ -4,7 +4,7 @@ import { dirname } from 'path'
 import { resolveDependency, resolveTypeDependencies } from './lib/dependencies'
 import compile, { Options as CompileOptions } from './lib/compile'
 import { findProject } from './utils/find'
-import { writeDependency, transformConfig } from './utils/fs'
+import { writeDependency, transformConfig, mkdirp, getTypingsLocation, touch } from './utils/fs'
 import { parseDependency } from './utils/parse'
 import { DependencyTree, Dependency, DependencyBranch } from './interfaces/main'
 
@@ -47,6 +47,20 @@ export function install (options: InstallOptions): Promise<DependencyTree> {
       addToQueue(tree.devDependencies, false)
       addToQueue(tree.ambientDependencies, true)
       addToQueue(tree.ambientDevDependencies, true)
+
+      // Create the `.d.ts` files, even when nothing gets installed.
+      if (queue.length === 0) {
+        const { typingsDir, mainDtsFile, browserDtsFile } = getTypingsLocation({ cwd })
+
+        return mkdirp(typingsDir)
+          .then(() => {
+            return Promise.all([
+              touch(mainDtsFile, {}),
+              touch(browserDtsFile, {})
+            ])
+          })
+          .then(() => tree)
+      }
 
       // Install each dependency after each other.
       function chain (result: Promise<DependencyTree>, [name, tree, ambient]) {
