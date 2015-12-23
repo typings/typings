@@ -15,6 +15,7 @@ import rmrf = require('rimraf')
 import ProxyAgent = require('proxy-agent')
 import promiseFinally from 'promise-finally'
 import tch = require('touch')
+import { EOL } from 'os'
 import { join, dirname } from 'path'
 import { CONFIG_FILE, TYPINGS_DIR, DTS_MAIN_FILE, DTS_BROWSER_FILE, CACHE_DIR } from './config'
 import { isHttp, toDefinition } from './path'
@@ -64,7 +65,7 @@ export function readJson (path: string): Promise<any> {
  * Write JSON to a file.
  */
 export function writeJson (path: string, json: any, indent: string | number = 2) {
-  return writeFile(path, JSON.stringify(json, null, indent))
+  return writeFile(path, stringifyJson(json, indent))
 }
 
 /**
@@ -125,6 +126,13 @@ export function readJsonFrom (from: string): Promise<any> {
 }
 
 /**
+ * Stringify an object as JSON for the filesystem (appends EOL).
+ */
+export function stringifyJson (json: any, indent: number | string = 2) {
+  return JSON.stringify(json, null, indent) + EOL
+}
+
+/**
  * Parse a string as JSON.
  */
 export function parseJson (contents: string, path: string) {
@@ -164,7 +172,7 @@ export function transformJson <T> (path: string, transform: (json: T) => T) {
     const json = contents ? parseJson(contents, path) : undefined
 
     return Promise.resolve(transform(json))
-      .then(json => JSON.stringify(json, null, indent || 2))
+      .then(json => stringifyJson(json, indent))
   })
 }
 
