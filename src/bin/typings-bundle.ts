@@ -45,12 +45,12 @@ const { verbose } = args
 const options = extend({ source: cwd }, args)
 
 loader(bundle(options), { verbose })
-  .then(function (data) {
-    const file = options.browser ? data.browser : data.main
+  .then(function (output) {
+    const contents = options.browser ? output.browser : output.main
 
     if (options.out) {
-      return loader(writeFile(resolve(cwd, options.out), file), options)
+      return loader(writeFile(resolve(cwd, options.out), contents), options)
     }
 
-    process.stdout.write(file)
+    process.stdout.write(contents)
   })

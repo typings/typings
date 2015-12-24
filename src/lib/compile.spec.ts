@@ -15,11 +15,10 @@ test('compile', t => {
       const FIXTURE_DIR = join(FIXTURES_DIR, 'compile')
 
       const root: DependencyTree = {
-        type: PROJECT_NAME,
         src: join(FIXTURE_DIR, CONFIG_FILE),
         missing: false,
-        ambient: false,
         main: 'root',
+        raw: undefined,
         browser: {
           b: 'browser'
         },
@@ -30,11 +29,10 @@ test('compile', t => {
       }
 
       const a: DependencyTree = {
-        type: PROJECT_NAME,
         src: join(FIXTURE_DIR, `a/${CONFIG_FILE}`),
         missing: false,
-        ambient: false,
         main: undefined,
+        raw: undefined,
         typings: 'typed.d.ts',
         browserTypings: 'typed.browser.d.ts',
         dependencies: {},
@@ -44,11 +42,10 @@ test('compile', t => {
       }
 
       const b: DependencyTree = {
-        type: PROJECT_NAME,
         src: join(FIXTURE_DIR, 'bower.json'),
         missing: false,
-        ambient: false,
         main: undefined,
+        raw: undefined,
         typings: 'typings/b.d.ts',
         dependencies: {},
         devDependencies: {},
@@ -57,11 +54,10 @@ test('compile', t => {
       }
 
       const browser: DependencyTree = {
-        type: PROJECT_NAME,
         src: join(FIXTURE_DIR, 'package.json'),
         missing: false,
-        ambient: false,
         main: undefined,
+        raw: undefined,
         typings: 'browser.d.ts',
         dependencies: {},
         devDependencies: {},
@@ -70,11 +66,10 @@ test('compile', t => {
       }
 
       const dep: DependencyTree = {
-        type: PROJECT_NAME,
         src: join(FIXTURE_DIR, `dep/${CONFIG_FILE}`),
         missing: false,
-        ambient: false,
         main: 'dep/main.d.ts',
+        raw: undefined,
         dependencies: {},
         devDependencies: {},
         ambientDependencies: {},
@@ -174,11 +169,10 @@ test('compile', t => {
       const FIXTURE_DIR = join(FIXTURES_DIR, 'compile-export-equals')
 
       const file: DependencyTree = {
-        type: PROJECT_NAME,
         src: join(FIXTURE_DIR, CONFIG_FILE),
         missing: false,
-        ambient: false,
         main: 'file.d.ts',
+        raw: undefined,
         dependencies: {},
         devDependencies: {},
         ambientDependencies: {},
@@ -213,10 +207,9 @@ test('compile', t => {
       const FIXTURE_DIR = join(FIXTURES_DIR, 'compile-ambient')
 
       const node: DependencyTree = {
-        type: PROJECT_NAME,
         src: __filename,
+        raw: undefined,
         missing: false,
-        ambient: true,
         typings: join(FIXTURE_DIR, 'node.d.ts'),
         dependencies: {},
         devDependencies: {},
@@ -225,11 +218,10 @@ test('compile', t => {
       }
 
       const fs: DependencyTree = {
-        type: PROJECT_NAME,
         src: join(FIXTURE_DIR, 'fs.d.ts'),
         missing: false,
-        ambient: false,
         main: undefined,
+        raw: undefined,
         typings: join(FIXTURE_DIR, 'fs.d.ts'),
         dependencies: {},
         devDependencies: {},
@@ -257,10 +249,9 @@ test('compile', t => {
       const typings = join(FIXTURE_DIR, 'node.d.ts')
 
       const node: DependencyTree = {
-        type: PROJECT_NAME,
         src: __filename,
         missing: false,
-        ambient: true,
+        raw: undefined,
         typings,
         dependencies: {},
         devDependencies: {},
@@ -292,10 +283,9 @@ test('compile', t => {
 
   t.test('missing error', t => {
     const node: DependencyTree = {
-      type: PROJECT_NAME,
       src: 'http://example.com/typings/index.d.ts',
       missing: true,
-      ambient: false,
+      raw: undefined,
       typings: 'http://example.com/typings/index.d.ts',
       dependencies: {},
       devDependencies: {},
@@ -315,10 +305,9 @@ test('compile', t => {
     const FIXTURE_DIR = join(FIXTURES_DIR, 'main-resolve-error')
 
     const main: DependencyTree = {
-      type: 'npm',
       src: join(FIXTURE_DIR, 'package.json'),
+      raw: undefined,
       missing: false,
-      ambient: false,
       dependencies: {},
       devDependencies: {},
       ambientDependencies: {},
@@ -337,11 +326,10 @@ test('compile', t => {
     const FIXTURE_DIR = join(FIXTURES_DIR, 'node-resolve-error')
 
     const main: DependencyTree = {
-      type: 'npm',
       src: join(FIXTURE_DIR, 'package.json'),
       main: 'index.js',
       missing: false,
-      ambient: false,
+      raw: undefined,
       dependencies: {},
       devDependencies: {},
       ambientDependencies: {},
@@ -349,11 +337,10 @@ test('compile', t => {
     }
 
     const dependency: DependencyTree = {
-      type: 'npm',
       main: 'index.js',
+      raw: undefined,
       src: join(FIXTURE_DIR, 'node_modules/test/package.json'),
       missing: false,
-      ambient: false,
       dependencies: {},
       devDependencies: {},
       ambientDependencies: {},
@@ -372,10 +359,9 @@ test('compile', t => {
 
   t.test('resolve over http', t => {
     const node: DependencyTree = {
-      type: PROJECT_NAME,
       src: 'http://example.com/typings.json',
       missing: false,
-      ambient: false,
+      raw: undefined,
       typings: 'http://example.com/index.d.ts',
       dependencies: {},
       devDependencies: {},

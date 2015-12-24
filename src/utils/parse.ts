@@ -1,43 +1,52 @@
 import invariant = require('invariant')
-import { parse, format } from 'url'
-import { normalize, basename } from 'path'
+import { parse, format, resolve as resolveUrl } from 'url'
+import { normalize, join, basename } from 'path'
 import { Dependency } from '../interfaces/main'
 import { CONFIG_FILE } from './config'
-import { isDefinition } from './path'
+import { isDefinition, normalizeSlashes } from './path'
 
 /**
- * Find the Git options from a path.
+ * Parse the git host options from the raw string.
  */
-function gitFromPathname (pathname: string) {
-  const segments = pathname.substr(1).split('/')
+function gitFromPath (src: string) {
+  const index = src.indexOf('#')
+  const sha = index === -1 ? 'master' : src.substr(index + 1)
+  const segments = index === -1 ? src.split('/') : src.substr(0, index).split('/')
+  const org = segments.shift()
   const repo = segments.shift()
   let path = segments.join('/')
 
+  // Automatically look for the config file in the root.
   if (segments.length === 0) {
     path = CONFIG_FILE
   } else if (!isDefinition(path) && segments[segments.length - 1] !== CONFIG_FILE) {
     path += `/${CONFIG_FILE}`
   }
 
-  return { repo, path }
+  return { org, repo, path, sha }
 }
 
 /**
- * Extract the sha or default to `master`.
+ * Split the protocol from the rest of the string.
  */
-function shaFromHash (hash: string): string {
-  return hash ? hash.substr(1) : 'master'
+function splitProtocol (raw: string): [string, string] {
+  const index = raw.indexOf(':')
+
+  if (index === -1) {
+    return [undefined, raw]
+  }
+
+  return [raw.substr(0, index), normalizeSlashes(raw.substr(index + 1))]
 }
 
 /**
  * Parse the dependency string.
  */
 export function parseDependency (raw: string): Dependency {
-  const parsedurl = parse(raw)
-  const { protocol, auth, hostname, pathname, hash } = parsedurl
+  const [type, src] = splitProtocol(raw)
 
-  if (protocol === 'file:') {
-    const location = normalize(pathname)
+  if (type === 'file') {
+    const location = normalize(src)
     const filename = basename(location)
 
     invariant(
@@ -47,65 +56,112 @@ export function parseDependency (raw: string): Dependency {
 
     return {
       raw,
-      type: 'file',
+      type,
       location
     }
   }
 
-  if (protocol === 'github:') {
-    const sha = shaFromHash(hash)
-    const { repo, path } = gitFromPathname(pathname)
+  if (type === 'github') {
+    const meta = gitFromPath(src)
+    const { org, repo, path, sha } = meta
 
     return {
       raw,
-      type: 'hosted',
-      location: `https://raw.githubusercontent.com/${hostname}/${repo}/${sha}/${path}`
+      meta,
+      type,
+      location: `https://raw.githubusercontent.com/${org}/${repo}/${sha}/${path}`
     }
   }
 
-  if (protocol === 'bitbucket:') {
-    const sha = shaFromHash(hash)
-    const { repo, path } = gitFromPathname(pathname)
+  if (type === 'bitbucket') {
+    const meta = gitFromPath(src)
+    const { org, repo, path, sha } = meta
 
     return {
       raw,
-      type: 'hosted',
-      location: `https://bitbucket.org/${hostname}/${repo}/raw/${sha}/${path}`
+      meta,
+      type,
+      location: `https://bitbucket.org/${org}/${repo}/raw/${sha}/${path}`
     }
   }
 
-  if (protocol === 'npm:') {
-    const scoped = auth === ''
-    const parts = pathname ? pathname.substr(1).split('/') : []
-    let name = hostname
+  if (type === 'npm') {
+    const parts = src.split('/')
+    const isScoped = parts.length > 0 && parts[0].charAt(0) === '@'
+    const hasPath = isScoped ? parts.length > 2 : parts.length > 1
 
-    // Handle scoped packages.
-    if (scoped) {
-      name = `@${hostname}/${parts.shift()}`
+    if (!hasPath) {
+      parts.push('package.json')
     }
 
     return {
       raw,
       type: 'npm',
-      location: normalize(name + '/' + (parts.length ? parts.join('/') : 'package.json'))
+      meta: {
+        name: isScoped ? parts.slice(0, 2).join('/') : parts[0],
+        path: join(...parts.slice(isScoped ? 2 : 1))
+      },
+      location: join(...parts)
     }
   }
 
-  if (protocol === 'bower:') {
+  if (type === 'bower') {
+    const parts = src.split('/')
+
+    if (parts.length === 1) {
+      parts.push('bower.json')
+    }
+
     return {
       raw,
       type: 'bower',
-      location: normalize(hostname + (pathname || '/bower.json'))
+      meta: {
+        name: parts[0],
+        path: join(...parts.slice(1))
+      },
+      location: join(...parts)
     }
   }
 
-  if (protocol === 'http:' || protocol === 'https:') {
+  if (type === 'http' || type === 'https') {
     return {
       raw,
       type: 'hosted',
-      location: format(parsedurl)
+      location: raw
     }
   }
 
-  throw new TypeError(`Unsupported dependency: ${raw}`)
+  throw new TypeError(`Unknown dependency: ${raw}`)
+}
+
+/**
+ * Resolve a path relative to the raw string.
+ */
+export function resolveDependency (raw: string, path: string) {
+  const { type, meta, location } = parseDependency(raw)
+
+  // Handle git hosts.
+  if (type === 'github' || type === 'bitbucket') {
+    const { org, repo, sha } = meta
+    const resolvedPath = normalizeSlashes(join(meta.path, path))
+
+    return `${type}:${org}/${repo}/${resolvedPath}${sha === 'master' ? '' : '#' + sha}`
+  }
+
+  if (type === 'npm' || type === 'bower') {
+    const { name } = meta
+    const resolvedPath = normalizeSlashes(join(meta.path, path))
+
+    return `${type}:${name}/${resolvedPath}`
+  }
+
+  if (type === 'http' || type === 'https') {
+    return resolveUrl(location, path)
+  }
+
+  if (type === 'file') {
+    return `file:${normalizeSlashes(join(location, path))}`
+  }
+
+  throw new TypeError(`Unable to resolve dependency from ${path}`)
 }

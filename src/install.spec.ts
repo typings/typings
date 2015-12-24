@@ -87,4 +87,23 @@ test('install', t => {
         })
       })
   })
+
+  t.test('install empty', t => {
+    const FIXTURE_DIR = join(__dirname, '__test__/install-empty')
+
+    return install({
+      cwd: FIXTURE_DIR,
+      production: false
+    })
+      .then(function () {
+        return Promise.all([
+          readFile(join(FIXTURE_DIR, 'typings/main.d.ts'), 'utf8'),
+          readFile(join(FIXTURE_DIR, 'typings/browser.d.ts'), 'utf8')
+        ])
+      })
+      .then(function ([main, browser]) {
+        t.equal(main, '')
+        t.equal(browser, '')
+      })
+  })
 })

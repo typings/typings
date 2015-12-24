@@ -1,6 +1,6 @@
 import test = require('blue-tape')
 import { normalize } from 'path'
-import { parseDependency } from './parse'
+import { parseDependency, resolveDependency } from './parse'
 import { CONFIG_FILE } from './config'
 
 test('parse', t => {
@@ -34,6 +34,10 @@ test('parse', t => {
       const expected = {
         raw: 'npm:foobar',
         type: 'npm',
+        meta: {
+          name: 'foobar',
+          path: 'package.json'
+        },
         location: normalize('foobar/package.json')
       }
 
@@ -46,6 +50,10 @@ test('parse', t => {
       const expected = {
         raw: 'npm:@foo/bar',
         type: 'npm',
+        meta: {
+          name: '@foo/bar',
+          path: 'package.json'
+        },
         location: normalize('@foo/bar/package.json')
       }
 
@@ -58,6 +66,10 @@ test('parse', t => {
       const expected = {
         raw: 'npm:typescript/bin/lib.es6.d.ts',
         type: 'npm',
+        meta: {
+          name: 'typescript',
+          path: normalize('bin/lib.es6.d.ts')
+        },
         location: normalize('typescript/bin/lib.es6.d.ts')
       }
 
@@ -70,6 +82,10 @@ test('parse', t => {
       const expected = {
         raw: 'bower:foobar',
         type: 'bower',
+        meta: {
+          name: 'foobar',
+          path: 'bower.json'
+        },
         location: normalize('foobar/bower.json')
       }
 
@@ -82,6 +98,10 @@ test('parse', t => {
       const expected = {
         raw: 'bower:foobar/' + CONFIG_FILE,
         type: 'bower',
+        meta: {
+          name: 'foobar',
+          path: 'typings.json'
+        },
         location: normalize('foobar/' + CONFIG_FILE)
       }
 
@@ -93,7 +113,13 @@ test('parse', t => {
       const actual = parseDependency('github:foo/bar')
       const expected = {
         raw: 'github:foo/bar',
-        type: 'hosted',
+        type: 'github',
+        meta: {
+          org: 'foo',
+          path: 'typings.json',
+          repo: 'bar',
+          sha: 'master'
+        },
         location: 'https://raw.githubusercontent.com/foo/bar/master/' + CONFIG_FILE
       }
 
@@ -101,11 +127,17 @@ test('parse', t => {
       t.end()
     })
 
-    t.test('parse github with she and append `` + CONFIG_FILE', t => {
+    t.test('parse github with sha and append config file', t => {
       const actual = parseDependency('github:foo/bar#test')
       const expected = {
         raw: 'github:foo/bar#test',
-        type: 'hosted',
+        type: 'github',
+        meta: {
+          org: 'foo',
+          path: 'typings.json',
+          repo: 'bar',
+          sha: 'test'
+        },
         location: 'https://raw.githubusercontent.com/foo/bar/test/' + CONFIG_FILE
       }
 
@@ -117,7 +149,13 @@ test('parse', t => {
       const actual = parseDependency('github:foo/bar/typings/file.d.ts')
       const expected = {
         raw: 'github:foo/bar/typings/file.d.ts',
-        type: 'hosted',
+        type: 'github',
+        meta: {
+          org: 'foo',
+          path: 'typings/file.d.ts',
+          repo: 'bar',
+          sha: 'master'
+        },
         location: 'https://raw.githubusercontent.com/foo/bar/master/typings/file.d.ts'
       }
 
@@ -125,11 +163,17 @@ test('parse', t => {
       t.end()
     })
 
-    t.test('parse github paths to `` + CONFIG_FILE', t => {
+    t.test('parse github paths to config file', t => {
       const actual = parseDependency('github:foo/bar/src/' + CONFIG_FILE)
       const expected = {
         raw: 'github:foo/bar/src/' + CONFIG_FILE,
-        type: 'hosted',
+        type: 'github',
+        meta: {
+          org: 'foo',
+          path: 'src/typings.json',
+          repo: 'bar',
+          sha: 'master'
+        },
         location: 'https://raw.githubusercontent.com/foo/bar/master/src/' + CONFIG_FILE
       }
 
@@ -141,7 +185,13 @@ test('parse', t => {
       const actual = parseDependency('bitbucket:foo/bar')
       const expected = {
         raw: 'bitbucket:foo/bar',
-        type: 'hosted',
+        type: 'bitbucket',
+        meta: {
+          org: 'foo',
+          path: 'typings.json',
+          repo: 'bar',
+          sha: 'master'
+        },
         location: 'https://bitbucket.org/foo/bar/raw/master/' + CONFIG_FILE
       }
 
@@ -149,11 +199,17 @@ test('parse', t => {
       t.end()
     })
 
-    t.test('parse bitbucket and append `` + CONFIG_FILE to path', t => {
+    t.test('parse bitbucket and append config file to path', t => {
       const actual = parseDependency('bitbucket:foo/bar/dir')
       const expected = {
         raw: 'bitbucket:foo/bar/dir',
-        type: 'hosted',
+        type: 'bitbucket',
+        meta: {
+          org: 'foo',
+          path: 'dir/typings.json',
+          repo: 'bar',
+          sha: 'master'
+        },
         location: 'https://bitbucket.org/foo/bar/raw/master/dir/' + CONFIG_FILE
       }
 
@@ -165,7 +221,13 @@ test('parse', t => {
       const actual = parseDependency('bitbucket:foo/bar#abc')
       const expected = {
         raw: 'bitbucket:foo/bar#abc',
-        type: 'hosted',
+        type: 'bitbucket',
+        meta: {
+          org: 'foo',
+          path: 'typings.json',
+          repo: 'bar',
+          sha: 'abc'
+        },
         location: 'https://bitbucket.org/foo/bar/raw/abc/' + CONFIG_FILE
       }
 
@@ -185,8 +247,15 @@ test('parse', t => {
       t.end()
     })
 
-    t.test('unsupported scheme', t => {
-      t.throws(() => parseDependency('random:fake/dep'), /Unsupported dependency/)
+    t.test('unknown scheme', t => {
+      t.throws(() => parseDependency('random:fake/dep'), /Unknown dependency: /)
+      t.end()
+    })
+  })
+
+  t.test('resolve dependency', t => {
+    t.test('github', t => {
+      t.equal(resolveDependency('github:foo/bar/x.d.ts', '../lib/test.d.ts'), 'github:foo/bar/lib/test.d.ts')
       t.end()
     })
   })

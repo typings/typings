@@ -155,7 +155,7 @@ Supports configuration using [`rc`](https://github.com/dominictarr/rc). The conf
 
 * **proxy** A HTTP(s) proxy URI for outgoing requests
 
-### `main.d.ts` and `browser.d.ts`?
+### `main.d.ts` And `browser.d.ts`
 
 To simplify integration with TypeScript, two files - `typings/main.d.ts` and `typings/browser.d.ts` - are generated which reference all typings installed in the current project. To use this, you can add the reference to `tsconfig.json` files:
 
@@ -174,6 +174,10 @@ Or as a reference to the top of TypeScript files:
 ```
 
 If you're building a front-end package it's recommended you use `typings/browser.d.ts` instead. The browser typings are compiled using the `browser` field overrides.
+
+### References
+
+During installation, any typings references (`/// <reference path="" />`) will be removed. This is because there's no simple way to include the contents from the other file within the project. With legacy projects, these references tend to denote both dependencies and ambient dependencies, and can't be relied on in any formal way.
 
 ### How Do I Use Typings With Git and Continuous Integration?
 
