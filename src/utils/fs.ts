@@ -64,8 +64,8 @@ export function readJson (path: string): Promise<any> {
 /**
  * Write JSON to a file.
  */
-export function writeJson (path: string, json: any, indent: string | number = 2) {
-  return writeFile(path, stringifyJson(json, indent))
+export function writeJson (path: string, json: any, indent?: string | number, eol?: string) {
+  return writeFile(path, stringifyJson(json, indent, eol))
 }
 
 /**
@@ -82,6 +82,9 @@ export function readConfigFrom (path: string): Promise<ConfigJson> {
   return readJsonFrom(path).then(data => parseConfig(data, path))
 }
 
+/**
+ * Parse a config object with helpful validation.
+ */
 export function parseConfig (config: ConfigJson, path: string): ConfigJson {
   // TODO(blakeembrey): Validate config object.
   return config
@@ -128,8 +131,8 @@ export function readJsonFrom (from: string): Promise<any> {
 /**
  * Stringify an object as JSON for the filesystem (appends EOL).
  */
-export function stringifyJson (json: any, indent: number | string = 2) {
-  return JSON.stringify(json, null, indent) + EOL
+export function stringifyJson (json: any, indent: number | string = 2, eol: string = EOL) {
+  return JSON.stringify(json, null, indent).replace(/\n/g, eol) + eol
 }
 
 /**
@@ -168,11 +171,12 @@ export function transformFile (path: string, transform: (contents: string) => st
  */
 export function transformJson <T> (path: string, transform: (json: T) => T) {
   return transformFile(path, (contents) => {
-    const indent = contents ? detectIndent(contents).indent : 2
+    const indent = contents ? detectIndent(contents).indent : undefined
     const json = contents ? parseJson(contents, path) : undefined
+    const eol = contents ? detectEOL(contents) : undefined
 
     return Promise.resolve(transform(json))
-      .then(json => stringifyJson(json, indent))
+      .then(json => stringifyJson(json, indent, eol))
   })
 }
 
@@ -299,4 +303,12 @@ export function getDependencyLocation (options: DefinitionOptions) {
     mainDtsFile,
     browserDtsFile
   }
+}
+
+/**
+ * Detect the EOL character of a string.
+ */
+function detectEOL (contents: string) {
+  const match = contents.match(/\r\n|\r|\n/)
+  return match ? match[0] : undefined
 }
