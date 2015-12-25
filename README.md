@@ -26,7 +26,7 @@ npm install typings --global
 
 ## Usage
 
-**Typings** is the simple way for TypeScript definitions to be installed and maintained. It uses `typings.json`, which can resolve to GitHub, NPM, Bower, HTTP and from local files. Every packages can use type definitions from different sources and with different versions, and know they will _never_ cause a conflict for their users.
+**Typings** is the simple way for TypeScript definitions to be installed and maintained. It uses `typings.json`, which can resolve to GitHub, NPM, Bower, HTTP and from local files. Every package can use type definitions from different sources and with different versions, and know they will _never_ cause a conflict for their users.
 
 ```sh
 typings install debug --save
