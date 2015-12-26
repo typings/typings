@@ -10,9 +10,8 @@ test('dependencies', t => {
   t.test('resolve fixture', t => {
     t.test('resolve a dependency tree', t => {
       const expected: DependencyTree = {
-        type: undefined,
-        ambient: false,
         missing: false,
+        raw: undefined,
         name: 'foobar',
         src: join(RESOLVE_FIXTURE_DIR, 'package.json'),
         main: 'index.js',
@@ -26,9 +25,8 @@ test('dependencies', t => {
       }
 
       const bowerDep: DependencyTree = {
-        type: 'bower',
-        ambient: false,
         missing: false,
+        raw: 'bower:bower-dep',
         src: join(RESOLVE_FIXTURE_DIR, 'bower_components/bower-dep/bower.json'),
         typings: 'bower-dep.d.ts',
         browserTypings: undefined,
@@ -43,9 +41,8 @@ test('dependencies', t => {
       }
 
       const exampleDep: DependencyTree = {
-        type: 'bower',
-        ambient: false,
         missing: false,
+        raw: 'bower:example',
         src: join(RESOLVE_FIXTURE_DIR, 'bower_components/example/bower.json'),
         main: undefined,
         browser: undefined,
@@ -60,9 +57,8 @@ test('dependencies', t => {
       }
 
       const typedDep: DependencyTree = {
-        type: PROJECT_NAME,
-        ambient: false,
         missing: false,
+        raw: 'file:typings/dep.d.ts',
         src: join(RESOLVE_FIXTURE_DIR, 'typings/dep.d.ts'),
         typings: join(RESOLVE_FIXTURE_DIR, 'typings/dep.d.ts'),
         dependencies: {},
@@ -72,9 +68,8 @@ test('dependencies', t => {
       }
 
       const npmDep: DependencyTree = {
-        type: 'npm',
-        ambient: false,
         missing: false,
+        raw: 'npm:npm-dep',
         src: join(RESOLVE_FIXTURE_DIR, 'node_modules/npm-dep/package.json'),
         main: './index.js',
         browser: undefined,
@@ -89,9 +84,8 @@ test('dependencies', t => {
       }
 
       const typedDevDep: DependencyTree = {
-        type: 'bower',
-        ambient: false,
         missing: true,
+        raw: 'bower:dep',
         src: join(RESOLVE_FIXTURE_DIR, 'bower_components/dep/bower.json'),
         dependencies: {},
         devDependencies: {},

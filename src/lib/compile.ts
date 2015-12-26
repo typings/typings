@@ -9,13 +9,12 @@ import { readFileFrom } from '../utils/fs'
 import { resolveFrom, relativeTo, isHttp, isModuleName, normalizeSlashes, fromDefinition, normalizeToDefinition } from '../utils/path'
 import { REFERENCE_REGEXP } from '../utils/references'
 import { PROJECT_NAME, CONFIG_FILE } from '../utils/config'
+import { resolveDependency } from '../utils/parse'
 import { VERSION } from '../typings'
 import TypingsError from './error'
 
 /**
  * Define the separator between module paths. E.g. `foo~bar`.
- *
- * Note: This used to be `!`, but it appears that breaks in TypeScript 1.8+.
  */
 const SEPARATOR = '~'
 
@@ -30,11 +29,40 @@ export interface Options {
 }
 
 /**
+ * References collected by compilation.
+ */
+interface Reference {
+  path: string
+  raw: string
+  src: string
+  name: string
+}
+
+/**
+ * The result of compiling a dependency tree.
+ */
+interface CompiledResult {
+  contents: string
+  references: Reference[]
+  missing: Reference[]
+}
+
+/**
+ * Compiled reference map with usages.
+ */
+export interface ReferenceMap {
+  [path: string]: Array<{ name: string; main: boolean; browser: boolean }>
+}
+
+/**
  * The compiled output data.
  */
 export interface CompiledOutput {
+  tree: DependencyTree
   main: string
   browser: string
+  references: ReferenceMap
+  missing: ReferenceMap
 }
 
 /**
@@ -47,7 +75,65 @@ export default function compile (tree: DependencyTree, options: Options): Promis
     compileDependencyTree(tree, extend(options, { browser: false, files })),
     compileDependencyTree(tree, extend(options, { browser: true, files }))
   ])
-    .then(([main, browser]) => ({ main, browser }))
+    .then(([main, browser]) => {
+      return {
+        tree,
+        main: main.contents,
+        browser: browser.contents,
+        references: mergeReferences(main.references, browser.references, true),
+        missing: mergeReferences(main.missing, browser.missing, false)
+      }
+    })
+}
+
+/**
+ * Create a reference map with the original sources.
+ */
+function mergeReferences (main: Reference[], browser: Reference[], isPaths: boolean): ReferenceMap {
+  const map: ReferenceMap = {}
+
+  // Add each entry to the map, deduping as we go.
+  function addEntry (entry: Reference, browser: boolean) {
+    const { path, raw, src, name } = entry
+    let location: string
+
+    if (isPaths) {
+      location = resolveDependency(raw, relativeTo(src, path))
+    } else {
+      location = path
+    }
+
+    const values = map[location] || (map[location] = [])
+
+    for (const value of values) {
+      if (value.name === name) {
+        // Set "browser" or "main" flags.
+        if (browser) {
+          value.browser = true
+        } else {
+          value.main = true
+        }
+
+        return
+      }
+    }
+
+    values.push({
+      name,
+      main: !browser,
+      browser
+    })
+  }
+
+  for (const entry of main) {
+    addEntry(entry, false)
+  }
+
+  for (const entry of browser) {
+    addEntry(entry, true)
+  }
+
+  return map
 }
 
 /**
@@ -115,14 +201,14 @@ function getStringifyOptions (
 /**
  * Compile a dependency tree to a single definition.
  */
-function compileDependencyTree (tree: DependencyTree, options: CompileOptions): Promise<string> {
+function compileDependencyTree (tree: DependencyTree, options: CompileOptions): Promise<CompiledResult> {
   return compileDependencyPath(null, getStringifyOptions(tree, options, undefined))
 }
 
 /**
  * Compile a dependency for a path, with pre-created stringify options.
  */
-function compileDependencyPath (path: string, options: StringifyOptions) {
+function compileDependencyPath (path: string, options: StringifyOptions): Promise<CompiledResult> {
   const { tree, entry } = options
 
   if (tree.missing) {
@@ -206,7 +292,7 @@ function getDependency (name: string, options: StringifyOptions) {
 /**
  * Stringify a dependency file.
  */
-function stringifyDependencyPath (path: string, options: StringifyOptions): Promise<string> {
+function stringifyDependencyPath (path: string, options: StringifyOptions): Promise<CompiledResult> {
   let definitionPath = normalizeToDefinition(path)
   const { tree, ambient, cwd, browser, name, files, meta, entry } = options
 
@@ -234,6 +320,8 @@ function stringifyDependencyPath (path: string, options: StringifyOptions): Prom
         }
 
         const importedFiles = info.importedFiles.map(x => isModuleName(x.fileName) ? x.fileName : resolveFrom(path, x.fileName))
+        const referencedFiles = info.referencedFiles.map(x => resolveFrom(path, x.fileName))
+        const missingDependencies: string[] = []
 
         // All dependencies MUST be imported for ambient modules.
         if (ambient) {
@@ -262,6 +350,10 @@ function stringifyDependencyPath (path: string, options: StringifyOptions): Prom
 
             // When no options are returned, the dependency is missing.
             if (!stringifyOptions) {
+              if (missingDependencies.indexOf(path) === -1) {
+                missingDependencies.push(path)
+              }
+
               return
             }
 
@@ -272,14 +364,33 @@ function stringifyDependencyPath (path: string, options: StringifyOptions): Prom
         })
 
         return Promise.all(imports)
-          .then(files => {
+          .then<CompiledResult>(imports => {
             const stringifyOptions = extend(options, { originalPath: path })
-            const contents = rawContents.replace(REFERENCE_REGEXP, '')
+            const stringified = stringifyFile(definitionPath, rawContents, stringifyOptions)
+            const { raw, src } = tree
 
-            files.push(stringifyFile(definitionPath, contents, stringifyOptions))
+            let references = referencedFiles.map(path => ({ name, path, raw, src }))
+            let missing = missingDependencies.map(path => ({ name, path, raw, src }))
+            let contents: string[] = []
 
-            // Filter skipped dependencies.
-            return files.filter(x => x != null).join(EOL + EOL)
+            for (const imported of imports) {
+              // Some dependencies and imports are skipped.
+              if (imported) {
+                references = references.concat(imported.references)
+                missing = missing.concat(imported.missing)
+                contents.push(imported.contents)
+              }
+            }
+
+            // Push the current file at the end of the contents. This builds
+            // the stringified file with dependencies first.
+            contents.push(stringified)
+
+            return {
+              contents: contents.join(EOL + EOL),
+              references,
+              missing
+            }
           })
       },
       function (cause) {
@@ -319,7 +430,8 @@ function getModuleNameParts (moduleName: string): [string, string] {
 /**
  * Stringify a dependency file contents.
  */
-function stringifyFile (path: string, contents: string, options: StringifyOptions & { originalPath: string }) {
+function stringifyFile (path: string, rawContents: string, options: StringifyOptions & { originalPath: string }) {
+  const contents = rawContents.replace(REFERENCE_REGEXP, '')
   const sourceFile = ts.createSourceFile(path, contents, ts.ScriptTarget.Latest, true)
   const { tree, name, originalPath } = options
 

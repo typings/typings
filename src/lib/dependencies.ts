@@ -17,10 +17,9 @@ import { Dependency, DependencyBranch, DependencyTree } from '../interfaces/main
  * Default dependency config options.
  */
 const DEFAULT_DEPENDENCY: DependencyTree = {
-  type: undefined,
-  ambient: false,
   missing: false,
   src: undefined,
+  raw: undefined,
   dependencies: {},
   devDependencies: {},
   ambientDependencies: {},
@@ -60,31 +59,31 @@ export function resolveDependencies (options: Options): Promise<DependencyTree> 
  */
 export function resolveDependency (dependency: Dependency, options: Options, parent?: DependencyTree): Promise<DependencyTree> {
   if (dependency.type === 'npm') {
-    return resolveNpmDependency(dependency.location, options, parent)
+    return resolveNpmDependency(dependency.location, dependency.raw, options, parent)
   }
 
   if (dependency.type === 'bower') {
-    return resolveBowerDependency(dependency.location, options, parent)
+    return resolveBowerDependency(dependency.location, dependency.raw, options, parent)
   }
 
-  return resolveFileDependency(dependency.location, options, parent)
+  return resolveFileDependency(dependency.location, dependency.raw, options, parent)
 }
 
 /**
  * Resolve a dependency in NPM.
  */
-function resolveNpmDependency (name: string, options: Options, parent?: DependencyTree) {
+function resolveNpmDependency (name: string, raw: string, options: Options, parent?: DependencyTree) {
   return findUp(options.cwd, join('node_modules', name))
     .then(
       function (modulePath: string) {
         if (isDefinition(modulePath)) {
-          return resolveFileDependency(modulePath, options, parent)
+          return resolveFileDependency(modulePath, raw, options, parent)
         }
 
-        return resolveNpmDependencyFrom(modulePath, options, parent)
+        return resolveNpmDependencyFrom(modulePath, raw, options, parent)
       },
       function () {
-        return extend(MISSING_DEPENDENCY, { type: 'npm' })
+        return extend(MISSING_DEPENDENCY, { raw })
       }
     )
 }
@@ -92,20 +91,20 @@ function resolveNpmDependency (name: string, options: Options, parent?: Dependen
 /**
  * Resolve a dependency in Bower.
  */
-function resolveBowerDependency (name: string, options: Options, parent?: DependencyTree) {
+function resolveBowerDependency (name: string, raw: string, options: Options, parent?: DependencyTree) {
   return resolveBowerComponentPath(options.cwd)
     .then(
       function (componentPath: string) {
         const modulePath = resolve(componentPath, name)
 
         if (isDefinition(modulePath)) {
-          return resolveFileDependency(modulePath, options, parent)
+          return resolveFileDependency(modulePath, raw, options, parent)
         }
 
-        return resolveBowerDependencyFrom(modulePath, componentPath, options, parent)
+        return resolveBowerDependencyFrom(modulePath, raw, componentPath, options, parent)
       },
       function () {
-        return extend(MISSING_DEPENDENCY, { type: 'bower' })
+        return extend(MISSING_DEPENDENCY, { raw })
       }
     )
 }
@@ -113,7 +112,7 @@ function resolveBowerDependency (name: string, options: Options, parent?: Depend
 /**
  * Resolve a local file dependency.
  */
-function resolveFileDependency (location: string, options: Options, parent?: DependencyTree): Promise<DependencyTree> {
+function resolveFileDependency (location: string, raw: string, options: Options, parent?: DependencyTree): Promise<DependencyTree> {
   let src: string
 
   if (isHttp(location)) {
@@ -125,14 +124,14 @@ function resolveFileDependency (location: string, options: Options, parent?: Dep
   }
 
   if (!isDefinition(src)) {
-    return resolveTypeDependencyFrom(src, options, parent)
+    return resolveTypeDependencyFrom(src, raw, options, parent)
   }
 
   // Resolve direct typings using `typings` property.
   return Promise.resolve(extend(DEFAULT_DEPENDENCY, {
-    type: PROJECT_NAME,
     typings: src,
     src,
+    raw,
     parent
   }))
 }
@@ -146,11 +145,11 @@ export function resolveBowerDependencies (options: Options): Promise<DependencyT
       function (bowerJsonPath: string) {
         return resolveBowerComponentPath(dirname(bowerJsonPath))
           .then(function (componentPath: string) {
-            return resolveBowerDependencyFrom(bowerJsonPath, componentPath, options)
+            return resolveBowerDependencyFrom(bowerJsonPath, undefined, componentPath, options)
           })
       },
       function () {
-        return extend(MISSING_DEPENDENCY, { type: 'bower' })
+        return extend(MISSING_DEPENDENCY)
       }
     )
 }
@@ -160,6 +159,7 @@ export function resolveBowerDependencies (options: Options): Promise<DependencyT
  */
 function resolveBowerDependencyFrom (
   src: string,
+  raw: string,
   componentPath: string,
   options: Options,
   parent?: DependencyTree
@@ -176,8 +176,8 @@ function resolveBowerDependencyFrom (
           browser: bowerJson.browser,
           typings: bowerJson.typings,
           browserTypings: bowerJson.browserTypings,
-          type: 'bower',
           src,
+          raw,
           parent
         })
 
@@ -187,7 +187,7 @@ function resolveBowerDependencyFrom (
         return Promise.all<any>([
           resolveBowerDependencyMap(componentPath, dependencyMap, options, tree),
           resolveBowerDependencyMap(componentPath, devDependencyMap, options, tree),
-          resolveTypeDependencyFrom(join(src, '..', CONFIG_FILE), options, tree)
+          resolveTypeDependencyFrom(join(src, '..', CONFIG_FILE), raw, options, tree)
         ])
           .then(function ([dependencies, devDependencies, typedPackage]) {
             tree.dependencies = extend(dependencies, typedPackage.dependencies)
@@ -197,11 +197,7 @@ function resolveBowerDependencyFrom (
           })
       },
       function () {
-        return Promise.resolve(extend(MISSING_DEPENDENCY, {
-          type: 'bower',
-          src,
-          parent
-        }))
+        return Promise.resolve(extend(MISSING_DEPENDENCY, { src, raw, parent }))
       }
     )
 }
@@ -236,7 +232,7 @@ function resolveBowerDependencyMap (
     const modulePath = resolve(componentPath, name, 'bower.json')
     const resolveOptions = extend(options, { dev: false, ambient: false })
 
-    return resolveBowerDependencyFrom(modulePath, componentPath, resolveOptions, parent)
+    return resolveBowerDependencyFrom(modulePath, `bower:${name}`, componentPath, resolveOptions, parent)
   }))
     .then(partial(zipObject, keys))
 }
@@ -248,10 +244,10 @@ export function resolveNpmDependencies (options: Options): Promise<DependencyTre
   return findUp(options.cwd, 'package.json')
     .then(
       function (packgeJsonPath: string) {
-        return resolveNpmDependencyFrom(packgeJsonPath, options)
+        return resolveNpmDependencyFrom(packgeJsonPath, undefined, options)
       },
       function () {
-        return extend(MISSING_DEPENDENCY, { type: 'npm' })
+        return extend(MISSING_DEPENDENCY)
       }
     )
 }
@@ -259,7 +255,7 @@ export function resolveNpmDependencies (options: Options): Promise<DependencyTre
 /**
  * Resolve NPM dependencies from `package.json`.
  */
-function resolveNpmDependencyFrom (src: string, options: Options, parent?: DependencyTree): Promise<DependencyTree> {
+function resolveNpmDependencyFrom (src: string, raw: string, options: Options, parent?: DependencyTree): Promise<DependencyTree> {
   checkCircularDependency(parent, src)
 
   return readJson(src)
@@ -272,8 +268,8 @@ function resolveNpmDependencyFrom (src: string, options: Options, parent?: Depen
           browser: packageJson.browser,
           typings: packageJson.typings,
           browserTypings: packageJson.browserTypings,
-          type: 'npm',
           src,
+          raw,
           parent
         })
 
@@ -283,7 +279,7 @@ function resolveNpmDependencyFrom (src: string, options: Options, parent?: Depen
         return Promise.all<any>([
           resolveNpmDependencyMap(src, dependencyMap, options, tree),
           resolveNpmDependencyMap(src, devDependencyMap, options, tree),
-          resolveTypeDependencyFrom(join(src, '..', CONFIG_FILE), options, tree)
+          resolveTypeDependencyFrom(join(src, '..', CONFIG_FILE), raw, options, tree)
         ])
           .then(function ([dependencies, devDependencies, typedPackage]) {
             tree.dependencies = extend(dependencies, typedPackage.dependencies)
@@ -293,11 +289,7 @@ function resolveNpmDependencyFrom (src: string, options: Options, parent?: Depen
           })
       },
       function () {
-        return Promise.resolve(extend(MISSING_DEPENDENCY, {
-          type: 'npm',
-          src,
-          parent
-        }))
+        return Promise.resolve(extend(MISSING_DEPENDENCY, { src, raw, parent }))
       }
     )
 }
@@ -312,7 +304,7 @@ function resolveNpmDependencyMap (src: string, dependencies: any, options: Optio
   return Promise.all(keys.map(function (name) {
     const resolveOptions = extend(options, { dev: false, ambient: false, cwd })
 
-    return resolveNpmDependency(join(name, 'package.json'), resolveOptions, parent)
+    return resolveNpmDependency(join(name, 'package.json'), `npm:${name}`, resolveOptions, parent)
   }))
     .then(partial(zipObject, keys))
 }
@@ -324,7 +316,7 @@ export function resolveTypeDependencies (options: Options): Promise<DependencyTr
   return findConfigFile(options.cwd)
     .then(
       function (path: string) {
-        return resolveTypeDependencyFrom(path, options)
+        return resolveTypeDependencyFrom(path, undefined, options)
       },
       function () {
         return extend(MISSING_DEPENDENCY)
@@ -335,7 +327,7 @@ export function resolveTypeDependencies (options: Options): Promise<DependencyTr
 /**
  * Resolve type dependencies from an exact path.
  */
-function resolveTypeDependencyFrom (src: string, options: Options, parent?: DependencyTree) {
+function resolveTypeDependencyFrom (src: string, raw: string, options: Options, parent?: DependencyTree) {
   checkCircularDependency(parent, src)
 
   return readConfigFrom(src)
@@ -347,9 +339,9 @@ function resolveTypeDependencyFrom (src: string, options: Options, parent?: Depe
           browser: config.browser,
           typings: config.typings,
           browserTypings: config.browserTypings,
-          ambient: !!config.ambient,
           type: PROJECT_NAME,
           src,
+          raw,
           parent
         })
 
@@ -376,11 +368,7 @@ function resolveTypeDependencyFrom (src: string, options: Options, parent?: Depe
           })
       },
       function () {
-        return extend(MISSING_DEPENDENCY, {
-          type: PROJECT_NAME,
-          src,
-          parent
-        })
+        return extend(MISSING_DEPENDENCY, { src, raw, parent })
       }
     )
 }
@@ -408,7 +396,7 @@ function resolveTypeDependencyMap (src: string, dependencies: any, options: Opti
             return tree
           })
         },
-        Promise.resolve(MISSING_DEPENDENCY)
+        Promise.resolve(extend(MISSING_DEPENDENCY))
       )
   }))
     .then(partial(zipObject, keys))
@@ -454,6 +442,7 @@ function mergeDependencies (trees: DependencyTree[]): DependencyTree {
     dependency.dependencies = extend(dependency.dependencies, dependencyTree.dependencies)
     dependency.devDependencies = extend(dependency.devDependencies, dependencyTree.devDependencies)
     dependency.ambientDependencies = extend(dependency.ambientDependencies, dependencyTree.ambientDependencies)
+    dependency.ambientDevDependencies = extend(dependency.ambientDevDependencies, dependencyTree.ambientDevDependencies)
   })
 
   return dependency

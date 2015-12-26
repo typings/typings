@@ -21,6 +21,7 @@ import { CONFIG_FILE, TYPINGS_DIR, DTS_MAIN_FILE, DTS_BROWSER_FILE, CACHE_DIR } 
 import { isHttp, toDefinition } from './path'
 import { parseReferences, stringifyReferences } from './references'
 import { ConfigJson } from '../interfaces/main'
+import { CompiledOutput } from '../lib/compile'
 import rc from './rc'
 
 // Create a file cache for popsicle.
@@ -233,7 +234,7 @@ export interface DefinitionOptions {
 /**
  * Write a dependency to the filesytem.
  */
-export function writeDependency (contents: { main: string; browser: string }, options: DefinitionOptions): Promise<boolean> {
+export function writeDependency (output: CompiledOutput, options: DefinitionOptions): Promise<CompiledOutput> {
   const location = getDependencyLocation(options)
 
   // Execute the dependency creation flow.
@@ -245,9 +246,9 @@ export function writeDependency (contents: { main: string; browser: string }, op
 
   // Create both typings concurrently.
   return Promise.all([
-    create(location.mainPath, location.mainFile, contents.main, location.mainDtsFile),
-    create(location.browserPath, location.browserFile, contents.browser, location.browserDtsFile)
-  ]).then(() => undefined)
+    create(location.mainPath, location.mainFile, output.main, location.mainDtsFile),
+    create(location.browserPath, location.browserFile, output.browser, location.browserDtsFile)
+  ]).then(() => output)
 }
 
 /**

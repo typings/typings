@@ -2,10 +2,13 @@
 
 import minimist = require('minimist')
 import extend = require('xtend')
+import chalk = require('chalk')
 import { install, installDependency } from '../typings'
 import { loader, inquire } from '../utils/cli'
 import { PROJECT_NAME } from '../utils/config'
 import { VALID_SOURCES, isRegistryPath, parseRegistryPath, search, getVersions } from '../lib/registry'
+import { ReferenceMap } from '../lib/compile'
+import { DependencyTree } from '../interfaces/main'
 import { archifyDependencyTree, handleError } from '../utils/cli'
 import TypingsError from '../lib/error'
 
@@ -51,6 +54,51 @@ Options: [--name] [--save|--save-dev] [--ambient] [--production]
   process.exit(0)
 }
 
+interface PrintOutput {
+  tree: DependencyTree
+  references?: ReferenceMap
+  missing?: ReferenceMap
+}
+
+/**
+ * Print the result to the user.
+ */
+function printResult (output: PrintOutput, options?: { name: string }) {
+  if (output.references) {
+    const references = Object.keys(output.references)
+
+    if (references.length) {
+      console.log(`References ${chalk.bold(`(not installed)`)}:`)
+
+      for (const reference of references) {
+        const info = output.references[reference]
+
+        console.log(`  ${reference} ${chalk.gray(`(from ${info.map(x => x.name).join(', ')})`)}`)
+      }
+
+      console.log('')
+    }
+  }
+
+  if (output.missing) {
+    const missings = Object.keys(output.missing)
+
+    if (missings.length) {
+      console.log(`Possible ambient modules ${chalk.bold(`(not installed)`)}:`)
+
+      for (const missing of missings) {
+        const info = output.missing[missing]
+
+        console.log(`  ${missing} ${chalk.gray(`(from ${info.map(x => x.name).join(', ')})`)}`)
+      }
+
+      console.log('')
+    }
+  }
+
+  console.log(archifyDependencyTree(output.tree, options))
+}
+
 /**
  * Install using CLI arguments.
  */
@@ -61,18 +109,14 @@ function installer (args: Args & minimist.ParsedArgs) {
 
   if (!args._.length) {
     return loader(install(options), args)
-      .then(function (tree) {
-        console.log(archifyDependencyTree(tree))
-      })
+      .then(output => printResult(output))
   }
 
   const dependency = args._[0]
 
   if (!isRegistryPath(dependency)) {
     return loader(installDependency(dependency, options), args)
-      .then(function (tree) {
-        console.log(archifyDependencyTree(tree, { name }))
-      })
+      .then(output => printResult(output, { name }))
   }
 
   const { name: dependencyName, version } = parseRegistryPath(dependency)
@@ -116,11 +160,11 @@ function installer (args: Args & minimist.ParsedArgs) {
           console.log(`Writing dependency as "${saveName}"...`)
         }
 
+        console.log('')
+
         return loader(installation, args)
       })
-      .then(function (tree) {
-        console.log(archifyDependencyTree(tree, { name: saveName }))
-      })
+      .then(output => printResult(output, { name: saveName }))
   }
 
   // User provided a source.

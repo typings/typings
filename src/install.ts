@@ -2,7 +2,7 @@ import extend = require('xtend')
 import Promise = require('native-or-bluebird')
 import { dirname } from 'path'
 import { resolveDependency, resolveTypeDependencies } from './lib/dependencies'
-import compile, { Options as CompileOptions } from './lib/compile'
+import compile, { Options as CompileOptions, CompiledOutput } from './lib/compile'
 import { findProject } from './utils/find'
 import { writeDependency, transformConfig, mkdirp, getTypingsLocation, touch } from './utils/fs'
 import { parseDependency } from './utils/parse'
@@ -31,15 +31,17 @@ export interface InstallOptions {
 /**
  * Install all dependencies on the current project.
  */
-export function install (options: InstallOptions): Promise<DependencyTree> {
+export function install (options: InstallOptions): Promise<{ tree: DependencyTree }> {
   return resolveTypeDependencies({ cwd: options.cwd, dev: !options.production, ambient: true })
     .then(tree => {
       const cwd = dirname(tree.src)
-      const queue: [string, DependencyTree, boolean][] = []
+      const queue: Array<Promise<any>> = []
 
       function addToQueue (deps: DependencyBranch, ambient: boolean) {
-        for (const key of Object.keys(deps)) {
-          queue.push([key, deps[key], ambient])
+        for (const name of Object.keys(deps)) {
+          const tree = deps[name]
+
+          queue.push(installDependencyTree(tree, { cwd, name, ambient, meta: true }))
         }
       }
 
@@ -48,33 +50,28 @@ export function install (options: InstallOptions): Promise<DependencyTree> {
       addToQueue(tree.ambientDependencies, true)
       addToQueue(tree.ambientDevDependencies, true)
 
-      // Create the `.d.ts` files, even when nothing gets installed.
-      if (queue.length === 0) {
-        const { typingsDir, mainDtsFile, browserDtsFile } = getTypingsLocation({ cwd })
+      return Promise.all(queue)
+        .then(installed => {
+          if (installed.length === 0) {
+            const { typingsDir, mainDtsFile, browserDtsFile } = getTypingsLocation({ cwd })
 
-        return mkdirp(typingsDir)
-          .then(() => {
-            return Promise.all([
-              touch(mainDtsFile, {}),
-              touch(browserDtsFile, {})
-            ])
-          })
-          .then(() => tree)
-      }
-
-      // Install each dependency after each other.
-      function chain (result: Promise<DependencyTree>, [name, tree, ambient]) {
-        return result.then(() => installDependencyTree(tree, { cwd, name, ambient, meta: true }))
-      }
-
-      return queue.reduce(chain, Promise.resolve()).then(() => tree)
+            return mkdirp(typingsDir)
+              .then(() => {
+                return Promise.all([
+                  touch(mainDtsFile, {}),
+                  touch(browserDtsFile, {})
+                ])
+              })
+          }
+        })
+        .then(() => ({ tree }))
     })
 }
 
 /**
  * Install a dependency into the currect project.
  */
-export function installDependency (dependency: string, options: InstallDependencyOptions): Promise<DependencyTree> {
+export function installDependency (dependency: string, options: InstallDependencyOptions): Promise<CompiledOutput> {
   if (!options.name) {
     return Promise.reject(new TypeError('You must specify a name for the dependency'))
   }
@@ -89,7 +86,7 @@ export function installDependency (dependency: string, options: InstallDependenc
 /**
  * Install from a dependency string.
  */
-function installTo (location: string, options: InstallDependencyOptions): Promise<DependencyTree> {
+function installTo (location: string, options: InstallDependencyOptions): Promise<CompiledOutput> {
   const dependency = parseDependency(location)
 
   return resolveDependency(dependency, options)
@@ -104,17 +101,17 @@ function installTo (location: string, options: InstallDependencyOptions): Promis
         ambient: options.ambient,
         meta: true
       })
-        .then(() => writeToConfig(dependency, options))
-        .then(() => tree)
+        .then(result => {
+          return writeToConfig(dependency, options).then(() => result)
+        })
     })
 }
 
 /**
  * Compile a dependency tree into the users typings.
  */
-function installDependencyTree (tree: DependencyTree, options: CompileOptions) {
-  return compile(tree, options)
-    .then(definitions => writeDependency(definitions, options))
+function installDependencyTree (tree: DependencyTree, options: CompileOptions): Promise<CompiledOutput> {
+  return compile(tree, options).then(result => writeDependency(result, options))
 }
 
 /**
@@ -143,4 +140,6 @@ function writeToConfig (dependency: Dependency, options: InstallDependencyOption
       return config
     })
   }
+
+  return Promise.resolve()
 }
