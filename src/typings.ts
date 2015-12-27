@@ -1,4 +1,4 @@
-export { install, installDependency } from './install'
+export { install, installDependency, InstallOptions, InstallDependencyOptions } from './install'
 export { uninstallDependency } from './uninstall'
 export { init } from './init'
 export { bundle } from './bundle'

@@ -1,6 +1,6 @@
 import test = require('blue-tape')
 import { normalize } from 'path'
-import { parseDependency, resolveDependency } from './parse'
+import { parseDependency, resolveDependency, inferDependencyName } from './parse'
 import { CONFIG_FILE } from './config'
 
 test('parse', t => {
@@ -239,7 +239,7 @@ test('parse', t => {
       const actual = parseDependency('http://example.com/foo/' + CONFIG_FILE)
       const expected = {
         raw: 'http://example.com/foo/' + CONFIG_FILE,
-        type: 'hosted',
+        type: 'http',
         location: 'http://example.com/foo/' + CONFIG_FILE
       }
 
@@ -254,9 +254,19 @@ test('parse', t => {
   })
 
   t.test('resolve dependency', t => {
-    t.test('github', t => {
-      t.equal(resolveDependency('github:foo/bar/baz/x.d.ts', '../lib/test.d.ts'), 'github:foo/bar/lib/test.d.ts')
-      t.end()
-    })
+    t.equal(resolveDependency('github:foo/bar/baz/x.d.ts', '../lib/test.d.ts'), 'github:foo/bar/lib/test.d.ts')
+    t.equal(resolveDependency('http://example.com/foo/bar.d.ts', 'x.d.ts'), 'http://example.com/foo/x.d.ts')
+
+    t.end()
+  })
+
+  t.test('infer dependency name', t => {
+    t.equal(inferDependencyName('github:foo/bar'), 'bar')
+    t.equal(inferDependencyName('npm:@scoped/package'), '@scoped/package')
+    t.equal(inferDependencyName('bower:dependency/path/to/type.d.ts'), 'dependency')
+    t.equal(inferDependencyName('github:a/b/c/d.d.ts'), 'd')
+    t.equal(inferDependencyName('github:typings/typed-debug'), 'debug')
+
+    t.end()
   })
 })

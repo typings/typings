@@ -34,11 +34,26 @@ export function normalizeSlashes (path: string) {
  * Infer the definition name from a location string.
  */
 export function inferDefinitionName (location: string) {
-  if (isHttp(location)) {
-    return basename(parseUrl(location).pathname, '.d.ts')
+  if (isDefinition(location)) {
+    let pathname = location
+
+    if (isHttp(location)) {
+      pathname = parseUrl(location).pathname
+    }
+
+    return sanitizeDefinitionName(basename(pathname, '.d.ts'))
+  }
+}
+
+/**
+ * Attempt to sanitize the definition name (stripping "typings", etc).
+ */
+export function sanitizeDefinitionName (name: string) {
+  if (name == null) {
+    return name
   }
 
-  return basename(location, '.d.ts')
+  return name.replace(/^(?:typings|typed)\-|\-(?:typings|typed)$/, '')
 }
 
 /**
