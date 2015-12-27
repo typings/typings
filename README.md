@@ -202,7 +202,6 @@ Writing a new type definition is as simple as creating a new package. Start by c
 {
   "name": "typings",
   "main": "path/to/definition.d.ts",
-  "ambient": false,
   "author": "Blake Embrey <hello@blakeembrey.com>",
   "description": "The TypeScript definition dependency manager",
   "dependencies": {},
