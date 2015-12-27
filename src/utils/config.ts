@@ -8,3 +8,6 @@ export const DTS_MAIN_FILE = 'main.d.ts'
 export const DTS_BROWSER_FILE = 'browser.d.ts'
 export const TRACKING_CODE = 'UA-40161947-2'
 export const CACHE_DIR = join(tmpdir(), 'typings')
+
+export const HOMEPAGE = 'https://github.com/typings/typings'
+export const ISSUES_HOMEPAGE = 'https://github.com/typings/typings/issues'

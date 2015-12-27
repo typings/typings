@@ -5,7 +5,12 @@ import Promise = require('native-or-bluebird')
 import promiseFinally from 'promise-finally'
 import inquirer = require('inquirer')
 import archy = require('archy')
+import * as os from 'os'
+import { BaseError } from 'make-error-cause'
 import { DependencyTree } from '../interfaces/main'
+import { PROJECT_NAME, ISSUES_HOMEPAGE } from '../utils/config'
+
+const pkg = require('../../package.json')
 
 /**
  * Options for the execution.
@@ -37,15 +42,51 @@ export function loader <T> (promise: T | Promise<T>, options: PrintOptions): Pro
 }
 
 /**
- * Final error handling for the CLI.
+ * Log an error message.
  */
-export function handleError (error: Error, options: PrintOptions): any {
-  console.log(chalk.red(error.toString()))
+export function logError (message: string, prefix?: string) {
+  let result = ''
 
-  if (options.verbose && 'stack' in error) {
-    console.log((error as any).stack)
+  for (const line of message.split(/\r?\n/g)) {
+    result += `${chalk.bgBlack.white(PROJECT_NAME)} ${chalk.bgBlack.red('ERR!')} ${prefix ? chalk.magenta(`${prefix} `) : ''}${line}\n`
   }
 
+  return result
+}
+
+/**
+ * Final error handling for the CLI.
+ */
+export function handleError (error: BaseError, options: PrintOptions): any {
+  let message = ''
+
+  message += logError(error.message, 'message')
+
+  if (error.cause) {
+    message += logError(error.cause.toString(), 'caused by')
+  }
+
+  if (options.verbose && error.stack) {
+    message += '\n'
+    message += logError(error.stack, 'stack')
+  }
+
+  message += '\n'
+  message += logError(process.cwd(), 'cwd')
+  message += logError(`${os.type()} ${os.release()}`, 'system')
+  message += logError(process.argv.map(JSON.stringify).join(' '), 'command')
+  message += logError(process.version, 'node -v')
+  message += logError(pkg.version, `${PROJECT_NAME} -v`)
+
+  if ((error as any).code) {
+    message += logError((error as any).code, 'code')
+  }
+
+  message += '\n'
+  message += logError('If you need help, you may report this error at:')
+  message += logError(`  <${ISSUES_HOMEPAGE}>`)
+
+  console.error(message)
   process.exit(1)
 }
 
