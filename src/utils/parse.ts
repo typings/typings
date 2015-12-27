@@ -1,6 +1,6 @@
 import invariant = require('invariant')
 import { parse, format, resolve as resolveUrl } from 'url'
-import { normalize, join, basename } from 'path'
+import { normalize, join, basename, dirname } from 'path'
 import { Dependency } from '../interfaces/main'
 import { CONFIG_FILE } from './config'
 import { isDefinition, normalizeSlashes } from './path'
@@ -143,16 +143,15 @@ export function resolveDependency (raw: string, path: string) {
   // Handle git hosts.
   if (type === 'github' || type === 'bitbucket') {
     const { org, repo, sha } = meta
-    const resolvedPath = normalizeSlashes(join(meta.path, path))
+    const resolvedPath = normalizeSlashes(join(dirname(meta.path), path))
 
     return `${type}:${org}/${repo}/${resolvedPath}${sha === 'master' ? '' : '#' + sha}`
   }
 
   if (type === 'npm' || type === 'bower') {
-    const { name } = meta
-    const resolvedPath = normalizeSlashes(join(meta.path, path))
+    const resolvedPath = normalizeSlashes(join(dirname(meta.path), path))
 
-    return `${type}:${name}/${resolvedPath}`
+    return `${type}:${meta.name}/${resolvedPath}`
   }
 
   if (type === 'http' || type === 'https') {

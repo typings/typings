@@ -255,7 +255,7 @@ test('parse', t => {
 
   t.test('resolve dependency', t => {
     t.test('github', t => {
-      t.equal(resolveDependency('github:foo/bar/x.d.ts', '../lib/test.d.ts'), 'github:foo/bar/lib/test.d.ts')
+      t.equal(resolveDependency('github:foo/bar/baz/x.d.ts', '../lib/test.d.ts'), 'github:foo/bar/lib/test.d.ts')
       t.end()
     })
   })
