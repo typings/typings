@@ -15,7 +15,7 @@ export interface InstallDependencyOptions {
   save?: boolean
   saveDev?: boolean
   ambient?: boolean
-  name?: string
+  name: string
   cwd: string
   source?: string
 }

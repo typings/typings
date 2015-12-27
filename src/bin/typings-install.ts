@@ -3,9 +3,10 @@
 import minimist = require('minimist')
 import extend = require('xtend')
 import chalk = require('chalk')
-import { install, installDependency } from '../typings'
+import { install, installDependency, InstallDependencyOptions } from '../typings'
 import { loader, inquire } from '../utils/cli'
 import { PROJECT_NAME } from '../utils/config'
+import { inferDependencyName } from '../utils/parse'
 import { VALID_SOURCES, isRegistryPath, parseRegistryPath, search, getVersions } from '../lib/registry'
 import { ReferenceMap } from '../lib/compile'
 import { DependencyTree } from '../interfaces/main'
@@ -112,14 +113,34 @@ function installer (args: Args & minimist.ParsedArgs) {
       .then(output => printResult(output))
   }
 
-  const dependency = args._[0]
+  function installLocation (location: string, options: InstallDependencyOptions) {
+    function handle (options: InstallDependencyOptions) {
+      return loader(installDependency(location, options), args)
+        .then(output => {
+          printResult(output, { name: options.name })
+        })
+    }
 
-  if (!isRegistryPath(dependency)) {
-    return loader(installDependency(dependency, options), args)
-      .then(output => printResult(output, { name }))
+    if (typeof options.name === 'string') {
+      return handle(options)
+    }
+
+    return inquire([{
+      name: 'name',
+      type: 'input',
+      message: 'What is the dependency name?',
+      default: inferDependencyName(location)
+    }])
+      .then((answers: any) => handle(extend(options, { name: answers.name})))
   }
 
-  const { name: dependencyName, version } = parseRegistryPath(dependency)
+  const location = args._[0]
+
+  if (!isRegistryPath(location)) {
+    return installLocation(location, options)
+  }
+
+  const { name: dependencyName, version } = parseRegistryPath(location)
 
   // Install a dependency from a specific source.
   function installFrom (source: string) {
@@ -150,9 +171,6 @@ function installer (args: Args & minimist.ParsedArgs) {
           .then((answers: any) => versions[answers.version])
       })
       .then(function (version) {
-        const installOptions = extend(options, { name: saveName })
-        const installation = installDependency(version.location, installOptions)
-
         console.log(`Installing ${dependencyName}@${version.version} for ${sourceName}...`)
 
         // Log extra info when the installation name is different to the registry.
@@ -162,9 +180,8 @@ function installer (args: Args & minimist.ParsedArgs) {
 
         console.log('')
 
-        return loader(installation, args)
+        return installLocation(version.location, extend(options, { name: saveName }))
       })
-      .then(output => printResult(output, { name: saveName }))
   }
 
   // User provided a source.

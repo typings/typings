@@ -3,7 +3,7 @@ import { parse, format, resolve as resolveUrl } from 'url'
 import { normalize, join, basename, dirname } from 'path'
 import { Dependency } from '../interfaces/main'
 import { CONFIG_FILE } from './config'
-import { isDefinition, normalizeSlashes } from './path'
+import { isDefinition, normalizeSlashes, inferDefinitionName, sanitizeDefinitionName } from './path'
 
 /**
  * Parse the git host options from the raw string.
@@ -126,7 +126,7 @@ export function parseDependency (raw: string): Dependency {
   if (type === 'http' || type === 'https') {
     return {
       raw,
-      type: 'hosted',
+      type,
       location: raw
     }
   }
@@ -162,5 +162,32 @@ export function resolveDependency (raw: string, path: string) {
     return `file:${normalizeSlashes(join(location, path))}`
   }
 
-  throw new TypeError(`Unable to resolve dependency from ${path}`)
+  throw new TypeError(`Unable to resolve dependency from unknown scheme`)
+}
+
+/**
+ * Infer a dependency name from the installation location.
+ */
+export function inferDependencyName (raw: string) {
+  const { type, meta, location } = parseDependency(raw)
+
+  if (type === 'npm' || type === 'bower') {
+    return meta.name
+  }
+
+  if (type === 'http' || type === 'https' || type === 'file') {
+    return inferDefinitionName(location)
+  }
+
+  if (type === 'github' || type === 'bitbucket') {
+    const { org, repo, path } = meta
+
+    if (isDefinition(path)) {
+      return inferDefinitionName(path)
+    }
+
+    return sanitizeDefinitionName(repo)
+  }
+
+  throw new TypeError(`Unable to infer dependency name from unknown scheme`)
 }
