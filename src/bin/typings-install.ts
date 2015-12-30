@@ -171,7 +171,7 @@ function installer (args: Args & minimist.ParsedArgs) {
           .then((answers: any) => versions[answers.version])
       })
       .then(function (version) {
-        console.log(`Installing ${dependencyName}@${version.version} for ${sourceName}...`)
+        console.log(`Installing ${dependencyName}@${version.version} (${sourceName})...`)
 
         // Log extra info when the installation name is different to the registry.
         if (name != null && name !== saveName) {
