@@ -4,13 +4,12 @@ import minimist = require('minimist')
 import extend = require('xtend')
 import chalk = require('chalk')
 import { install, installDependency, InstallDependencyOptions } from '../typings'
-import { loader, inquire } from '../utils/cli'
+import { loader, inquire, handleError, archifyDependencyTree } from '../utils/cli'
 import { PROJECT_NAME } from '../utils/config'
 import { inferDependencyName } from '../utils/parse'
 import { VALID_SOURCES, isRegistryPath, parseRegistryPath, search, getVersions } from '../lib/registry'
 import { ReferenceMap } from '../lib/compile'
 import { DependencyTree } from '../interfaces/main'
-import { archifyDependencyTree, handleError } from '../utils/cli'
 import TypingsError from '../lib/error'
 
 interface Args {
@@ -182,6 +181,7 @@ function installer (args: Args & minimist.ParsedArgs) {
 
         return installLocation(version.location, extend(options, { name: saveName }))
       })
+      .catch(err => handleError(err, { verbose }))
   }
 
   // User provided a source.
