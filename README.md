@@ -75,6 +75,8 @@ Write a dependency to the `typings/` directory, and optionally persist it in `ty
 
 Where `path` can be a `typings.json` file, a `.d.ts` file, or empty. When the path is empty, or not a `d.ts` file, `typings.json` will be automatically appended to the path.
 
+**Please note:** `npm` and `bower` resolve using their respective algorithms over the local filesystem. They will need to be installed before running `typings install`. The other schemes (`http`, `https`, `github`, `bitbucket`) resolve over HTTP(s). Finally, `file` is a direct pointer in the local filesystem.
+
 #### Registry
 
 Typings installations without a location will be looked up in the [registry](https://github.com/typings/registry). For example, `typings install debug` will resolve to [this entry](https://github.com/typings/registry/blob/master/npm/debug.json) in the public registry. Anyone can contribute typings to the registry, just make a pull request.
