@@ -132,8 +132,8 @@ export function readJsonFrom (from: string): Promise<any> {
 /**
  * Stringify an object as JSON for the filesystem (appends EOL).
  */
-export function stringifyJson (json: any, indent: number | string = 2, eol: string = EOL) {
-  return JSON.stringify(json, null, indent).replace(/\n/g, eol) + eol
+export function stringifyJson (json: any, indent?: number | string, eol: string = EOL) {
+  return JSON.stringify(json, null, indent || 2).replace(/\n/g, eol) + eol
 }
 
 /**
