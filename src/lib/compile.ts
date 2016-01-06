@@ -8,15 +8,10 @@ import { DependencyTree, Overrides } from '../interfaces/main'
 import { readFileFrom } from '../utils/fs'
 import { resolveFrom, relativeTo, isHttp, isModuleName, normalizeSlashes, fromDefinition, normalizeToDefinition } from '../utils/path'
 import { REFERENCE_REGEXP } from '../utils/references'
-import { PROJECT_NAME, CONFIG_FILE } from '../utils/config'
+import { PROJECT_NAME, CONFIG_FILE, DEPENDENCY_SEPARATOR } from '../utils/config'
 import { resolveDependency } from '../utils/parse'
 import { VERSION } from '../typings'
 import TypingsError from './error'
-
-/**
- * Define the separator between module paths. E.g. `foo~bar`.
- */
-const SEPARATOR = '~'
 
 /**
  * Options interface. Supply a name and the current working directory.
@@ -211,12 +206,6 @@ function compileDependencyTree (tree: DependencyTree, options: CompileOptions): 
 function compileDependencyPath (path: string, options: StringifyOptions): Promise<CompiledResult> {
   const { tree, entry } = options
 
-  if (tree.missing) {
-    return Promise.reject(new TypingsError(
-      `Missing dependency "${options.name}", unable to compile dependency tree`
-    ))
-  }
-
   // Fallback to resolving the entry file.
   if (path == null) {
     if (entry == null) {
@@ -344,7 +333,7 @@ function stringifyDependencyPath (path: string, options: StringifyOptions): Prom
 
           if (isModuleName(path)) {
             const [dependencyName, dependencyPath] = getModuleNameParts(path)
-            const moduleName = ambient ? dependencyName : `${name}${SEPARATOR}${dependencyName}`
+            const moduleName = ambient ? dependencyName : `${name}${DEPENDENCY_SEPARATOR}${dependencyName}`
             const compileOptions = { cwd, browser, files, name: moduleName, ambient: false, meta }
             const stringifyOptions = cachedStringifyOptions(dependencyName, compileOptions, options)
 
@@ -382,8 +371,8 @@ function stringifyDependencyPath (path: string, options: StringifyOptions): Prom
               }
             }
 
-            // Push the current file at the end of the contents. This builds
-            // the stringified file with dependencies first.
+            // Push the current file at the end of the contents.
+            // This builds the stringified file with dependencies first.
             contents.push(stringified)
 
             return {
@@ -394,22 +383,21 @@ function stringifyDependencyPath (path: string, options: StringifyOptions): Prom
           })
       },
       function (cause) {
-        const authorPhrase = options.parent ? `The author of "${options.parent.name}" needs` : 'You need'
+        const authorPhrase = options.parent ? `The author of "${options.parent.name}" needs to` : 'You should'
         const relativePath = relativeTo(tree.src, path)
 
         // Provide better errors for the entry path.
         if (path === entry) {
           return Promise.reject(new TypingsError(
             `Unable to read typings for "${options.name}". ` +
-            `${authorPhrase} to make sure the main path is correct`,
+            `${authorPhrase} check the path is correct`,
             cause
           ))
         }
 
         return Promise.reject(new TypingsError(
-          `Unable to read ${relativePath} from "${options.name}". ` +
-          `${authorPhrase} to check that the entry in "${CONFIG_FILE}" is ` +
-          `complete (the path "${relativePath}" appears to be missing)`,
+          `Unable to read "${relativePath}" from "${options.name}". ` +
+          `${authorPhrase} check the entry in "${CONFIG_FILE}" is complete`,
           cause
         ))
       }
@@ -465,7 +453,7 @@ function stringifyFile (path: string, rawContents: string, options: StringifyOpt
         return name
       }
 
-      return `${options.name}${SEPARATOR}${name}`
+      return `${options.name}${DEPENDENCY_SEPARATOR}${name}`
     }
 
     const relativePath = relativeTo(tree.src, resolveFrom(path, name))

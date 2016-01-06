@@ -1,7 +1,6 @@
 import test = require('blue-tape')
 import { join } from 'path'
 import { resolveDependencies } from './dependencies'
-import { PROJECT_NAME } from '../utils/config'
 import { DependencyTree, DependencyBranch } from '../interfaces/main'
 
 const RESOLVE_FIXTURE_DIR = join(__dirname, '__test__/fixtures/resolve')
@@ -10,7 +9,6 @@ test('dependencies', t => {
   t.test('resolve fixture', t => {
     t.test('resolve a dependency tree', t => {
       const expected: DependencyTree = {
-        missing: false,
         raw: undefined,
         name: 'foobar',
         src: join(RESOLVE_FIXTURE_DIR, 'package.json'),
@@ -25,7 +23,6 @@ test('dependencies', t => {
       }
 
       const bowerDep: DependencyTree = {
-        missing: false,
         raw: 'bower:bower-dep',
         src: join(RESOLVE_FIXTURE_DIR, 'bower_components/bower-dep/bower.json'),
         typings: 'bower-dep.d.ts',
@@ -41,7 +38,6 @@ test('dependencies', t => {
       }
 
       const exampleDep: DependencyTree = {
-        missing: false,
         raw: 'bower:example',
         src: join(RESOLVE_FIXTURE_DIR, 'bower_components/example/bower.json'),
         main: undefined,
@@ -57,7 +53,6 @@ test('dependencies', t => {
       }
 
       const typedDep: DependencyTree = {
-        missing: false,
         raw: 'file:typings/dep.d.ts',
         src: join(RESOLVE_FIXTURE_DIR, 'typings/dep.d.ts'),
         typings: join(RESOLVE_FIXTURE_DIR, 'typings/dep.d.ts'),
@@ -68,7 +63,6 @@ test('dependencies', t => {
       }
 
       const npmDep: DependencyTree = {
-        missing: false,
         raw: 'npm:npm-dep',
         src: join(RESOLVE_FIXTURE_DIR, 'node_modules/npm-dep/package.json'),
         main: './index.js',
@@ -84,13 +78,18 @@ test('dependencies', t => {
       }
 
       const typedDevDep: DependencyTree = {
-        missing: true,
-        raw: 'bower:dep',
-        src: join(RESOLVE_FIXTURE_DIR, 'bower_components/dep/bower.json'),
+        ambientDependencies: {},
+        ambientDevDependencies: {},
+        browser: undefined,
+        browserTypings: undefined,
         dependencies: {},
         devDependencies: {},
-        ambientDependencies: {},
-        ambientDevDependencies: {}
+        main: undefined,
+        name: 'dep',
+        raw: 'bower:dep',
+        src: join(RESOLVE_FIXTURE_DIR, 'bower_components/dep/bower.json'),
+        typings: undefined,
+        version: undefined
       }
 
       ;(expected as any).dependencies['bower-dep'] = bowerDep

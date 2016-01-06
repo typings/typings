@@ -59,11 +59,12 @@ export function logError (message: string, prefix?: string) {
  */
 export function handleError (error: BaseError, options: PrintOptions): any {
   let message = ''
+  let cause = error
 
   message += logError(error.message, 'message')
 
-  if (error.cause) {
-    message += logError(error.cause.toString(), 'caused by')
+  while (cause = cause.cause as any) {
+    message += logError(cause.message, 'caused by')
   }
 
   if (options.verbose && error.stack) {

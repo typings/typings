@@ -70,7 +70,6 @@ export interface DependencyTree {
   parent?: DependencyTree
   src: string
   raw: string
-  missing: boolean
   dependencies: DependencyBranch
   devDependencies: DependencyBranch
   ambientDependencies: DependencyBranch
