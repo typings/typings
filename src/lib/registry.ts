@@ -44,8 +44,8 @@ export interface SearchResults {
  * Search the typings registry.
  */
 export function search (options: SearchOptions): Promise<SearchResults> {
-  if (options.source) {
-    invariantSource(options.source)
+  if (options.source && !isValidSource(options.source)) {
+    return Promise.reject(new TypeError(`Invalid registry source: ${options.source}`))
   }
 
   const query = stringify(pick(options, ['query', 'name', 'source', 'offset', 'limit']))
@@ -67,7 +67,9 @@ export interface ProjectVersion {
  * Get matching project versions.
  */
 export function getVersions (source: string, name: string, version?: string): Promise<{ versions: ProjectVersion[] }> {
-  invariantSource(source)
+  if (!isValidSource(source)) {
+    return Promise.reject(new TypeError(`Invalid registry source: ${source}`))
+  }
 
   const sourceParam = encodeURIComponent(source)
   const nameParam = encodeURIComponent(name)
@@ -96,8 +98,8 @@ export function parseRegistryPath (dep: string) {
 }
 
 /**
- * Invariant source check.
+ * Source validity check.
  */
-function invariantSource (source: string) {
-  invariant(VALID_SOURCES.hasOwnProperty(source), 'Invalid source: %s', source)
+function isValidSource (source: string): boolean {
+  return VALID_SOURCES.hasOwnProperty(source)
 }

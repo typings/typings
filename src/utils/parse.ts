@@ -51,7 +51,7 @@ export function parseDependency (raw: string): Dependency {
 
     invariant(
       filename === CONFIG_FILE || isDefinition(filename),
-      `Only ".d.ts" files and "${CONFIG_FILE}" are supported`
+      `Only ".d.ts" and "${CONFIG_FILE}" files are supported`
     )
 
     return {

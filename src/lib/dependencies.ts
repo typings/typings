@@ -395,7 +395,7 @@ function checkCircularDependency (tree: DependencyTree, filename: string) {
     const currentSrc = tree.src
 
     do {
-      invariant(tree.src !== filename, 'Circular dependency detected in %s', currentSrc)
+      invariant(tree.src !== filename, `Circular dependency detected using "${currentSrc}"`)
     } while (tree = tree.parent)
   }
 }

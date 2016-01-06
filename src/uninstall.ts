@@ -1,5 +1,4 @@
 import extend = require('xtend')
-import invariant = require('invariant')
 import { removeDependency, transformConfig, DefinitionOptions } from './utils/fs'
 import { findProject } from './utils/find'
 
