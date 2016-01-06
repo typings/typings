@@ -4,7 +4,7 @@ import { EOL } from 'os'
 import { join, relative } from 'path'
 import compile from './compile'
 import { DependencyTree } from '../interfaces/main'
-import { PROJECT_NAME, CONFIG_FILE } from '../utils/config'
+import { CONFIG_FILE } from '../utils/config'
 import { VERSION } from '../typings'
 
 const FIXTURES_DIR = join(__dirname, '__test__/fixtures')
@@ -16,7 +16,6 @@ test('compile', t => {
 
       const root: DependencyTree = {
         src: join(FIXTURE_DIR, CONFIG_FILE),
-        missing: false,
         main: 'root',
         raw: undefined,
         browser: {
@@ -30,7 +29,6 @@ test('compile', t => {
 
       const a: DependencyTree = {
         src: join(FIXTURE_DIR, `a/${CONFIG_FILE}`),
-        missing: false,
         main: undefined,
         raw: undefined,
         typings: 'typed.d.ts',
@@ -43,7 +41,6 @@ test('compile', t => {
 
       const b: DependencyTree = {
         src: join(FIXTURE_DIR, 'bower.json'),
-        missing: false,
         main: undefined,
         raw: undefined,
         typings: 'typings/b.d.ts',
@@ -55,7 +52,6 @@ test('compile', t => {
 
       const browser: DependencyTree = {
         src: join(FIXTURE_DIR, 'package.json'),
-        missing: false,
         main: undefined,
         raw: undefined,
         typings: 'browser.d.ts',
@@ -67,7 +63,6 @@ test('compile', t => {
 
       const dep: DependencyTree = {
         src: join(FIXTURE_DIR, `dep/${CONFIG_FILE}`),
-        missing: false,
         main: 'dep/main.d.ts',
         raw: undefined,
         dependencies: {},
@@ -170,7 +165,6 @@ test('compile', t => {
 
       const file: DependencyTree = {
         src: join(FIXTURE_DIR, CONFIG_FILE),
-        missing: false,
         main: 'file.d.ts',
         raw: undefined,
         dependencies: {},
@@ -209,7 +203,6 @@ test('compile', t => {
       const node: DependencyTree = {
         src: __filename,
         raw: undefined,
-        missing: false,
         typings: join(FIXTURE_DIR, 'node.d.ts'),
         dependencies: {},
         devDependencies: {},
@@ -219,7 +212,6 @@ test('compile', t => {
 
       const fs: DependencyTree = {
         src: join(FIXTURE_DIR, 'fs.d.ts'),
-        missing: false,
         main: undefined,
         raw: undefined,
         typings: join(FIXTURE_DIR, 'fs.d.ts'),
@@ -250,7 +242,6 @@ test('compile', t => {
 
       const node: DependencyTree = {
         src: __filename,
-        missing: false,
         raw: undefined,
         typings,
         dependencies: {},
@@ -284,7 +275,6 @@ test('compile', t => {
   t.test('missing error', t => {
     const node: DependencyTree = {
       src: 'http://example.com/typings/index.d.ts',
-      missing: true,
       raw: undefined,
       typings: 'http://example.com/typings/index.d.ts',
       dependencies: {},
@@ -297,7 +287,7 @@ test('compile', t => {
 
     return compile(node, { name: 'test', cwd: __dirname, ambient: false, meta: false })
       .catch(function (result) {
-        t.equal(result.message, 'Missing dependency "test", unable to compile dependency tree')
+        t.equal(result.message, 'Unable to read typings for "test". You should check the path is correct')
       })
   })
 
@@ -307,7 +297,6 @@ test('compile', t => {
     const main: DependencyTree = {
       src: join(FIXTURE_DIR, 'package.json'),
       raw: undefined,
-      missing: false,
       dependencies: {},
       devDependencies: {},
       ambientDependencies: {},
@@ -328,7 +317,6 @@ test('compile', t => {
     const main: DependencyTree = {
       src: join(FIXTURE_DIR, 'package.json'),
       main: 'index.js',
-      missing: false,
       raw: undefined,
       dependencies: {},
       devDependencies: {},
@@ -340,7 +328,6 @@ test('compile', t => {
       main: 'index.js',
       raw: undefined,
       src: join(FIXTURE_DIR, 'node_modules/test/package.json'),
-      missing: false,
       dependencies: {},
       devDependencies: {},
       ambientDependencies: {},
@@ -360,7 +347,6 @@ test('compile', t => {
   t.test('resolve over http', t => {
     const node: DependencyTree = {
       src: 'http://example.com/typings.json',
-      missing: false,
       raw: undefined,
       typings: 'http://example.com/index.d.ts',
       dependencies: {},

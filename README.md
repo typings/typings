@@ -220,10 +220,6 @@ Writing a new type definition is as simple as creating a new package. Start by c
 * **devDependencies** A map of development dependencies that need installing
 * **ambientDependencies** A map of environment dependencies that need installing
 
-#### Can I Use Multiple Sources?
-
-The values of the dependency map can be a string, or an array of strings, which point to the location of the type information. For most cases, using a string is enough. In some cases, however, it's possible that a type definition becomes available over multiple sources. In this case, **typings** will resolve to the first available entry. For example, publishing a type definition that refers to `npm:<package>` will resolve before `github:<org>/<package>`, but only when the package is installed.
-
 #### What Are Ambient Dependencies?
 
 Ambient dependencies are type definitions which provide information about an environment. Some examples of these dependencies are `node`, `browserify`, `window` or even `Array.prototype.map`. These are globals that _need_ to exist, but you do not "require" them.

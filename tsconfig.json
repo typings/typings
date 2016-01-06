@@ -20,7 +20,6 @@
     "src/typings.ts",
     "custom_typings/archy.d.ts",
     "custom_typings/array-uniq.d.ts",
-    "custom_typings/arrify.d.ts",
     "custom_typings/blue-tape.d.ts",
     "custom_typings/chalk.d.ts",
     "custom_typings/columnify.d.ts",

@@ -11,3 +11,5 @@ export const CACHE_DIR = join(tmpdir(), 'typings')
 
 export const HOMEPAGE = 'https://github.com/typings/typings'
 export const ISSUES_HOMEPAGE = 'https://github.com/typings/typings/issues'
+
+export const DEPENDENCY_SEPARATOR = '~'
