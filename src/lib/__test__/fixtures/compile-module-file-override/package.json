@@ -1,0 +1,7 @@
+{
+  "name": "test",
+  "main": "index.js",
+  "browser": {
+    "dep": "./override.js"
+  }
+}
