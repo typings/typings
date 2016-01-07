@@ -6,6 +6,7 @@ import compile from './compile'
 import { DependencyTree } from '../interfaces/main'
 import { CONFIG_FILE } from '../utils/config'
 import { VERSION } from '../typings'
+import { resolveDependencies } from './dependencies'
 
 const FIXTURES_DIR = join(__dirname, '__test__/fixtures')
 
@@ -129,7 +130,7 @@ test('compile', t => {
             '',
             `// Compiled using typings@${VERSION}`,
             `// Source: ${relative(__dirname, join(FIXTURE_DIR, 'browser.d.ts'))}`,
-            'declare module \'root~b\' {',
+            'declare module \'root~browser\' {',
             'export const bar: boolean',
             '}',
             '',
@@ -149,7 +150,7 @@ test('compile', t => {
             `// Source: ${relative(__dirname, join(FIXTURE_DIR, 'root.d.ts'))}`,
             'declare module \'root/root\' {',
             'import a from \'root~a\'',
-            'import b = require(\'root~b\')',
+            'import b = require(\'root~browser\')',
             'import { isDep } from \'root~dep/path\'',
             'export * from \'root/root-import\'',
             '}',
@@ -268,6 +269,7 @@ test('compile', t => {
 
           t.equal(result.main, contents)
           t.equal(result.browser, contents)
+          t.deepEqual(result.missing, {})
         })
     })
   })
@@ -341,6 +343,73 @@ test('compile', t => {
     return compile(main, { name: 'main', cwd: __dirname, ambient: false, meta: false })
       .catch(function (error) {
         t.ok(/^Unable to read typings for "main~test"/.test(error.message))
+      })
+  })
+
+  t.test('override dependency with local file', t => {
+    const FIXTURE_DIR = join(FIXTURES_DIR, 'compile-module-file-override')
+
+    return resolveDependencies({ cwd: FIXTURE_DIR, dev: false })
+      .then(x => compile(x, { name: 'main', cwd: __dirname, ambient: false, meta: false }))
+      .then(result => {
+        t.equal(result.browser, [
+          'declare module \'main/override\' {',
+          'function test (): string;',
+          '',
+          'export = test;',
+          '}',
+          '',
+          'declare module \'main/index\' {',
+          'import * as foo from \'main/override\'',
+          '',
+          'export = foo',
+          '}',
+          'declare module \'main\' {',
+          'import main = require(\'main/index\');',
+          'export = main;',
+          '}'
+        ].join(EOL))
+
+        t.deepEqual(result.missing, {
+          dep: [{ browser: false, main: true, name: 'main' }]
+        })
+      })
+  })
+
+  t.test('resolve and compile local file override with dependency', t => {
+    const FIXTURE_DIR = join(FIXTURES_DIR, 'compile-file-module-override')
+
+    return resolveDependencies({ cwd: FIXTURE_DIR, dev: false })
+      .then(x => compile(x, { name: 'main', cwd: __dirname, ambient: false, meta: false }))
+      .then(result => {
+        t.equal(result.main, [
+          'declare module \'main/imported\' {',
+          'export function isNotDep (): boolean;',
+          '}',
+          '',
+          'declare module \'main/index\' {',
+          'export * from \'main/imported\'',
+          '}',
+          'declare module \'main\' {',
+          'export * from \'main/index\';',
+          '}'
+        ].join(EOL))
+
+        t.equal(result.browser, [
+          'declare module \'main~dep/index\' {',
+          'export function isDep (): boolean;',
+          '}',
+          'declare module \'main~dep\' {',
+          'export * from \'main~dep/index\';',
+          '}',
+          '',
+          'declare module \'main/index\' {',
+          'export * from \'main~dep\'',
+          '}',
+          'declare module \'main\' {',
+          'export * from \'main/index\';',
+          '}'
+        ].join(EOL))
       })
   })
 

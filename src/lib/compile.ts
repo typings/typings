@@ -140,6 +140,17 @@ interface CompileOptions extends Options {
 }
 
 /**
+ * Resolve an override location.
+ */
+function resolveFromWithModuleName (src: string, to: string) {
+  if (to == null || typeof to === 'boolean' || isModuleName(to)) {
+    return to
+  }
+
+  return resolveFrom(src, normalizeToDefinition(to))
+}
+
+/**
  * Get stringify options for a dependency.
  */
 function getStringifyOptions (
@@ -161,17 +172,11 @@ function getStringifyOptions (
 
       overrides[mainDefinition] = browserDefinition
     } else {
-      const browserOverrides = browser
+      for (const key of Object.keys(browser)) {
+        const from = resolveFromWithModuleName(tree.src, key)
+        const to = resolveFromWithModuleName(tree.src, browser[key])
 
-      for (const key of Object.keys(browserOverrides)) {
-        if (!isModuleName(key)) {
-          const from = resolveFrom(tree.src, normalizeToDefinition(key))
-          const to = resolveFrom(tree.src, normalizeToDefinition(browserOverrides[key]))
-
-          overrides[from] = to
-        } else {
-          overrides[key] = browserOverrides[key]
-        }
+        overrides[from] = to
       }
     }
   }
@@ -264,6 +269,17 @@ function cachedStringifyOptions (name: string, compileOptions: CompileOptions, o
 }
 
 /**
+ * Get possible path and dependency overrides.
+ */
+function getPath (path: string, options: StringifyOptions) {
+  if (has(options.overrides, path)) {
+    return options.overrides[path]
+  }
+
+  return path
+}
+
+/**
  * Get dependency from stringify options.
  */
 function getDependency (name: string, options: StringifyOptions) {
@@ -282,14 +298,35 @@ function getDependency (name: string, options: StringifyOptions) {
  * Stringify a dependency file.
  */
 function stringifyDependencyPath (path: string, options: StringifyOptions): Promise<CompiledResult> {
-  let definitionPath = normalizeToDefinition(path)
+  const resolved = getPath(normalizeToDefinition(path), options)
   const { tree, ambient, cwd, browser, name, files, meta, entry } = options
+  const { raw, src } = tree
 
-  if (has(options.overrides, definitionPath)) {
-    definitionPath = options.overrides[definitionPath]
+  // Load a dependency path.
+  function loadByModuleName (path: string) {
+    const [dependencyName, dependencyPath] = getModuleNameParts(path)
+    const moduleName = ambient ? dependencyName : `${name}${DEPENDENCY_SEPARATOR}${dependencyName}`
+    const compileOptions = { cwd, browser, files, name: moduleName, ambient: false, meta }
+    const stringifyOptions = cachedStringifyOptions(dependencyName, compileOptions, options)
+
+    // When no options are returned, the dependency is missing.
+    if (!stringifyOptions) {
+      return Promise.resolve({
+        contents: null,
+        references: [],
+        missing: [{ name, path, raw, src }]
+      })
+    }
+
+    return compileDependencyPath(dependencyPath, stringifyOptions)
   }
 
-  return cachedReadFileFrom(definitionPath, options)
+  // Check if the path is resolving to a module name before reading.
+  if (isModuleName(resolved)) {
+    return loadByModuleName(resolved)
+  }
+
+  return cachedReadFileFrom(resolved, options)
     .then(
       function (rawContents) {
         const info = ts.preProcessFile(rawContents)
@@ -308,16 +345,17 @@ function stringifyDependencyPath (path: string, options: StringifyOptions): Prom
           ))
         }
 
-        const importedFiles = info.importedFiles.map(x => isModuleName(x.fileName) ? x.fileName : resolveFrom(path, x.fileName))
-        const referencedFiles = info.referencedFiles.map(x => resolveFrom(path, x.fileName))
-        const missingDependencies: string[] = []
+        const importedFiles = info.importedFiles.map(x => resolveFromWithModuleName(resolved, x.fileName))
+        const referencedFiles = info.referencedFiles.map(x => resolveFrom(resolved, x.fileName))
 
         // All dependencies MUST be imported for ambient modules.
         if (ambient) {
           Object.keys(tree.dependencies).forEach(x => importedFiles.push(x))
         }
 
-        const imports = importedFiles.map(path => {
+        const imports = importedFiles.map(importedFile => {
+          const path = getPath(importedFile, options)
+
           // Return `null` to skip the dependency writing, could have the same import twice.
           if (has(options.imported, path)) {
             return
@@ -332,21 +370,7 @@ function stringifyDependencyPath (path: string, options: StringifyOptions): Prom
           options.imported[path] = true
 
           if (isModuleName(path)) {
-            const [dependencyName, dependencyPath] = getModuleNameParts(path)
-            const moduleName = ambient ? dependencyName : `${name}${DEPENDENCY_SEPARATOR}${dependencyName}`
-            const compileOptions = { cwd, browser, files, name: moduleName, ambient: false, meta }
-            const stringifyOptions = cachedStringifyOptions(dependencyName, compileOptions, options)
-
-            // When no options are returned, the dependency is missing.
-            if (!stringifyOptions) {
-              if (missingDependencies.indexOf(path) === -1) {
-                missingDependencies.push(path)
-              }
-
-              return
-            }
-
-            return compileDependencyPath(dependencyPath, stringifyOptions)
+            return loadByModuleName(path)
           }
 
           return stringifyDependencyPath(path, options)
@@ -355,11 +379,10 @@ function stringifyDependencyPath (path: string, options: StringifyOptions): Prom
         return Promise.all(imports)
           .then<CompiledResult>(imports => {
             const stringifyOptions = extend(options, { originalPath: path })
-            const stringified = stringifyFile(definitionPath, rawContents, stringifyOptions)
-            const { raw, src } = tree
+            const stringified = stringifyFile(resolved, rawContents, stringifyOptions)
 
             let references = referencedFiles.map(path => ({ name, path, raw, src }))
-            let missing = missingDependencies.map(path => ({ name, path, raw, src }))
+            let missing: Reference[] = []
             let contents: string[] = []
 
             for (const imported of imports) {
@@ -367,7 +390,10 @@ function stringifyDependencyPath (path: string, options: StringifyOptions): Prom
               if (imported) {
                 references = references.concat(imported.references)
                 missing = missing.concat(imported.missing)
-                contents.push(imported.contents)
+
+                if (imported.contents != null) {
+                  contents.push(imported.contents)
+                }
               }
             }
 
@@ -384,7 +410,7 @@ function stringifyDependencyPath (path: string, options: StringifyOptions): Prom
       },
       function (cause) {
         const authorPhrase = options.parent ? `The author of "${options.parent.name}" needs to` : 'You should'
-        const relativePath = relativeTo(tree.src, path)
+        const relativePath = relativeTo(tree.src, resolved)
 
         // Provide better errors for the entry path.
         if (path === entry) {
@@ -397,7 +423,7 @@ function stringifyDependencyPath (path: string, options: StringifyOptions): Prom
 
         return Promise.reject(new TypingsError(
           `Unable to read "${relativePath}" from "${options.name}". ` +
-          `${authorPhrase} check the entry in "${CONFIG_FILE}" is complete`,
+          `${authorPhrase} check the entry in "${CONFIG_FILE}" is correct`,
           cause
         ))
       }
@@ -427,13 +453,12 @@ function stringifyFile (path: string, rawContents: string, options: StringifyOpt
   const source = isHttp(path) ? path : relative(options.cwd, path)
   const prefix = options.meta ? `// Compiled using ${PROJECT_NAME}@${VERSION}${EOL}// Source: ${source}${EOL}` : ''
 
-  // TODO(blakeembrey): Provide validation for ambient modules
   if (options.ambient) {
     if ((sourceFile as any).externalModuleIndicator) {
       throw new TypingsError(
         `Attempted to compile ${options.name} as an ambient ` +
-        `module declaration, but it has external module indicators. Did you ` +
-        `want to omit "--ambient"?`
+        `module declaration, but it has an external module indicator. ` +
+        `Did you want to omit "--ambient"?`
       )
     }
 
@@ -445,18 +470,20 @@ function stringifyFile (path: string, rawContents: string, options: StringifyOpt
 
   // Stringify the import path to a namespaced import.
   function importPath (name: string) {
-    if (isModuleName(name)) {
-      const [moduleName] = getModuleNameParts(name)
+    const resolved = getPath(resolveFromWithModuleName(path, name), options)
 
-      // If the dependency is not specified, **do not** transform - it's ambient.
+    if (isModuleName(resolved)) {
+      const [moduleName] = getModuleNameParts(resolved)
+
+      // If the dependency is not available, *do not* transform - it's probably ambient.
       if (options.dependencies[moduleName] == null) {
         return name
       }
 
-      return `${options.name}${DEPENDENCY_SEPARATOR}${name}`
+      return `${options.name}${DEPENDENCY_SEPARATOR}${resolved}`
     }
 
-    const relativePath = relativeTo(tree.src, resolveFrom(path, name))
+    const relativePath = relativeTo(tree.src, fromDefinition(resolved))
 
     return normalizeSlashes(join(options.name, relativePath))
   }

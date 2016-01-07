@@ -1,0 +1,10 @@
+{
+  "name": "test",
+  "main": "index.js",
+  "browser": {
+    "./imported.js": "dep"
+  },
+  "dependencies": {
+    "dep": "0.0.0"
+  }
+}
