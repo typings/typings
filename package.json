@@ -18,7 +18,7 @@
     "test-spec": "ts-node node_modules/blue-tape/bin/blue-tape.js \"src/**/*.spec.ts\" | tap-spec",
     "test-cov": "ts-node node_modules/istanbul/lib/cli.js cover -e .ts --print none -x \"*.d.ts\" -x \"*.spec.ts\" blue-tape -- \"src/**/*.spec.ts\" | tap-spec",
     "test": "npm run lint && npm run test-cov",
-    "prepublish": "npm run build"
+    "prepublish": "if [ ! $SKIP_PREPUBLISH ]; then npm run build; fi"
   },
   "repository": {
     "type": "git",
@@ -49,6 +49,7 @@
     "bluebird": "^3.1.1",
     "chalk": "^1.0.0",
     "columnify": "^1.5.2",
+    "debug": "^2.2.0",
     "detect-indent": "^4.0.0",
     "elegant-spinner": "^1.0.1",
     "graceful-fs": "^4.1.2",

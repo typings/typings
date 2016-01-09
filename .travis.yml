@@ -5,6 +5,11 @@ notifications:
     on_success: never
     on_failure: change
 
+install:
+  - mkdir typings && touch typings/main.d.ts && SKIP_PREPUBLISH=true npm install
+  - npm run build; cat dist/init.js > /dev/null && SKIP_PREPUBLISH=true npm link
+  - typings install
+
 node_js:
   - "0.10"
   - "0.12"

@@ -239,6 +239,10 @@ typings/{main,browser}.d.ts
 
 Where `typings/{main,browser}.d.ts` is a compilation of references to installed definitions. Main and browser typings are written to separate directories for `tsconfig.json` exclude support - you can completely exclude either the primary or browser typings.
 
+## Contributing
+
+The scripts to build the project are in `package.json`. Namely, `npm run test` and `npm run build`. To make compilation work the first time, you'll need to install Typings globally. Yes, it's recursive. Use `npm install -g typings` and run `typings install` before building, or look in `.travis.yml` for how Typings bootstraps itself.
+
 ## License
 
 MIT
