@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "debug": "github:typings/typed-debug#0a12b05a76400107c70a266dcd4c2b656baa7dae"
+  }
+}

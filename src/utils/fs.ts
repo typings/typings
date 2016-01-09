@@ -23,6 +23,7 @@ import { parseReferences, stringifyReferences } from './references'
 import { ConfigJson } from '../interfaces/main'
 import { CompiledOutput } from '../lib/compile'
 import rc from './rc'
+import debug from './debug'
 
 // Create a file cache for popsicle.
 const requestFileCache = popsicleCache({
@@ -110,7 +111,11 @@ export function readHttp (url: string): Promise<string> {
   })
     .use(requestFileCache)
     .use(popsicleStatus(200))
-    .then(x => x.body)
+    .then(response => {
+      debug('http response', response.toJSON())
+
+      return response.body
+    })
 }
 
 /**

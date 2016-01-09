@@ -18,6 +18,7 @@
     "src/bin/typings-search.ts",
     "src/bin/typings-uninstall.ts",
     "src/typings.ts",
+    "typings/main.d.ts",
     "custom_typings/archy.d.ts",
     "custom_typings/array-uniq.d.ts",
     "custom_typings/blue-tape.d.ts",
