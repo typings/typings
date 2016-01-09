@@ -37,11 +37,11 @@ export interface Options {
 /**
  * Resolve all dependencies at the current path.
  */
-export function resolveDependencies (options: Options): Promise<DependencyTree> {
+export function resolveAllDependencies (options: Options): Promise<DependencyTree> {
   return Promise.all([
-    resolveBowerDependencies(options),
-    resolveNpmDependencies(options),
-    resolveTypeDependencies(options)
+    resolveBowerDependencies(options).catch(() => extend(DEFAULT_DEPENDENCY)),
+    resolveNpmDependencies(options).catch(() => extend(DEFAULT_DEPENDENCY)),
+    resolveTypeDependencies(options).catch(() => extend(DEFAULT_DEPENDENCY))
   ])
     .then(mergeDependencies)
 }
@@ -140,8 +140,8 @@ export function resolveBowerDependencies (options: Options): Promise<DependencyT
             return resolveBowerDependencyFrom(bowerJsonPath, undefined, componentPath, options)
           })
       },
-      function () {
-        return null
+      function (cause) {
+        return Promise.reject(new TypingsError(`Unable to resolve Bower dependencies`, cause))
       }
     )
 }
@@ -238,8 +238,8 @@ export function resolveNpmDependencies (options: Options): Promise<DependencyTre
       function (packgeJsonPath: string) {
         return resolveNpmDependencyFrom(packgeJsonPath, undefined, options)
       },
-      function () {
-        return null
+      function (cause) {
+        return Promise.reject(new TypingsError(`Unable to resolve NPM dependencies`, cause))
       }
     )
 }
@@ -310,8 +310,8 @@ export function resolveTypeDependencies (options: Options): Promise<DependencyTr
       function (path: string) {
         return resolveTypeDependencyFrom(path, undefined, options)
       },
-      function () {
-        return null
+      function (cause) {
+        return Promise.reject(new TypingsError(`Unable to resolve Typings dependencies`, cause))
       }
     )
 }

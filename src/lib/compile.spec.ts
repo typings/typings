@@ -6,7 +6,7 @@ import compile from './compile'
 import { DependencyTree } from '../interfaces/main'
 import { CONFIG_FILE } from '../utils/config'
 import { VERSION } from '../typings'
-import { resolveDependencies } from './dependencies'
+import { resolveTypeDependencies, resolveNpmDependencies } from './dependencies'
 
 const FIXTURES_DIR = join(__dirname, '__test__/fixtures')
 
@@ -349,7 +349,7 @@ test('compile', t => {
   t.test('override dependency with local file', t => {
     const FIXTURE_DIR = join(FIXTURES_DIR, 'compile-module-file-override')
 
-    return resolveDependencies({ cwd: FIXTURE_DIR, dev: false })
+    return resolveNpmDependencies({ cwd: FIXTURE_DIR, dev: false })
       .then(x => compile(x, { name: 'main', cwd: __dirname, ambient: false, meta: false }))
       .then(result => {
         t.equal(result.browser, [
@@ -379,7 +379,7 @@ test('compile', t => {
   t.test('resolve and compile local file override with dependency', t => {
     const FIXTURE_DIR = join(FIXTURES_DIR, 'compile-file-module-override')
 
-    return resolveDependencies({ cwd: FIXTURE_DIR, dev: false })
+    return resolveNpmDependencies({ cwd: FIXTURE_DIR, dev: false })
       .then(x => compile(x, { name: 'main', cwd: __dirname, ambient: false, meta: false }))
       .then(result => {
         t.equal(result.main, [

@@ -1,5 +1,5 @@
 import Promise = require('native-or-bluebird')
-import { resolveDependencies } from './lib/dependencies'
+import { resolveAllDependencies } from './lib/dependencies'
 import compile, { CompiledOutput } from './lib/compile'
 
 /**
@@ -16,7 +16,7 @@ export interface Options {
 export function bundle (options: Options): Promise<CompiledOutput> {
   const { source: cwd } = options
 
-  return resolveDependencies({ cwd, dev: false, ambient: false })
+  return resolveAllDependencies({ cwd, dev: false, ambient: false })
     .then(function (tree) {
       const name = options.name || tree.name
 

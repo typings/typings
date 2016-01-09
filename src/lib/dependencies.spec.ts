@@ -1,6 +1,6 @@
 import test = require('blue-tape')
 import { join } from 'path'
-import { resolveDependencies } from './dependencies'
+import { resolveAllDependencies } from './dependencies'
 import { DependencyTree, DependencyBranch } from '../interfaces/main'
 
 const RESOLVE_FIXTURE_DIR = join(__dirname, '__test__/fixtures/resolve')
@@ -99,7 +99,7 @@ test('dependencies', t => {
 
       ;(bowerDep as any).dependencies.example = exampleDep
 
-      return resolveDependencies({
+      return resolveAllDependencies({
         cwd: RESOLVE_FIXTURE_DIR,
         dev: true
       })
