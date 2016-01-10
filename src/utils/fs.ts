@@ -104,8 +104,8 @@ export function readHttp (url: string): Promise<string> {
       agent
     },
     use: [
-      popsicle.plugins.headers,
-      popsicle.plugins.unzip,
+      popsicle.plugins.headers(),
+      popsicle.plugins.unzip(),
       popsicle.plugins.concatStream('string')
     ]
   })
