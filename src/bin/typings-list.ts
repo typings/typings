@@ -9,15 +9,13 @@ import { resolveTypeDependencies } from '../lib/dependencies'
 interface Args {
   verbose: boolean
   help: boolean
-  ambient: boolean
   production: boolean
 }
 
 const args = minimist<Args>(process.argv.slice(2), {
-  boolean: ['verbose', 'help', 'ambient', 'production'],
+  boolean: ['verbose', 'help', 'production'],
   alias: {
     verbose: ['v'],
-    ambient: ['a'],
     production: ['p'],
     help: ['h']
   }

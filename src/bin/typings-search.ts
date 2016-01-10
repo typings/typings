@@ -32,7 +32,7 @@ const args = minimist<Args>(process.argv.slice(2), {
 
 if (args.help) {
   console.log(`
-${PROJECT_NAME} search [query]
+${PROJECT_NAME} search [query] [--ambient]
 
 Options: [--name] [--source] [--offset] [--limit]
 `)
