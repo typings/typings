@@ -27,9 +27,7 @@ test('bundle', t => {
           `declare module \'example/index\' {`,
           `import { test } from \'example~test\'`,
           `}`,
-          `declare module \'example\' {`,
-          `export * from \'example/index\';`,
-          `}`
+          `declare module \'example\' {}`
         ].join(EOL))
       })
   })
