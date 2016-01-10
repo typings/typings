@@ -6,6 +6,7 @@ export interface Options {
   source?: string
   offset?: number | string
   limit?: number | string
+  ambient?: boolean
 }
 
 /**

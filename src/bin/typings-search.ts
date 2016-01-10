@@ -13,10 +13,11 @@ interface Args {
   limit: string
   verbose: boolean
   help: boolean
+  ambient: boolean
 }
 
 const args = minimist<Args>(process.argv.slice(2), {
-  boolean: ['verbose', 'help'],
+  boolean: ['verbose', 'help', 'ambient'],
   string: ['name', 'source'],
   alias: {
     name: ['n'],
@@ -24,7 +25,8 @@ const args = minimist<Args>(process.argv.slice(2), {
     offset: ['o'],
     limit: ['l'],
     verbose: ['v'],
-    help: ['h']
+    help: ['h'],
+    ambient: ['A']
   }
 })
 
@@ -38,14 +40,14 @@ Options: [--name] [--source] [--offset] [--limit]
   process.exit(0)
 }
 
-const { verbose, name, source, limit, offset } = args
+const { verbose, name, source, limit, offset, ambient } = args
 
-loader(search(args._[0], { name, source, limit, offset }), { verbose })
+loader(search(args._[0], { name, source, limit, offset, ambient }), { verbose })
   .then(function (result) {
     const { results, total } = result
 
     if (total === 0) {
-      console.log('No results found')
+      console.log(`No results found searching for ${ambient ? 'ambient' : 'regular'} definitions`)
       return
     }
 

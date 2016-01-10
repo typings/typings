@@ -190,14 +190,16 @@ function installer (args: Args & minimist.ParsedArgs) {
   }
 
   // Search all sources for the project name.
-  return loader(search({ name: dependencyName }), { verbose })
+  return loader(search({ name: dependencyName, ambient }), { verbose })
     .then(function (result) {
       const { results } = result
 
       if (results.length === 0) {
         return Promise.reject(new TypingsError(
-          `Unable to find "${dependencyName}" in the registry. If you can contribute ` +
-          `this typing, please help us out: https://github.com/typings/registry`
+          `Unable to find "${dependencyName}" in the registry. Maybe you ` +
+          `want to install ambient definitions using "--ambient"? ` +
+          `Alternatively, if you can contribute this typing, please help us ` +
+          `out: https://github.com/typings/registry`
         ))
       }
 

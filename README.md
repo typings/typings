@@ -241,7 +241,7 @@ Where `typings/{main,browser}.d.ts` is a compilation of references to installed 
 
 ## Contributing
 
-The scripts to build the project are in `package.json`. Namely, `npm run test` and `npm run build`. To make compilation work the first time, you'll need to install Typings globally. Yes, it's recursive. Use `npm install -g typings` and run `typings install` before building, or look in `.travis.yml` for how Typings bootstraps itself.
+The scripts to build the project are in `package.json`. Namely, `npm run test` and `npm run build`. To make compilation work the first time, you'll need to install Typings globally. Yes, it's recursive. Use `npm install -g typings` and run `typings install` before building, or look at `npm run bootstrap` to see how Typings is currently bootstrapping itself.
 
 ## License
 
