@@ -18,6 +18,7 @@
     "test-spec": "ts-node node_modules/blue-tape/bin/blue-tape.js \"src/**/*.spec.ts\" | tap-spec",
     "test-cov": "ts-node node_modules/istanbul/lib/cli.js cover -e .ts --print none -x \"*.d.ts\" -x \"*.spec.ts\" blue-tape -- \"src/**/*.spec.ts\" | tap-spec",
     "test": "npm run lint && npm run test-cov",
+    "bootstrap": "mkdir -p typings && touch typings/main.d.ts && SKIP_PREPUBLISH=true npm install && npm run build 2> /dev/null; cat dist/init.js > /dev/null && node dist/bin/typings.js install",
     "prepublish": "if [ ! $SKIP_PREPUBLISH ]; then npm run build; fi"
   },
   "repository": {
@@ -66,9 +67,9 @@
     "native-or-bluebird": "^1.2.0",
     "object-pick": "^0.1.1",
     "parse-json": "^2.2.0",
-    "popsicle": "^2.0.1",
-    "popsicle-cache": "^2.0.0",
-    "popsicle-status": "^0.2.0",
+    "popsicle": "^3.0.0",
+    "popsicle-cache": "^3.0.0",
+    "popsicle-status": "^1.0.0",
     "promise-finally": "^2.0.1",
     "proxy-agent": "^2.0.0",
     "rc": "^1.1.5",
@@ -88,7 +89,7 @@
   "devDependencies": {
     "blue-tape": "^0.1.11",
     "istanbul": "1.0.0-alpha.2",
-    "nock": "^3.5.0",
+    "nock": "^5.2.1",
     "pre-commit": "^1.0.6",
     "tap-spec": "^4.1.1",
     "ts-node": "^0.5.4",

@@ -340,8 +340,8 @@ function stringifyDependencyPath (path: string, options: StringifyOptions): Prom
         if (ambientModules.length && !ambient) {
           return Promise.reject(new TypingsError(
             `Attempted to compile "${options.name}" as a dependency, but ` +
-            `it contains ambient modules (${ambientModules.map(JSON.stringify).join(', ')}). ` +
-            `Did you want to specify "--ambient" instead?`
+            `it contains some ambient module declarations ` +
+            `(${ambientModules.map(JSON.stringify).join(', ')}).`
           ))
         }
 
@@ -456,9 +456,8 @@ function stringifyFile (path: string, rawContents: string, options: StringifyOpt
   if (options.ambient) {
     if ((sourceFile as any).externalModuleIndicator) {
       throw new TypingsError(
-        `Attempted to compile ${options.name} as an ambient ` +
-        `module declaration, but it has an external module indicator. ` +
-        `Did you want to omit "--ambient"?`
+        `Attempted to compile "${options.name}" as an ambient ` +
+        `module, but it looks like an external module.`
       )
     }
 

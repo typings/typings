@@ -151,7 +151,7 @@ export function parseJson (contents: string, path: string) {
 /**
  * Transform a file contents (read and write in a single operation).
  */
-export function transformFile (path: string, transform: (contents: string) => string | Promise<string>) {
+export function transformFile (path: string, transform: (contents: string) => string | Promise<string>): Promise<void> {
   function handle (contents: string) {
     return Promise.resolve(transform(contents))
       .then(contents => writeFile(path, contents))

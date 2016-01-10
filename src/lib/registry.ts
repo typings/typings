@@ -30,6 +30,7 @@ export interface SearchOptions {
   source?: string
   offset?: string
   limit?: string
+  ambient?: boolean
 }
 
 /**
@@ -48,9 +49,9 @@ export function search (options: SearchOptions): Promise<SearchResults> {
     return Promise.reject(new TypeError(`Invalid registry source: ${options.source}`))
   }
 
-  const query = stringify(pick(options, ['query', 'name', 'source', 'offset', 'limit']))
+  const query = pick(options, ['query', 'name', 'source', 'offset', 'limit', 'ambient'])
 
-  return readJsonFrom(`${REGISTRY_URL}/search?${query}`)
+  return readJsonFrom(`${REGISTRY_URL}/search?${stringify(query)}`)
 }
 
 /**

@@ -137,5 +137,5 @@ function writeToConfig (dependency: Dependency, options: InstallDependencyOption
     })
   }
 
-  return Promise.resolve()
+  return Promise.resolve<void>()
 }
