@@ -115,9 +115,11 @@ test('compile', t => {
             'import b = require(\'root~b\')',
             'import { isDep } from \'root~dep/path\'',
             'export * from \'root/root-import\'',
+            'export default a',
             '}',
             'declare module \'root\' {',
             'export * from \'root/root\';',
+            'export { default } from \'root/root\';',
             '}'
           ].join(EOL))
 
@@ -153,9 +155,11 @@ test('compile', t => {
             'import b = require(\'root~browser\')',
             'import { isDep } from \'root~dep/path\'',
             'export * from \'root/root-import\'',
+            'export default a',
             '}',
             'declare module \'root\' {',
             'export * from \'root/root\';',
+            'export { default } from \'root/root\';',
             '}'
           ].join(EOL))
         })

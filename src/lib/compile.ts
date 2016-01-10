@@ -65,10 +65,11 @@ export interface CompiledOutput {
  */
 export default function compile (tree: DependencyTree, options: Options): Promise<CompiledOutput> {
   const files: ts.Map<Promise<string>> = {}
+  const moduleName = options.name
 
   return Promise.all([
-    compileDependencyTree(tree, extend(options, { browser: false, files })),
-    compileDependencyTree(tree, extend(options, { browser: true, files }))
+    compileDependencyTree(tree, extend(options, { browser: false, moduleName, files })),
+    compileDependencyTree(tree, extend(options, { browser: true, moduleName, files }))
   ])
     .then(([main, browser]) => {
       return {
@@ -137,6 +138,7 @@ function mergeReferences (main: Reference[], browser: Reference[], isPaths: bool
 interface CompileOptions extends Options {
   files: ts.Map<Promise<string>>
   browser: boolean
+  moduleName: string
 }
 
 /**
@@ -304,10 +306,10 @@ function stringifyDependencyPath (path: string, options: StringifyOptions): Prom
 
   // Load a dependency path.
   function loadByModuleName (path: string) {
-    const [dependencyName, dependencyPath] = getModuleNameParts(path)
-    const moduleName = ambient ? dependencyName : `${name}${DEPENDENCY_SEPARATOR}${dependencyName}`
-    const compileOptions = { cwd, browser, files, name: moduleName, ambient: false, meta }
-    const stringifyOptions = cachedStringifyOptions(dependencyName, compileOptions, options)
+    const [moduleName, modulePath] = getModuleNameParts(path)
+    const dependencyName = ambient ? moduleName : `${name}${DEPENDENCY_SEPARATOR}${moduleName}`
+    const compileOptions = { cwd, browser, moduleName, files, name: dependencyName, ambient: false, meta }
+    const stringifyOptions = cachedStringifyOptions(moduleName, compileOptions, options)
 
     // When no options are returned, the dependency is missing.
     if (!stringifyOptions) {
@@ -318,7 +320,7 @@ function stringifyDependencyPath (path: string, options: StringifyOptions): Prom
       })
     }
 
-    return compileDependencyPath(dependencyPath, stringifyOptions)
+    return compileDependencyPath(modulePath, stringifyOptions)
   }
 
   // Check if the path is resolving to a module name before reading.
@@ -433,12 +435,12 @@ function stringifyDependencyPath (path: string, options: StringifyOptions): Prom
 /**
  * Separate the module name into pieces.
  */
-function getModuleNameParts (moduleName: string): [string, string] {
-  const parts = moduleName.split(/[\\\/]/)
-  const dependencyName = parts.shift()
-  const dependencyPath = parts.length === 0 ? null : parts.join('/')
+function getModuleNameParts (name: string): [string, string] {
+  const parts = name.split(/[\\\/]/)
+  const moduleName = parts.shift()
+  const modulePath = parts.length === 0 ? null : parts.join('/')
 
-  return [dependencyName, dependencyPath]
+  return [moduleName, modulePath]
 }
 
 /**
@@ -464,8 +466,10 @@ function stringifyFile (path: string, rawContents: string, options: StringifyOpt
     return `${prefix}${contents.trim()}`
   }
 
-  let isES6Export = true
   let wasDeclared = false
+  let hasExports = false
+  let hasDefaultExport = false
+  let hasExportEquals = false
 
   // Stringify the import path to a namespaced import.
   function importPath (name: string) {
@@ -491,7 +495,13 @@ function stringifyFile (path: string, rawContents: string, options: StringifyOpt
   function replacer (node: ts.Node) {
     // Flag `export =` as the main re-definition needs to be written different.
     if (node.kind === ts.SyntaxKind.ExportAssignment) {
-      isES6Export = !(<ts.ExportAssignment> node).isExportEquals
+      hasDefaultExport = !(node as ts.ExportAssignment).isExportEquals
+      hasExportEquals = !hasDefaultExport
+    } else if (node.kind === ts.SyntaxKind.ExportDeclaration) {
+      hasExports = true
+    } else {
+      hasExports = hasExports || !!(node.flags & ts.NodeFlags.Export)
+      hasDefaultExport = hasDefaultExport || !!(node.flags & ts.NodeFlags.Default)
     }
 
     if (
@@ -542,33 +552,44 @@ function stringifyFile (path: string, rawContents: string, options: StringifyOpt
     return text
   }
 
-  const moduleText = processTree(sourceFile, replacer, read)
   const isEntry = originalPath === options.entry
+  const moduleText = processTree(sourceFile, replacer, read)
 
   // Direct usage of definition/typings. This is *not* a psuedo-module.
   if (isEntry && options.isTypings) {
     return prefix + declareText(name, moduleText)
   }
 
-  const moduleName = `${name}/${normalizeSlashes(relativeTo(tree.src, fromDefinition(path)))}`
-  const declared = declareText(moduleName, moduleText)
+  const modulePath = importPath(path)
+  const declared = declareText(modulePath, moduleText)
 
   if (!isEntry) {
     return prefix + declared
   }
 
-  const importText = isES6Export ?
-    `export * from '${moduleName}';` :
-    `import main = require('${moduleName}');${EOL}export = main;`
+  const importParts: string[] = []
 
-  return prefix + declared + EOL + declareText(name, importText)
+  if (hasExportEquals) {
+    importParts.push(`import main = require('${modulePath}');`)
+    importParts.push(`export = main;`)
+  } else {
+    if (hasExports) {
+      importParts.push(`export * from '${modulePath}';`)
+    }
+
+    if (hasDefaultExport) {
+      importParts.push(`export { default } from '${modulePath}';`)
+    }
+  }
+
+  return prefix + declared + EOL + declareText(name, importParts.join(EOL))
 }
 
 /**
  * Declare a module.
  */
 function declareText (name: string, text: string) {
-  return `declare module '${name}' {${EOL}${text}${EOL}}`
+  return `declare module '${name}' {${text ? EOL + text + EOL : ''}}`
 }
 
 /**
