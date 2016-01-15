@@ -57,10 +57,10 @@ export function isFile (path: string): Promise<boolean> {
 /**
  * Read JSON from a path.
  */
-export function readJson (path: string): Promise<any> {
+export function readJson (path: string, allowEmpty?: boolean): Promise<any> {
   return readFile(path, 'utf8')
     .then(stripBom)
-    .then(contents => parseJson(contents, path))
+    .then(contents => parseJson(contents, path, allowEmpty))
 }
 
 /**
@@ -74,14 +74,14 @@ export function writeJson (path: string, json: any, indent?: string | number, eo
  * Read a configuration file.
  */
 export function readConfig (path: string): Promise<ConfigJson> {
-  return readJson(path).then(data => parseConfig(data, path))
+  return readJson(path, true).then(data => parseConfig(data, path))
 }
 
 /**
  * Read a configuration file from anywhere (HTTP or local).
  */
 export function readConfigFrom (path: string): Promise<ConfigJson> {
-  return readJsonFrom(path).then(data => parseConfig(data, path))
+  return readJsonFrom(path, true).then(data => parseConfig(data, path))
 }
 
 /**
@@ -128,10 +128,10 @@ export function readFileFrom (from: string): Promise<string> {
 /**
  * Read JSON from anywhere.
  */
-export function readJsonFrom (from: string): Promise<any> {
+export function readJsonFrom (from: string, allowEmpty?: boolean): Promise<any> {
   return readFileFrom(from)
     .then(stripBom)
-    .then(contents => parseJson(contents, from))
+    .then(contents => parseJson(contents, from, allowEmpty))
 }
 
 /**
@@ -144,7 +144,11 @@ export function stringifyJson (json: any, indent?: number | string, eol: string 
 /**
  * Parse a string as JSON.
  */
-export function parseJson (contents: string, path: string) {
+export function parseJson (contents: string, path: string, allowEmpty: boolean) {
+  if (contents === '' && allowEmpty) {
+    return {}
+  }
+
   return parse(contents, null, path)
 }
 
@@ -175,10 +179,10 @@ export function transformFile (path: string, transform: (contents: string) => st
 /**
  * Transform a JSON file in a single operation.
  */
-export function transformJson <T> (path: string, transform: (json: T) => T) {
+export function transformJson <T> (path: string, transform: (json: T) => T, allowEmpty?: boolean) {
   return transformFile(path, (contents) => {
     const indent = contents ? detectIndent(contents).indent : undefined
-    const json = contents ? parseJson(contents, path) : undefined
+    const json = contents ? parseJson(contents, path, allowEmpty) : undefined
     const eol = contents ? detectEOL(contents) : undefined
 
     return Promise.resolve(transform(json))
@@ -213,7 +217,7 @@ export function transformConfig (cwd: string, transform: (config: ConfigJson) =>
 
         return config
       })
-  })
+  }, true)
 }
 
 export function transformDtsFile (path: string, transform: (typings: string[]) => string[]) {
