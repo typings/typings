@@ -404,9 +404,9 @@ function checkCircularDependency (tree: DependencyTree, filename: string) {
  * Create a resolved failure error message.
  */
 function resolveError (raw: string, cause: Error, parent?: DependencyTree) {
-  let message = `Unable to resolve "${raw}"`
+  let message = `Unable to resolve ${raw == null ? 'typings' : `"${raw}"`}`
 
-  if (parent != null && parent.parent != null) {
+  if (parent != null && parent.raw != null) {
     message += ` from "${parent.raw}"`
   }
 
