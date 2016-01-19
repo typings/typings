@@ -96,12 +96,17 @@ export function parseConfig (config: ConfigJson, path: string): ConfigJson {
  * Read a file over HTTP, using a file cache and status check.
  */
 export function readHttp (url: string): Promise<string> {
-  const agent = rc.proxy ? new ProxyAgent(rc.proxy) : null
+  const { proxy, rejectUnauthorized, ca, key, cert } = rc
+  const agent = proxy ? new ProxyAgent(proxy) : null
 
   return popsicle.get({
     url,
     options: {
-      agent
+      agent,
+      ca,
+      key,
+      cert,
+      rejectUnauthorized
     },
     use: [
       popsicle.plugins.headers(),

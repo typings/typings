@@ -156,6 +156,10 @@ Bundle the current projects typings into an ambient module.
 Typings supports configuration using [`rc`](https://github.com/dominictarr/rc). The configuration can come from CLI arguments, environment variables prefixed with `typings_` or a `.typingsrc` file.
 
 * **proxy** A HTTP(s) proxy URI for outgoing requests
+* **rejectUnauthorized** Reject invalid SSL certificates (default: `true`)
+* **ca** A string or array of strings of trusted certificates in PEM format
+* **key** Private key to use for SSL (default: `null`)
+* **cert** Public x509 certificate to use (default: `null`)
 
 ### `main.d.ts` And `browser.d.ts`
 
