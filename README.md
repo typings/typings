@@ -7,32 +7,45 @@
 
 > The type definition manager for TypeScript.
 
-## Installation
+## Quick Start
 
 ```sh
+# Install Typings CLI utility.
 npm install typings --global
+
+# Search for definitions.
+typings search tape
+
+# Find ambient typings (includes DefinitelyTyped).
+typings search react --ambient
+
+# Install ambient typings (and persist selection in `typings.json`).
+typings install react --ambient --save
+
+# Use `main.d.ts` (in `tsconfig.json` or as a reference).
+cat typings/main.d.ts
 ```
 
 ## Features
 
 * Package manager parity
-  * `init`, `install`, `rm`, `ls`, etc.
+  * Familiar commands like `init`, `install`, `rm` and `ls`
 * Installation from GitHub, BitBucket, NPM dependencies, Bower dependencies and HTTP(s)
-  * If a project is published using Typings, you can still use it (using `typings install npm:typings`)
+  * If a project uses Typings, you can install it locally - try `typings install npm:popsicle`
 * Simple typings configuration file
-  * Specify dependencies in `typings.json` and everyone on the project can replicate it
-* Name-spaced dependencies
-  * TypeScript definitions will be name-spaced and properly contained from leaking external type information
+  * Persist dependencies in `typings.json` and everyone on the project can replicate it
+* Name-spaced dependencies (not for ambient dependencies - those are always global)
+  * TypeScript definitions will be name-spaced and contained from leaky type information
 
 ## Usage
 
-**Typings** is the simple way for TypeScript definitions to be installed and maintained. It uses `typings.json`, which can resolve to GitHub, NPM, Bower, HTTP and from local files. Every package can use type definitions from different sources and with different versions, and know they will _never_ cause a conflict for users.
+**Typings** is the simple way to manage and install TypeScript definitions. It uses `typings.json`, which can resolve to GitHub, NPM, Bower, HTTP and local files. Packages can use type definitions from various sources and different versions, and know they will _never_ cause a conflict for users.
 
 ```sh
 typings install debug --save
 ```
 
-The [public registry](https://github.com/typings/registry) is maintained by the community, and is used to resolve official type definitions for JavaScript packages.
+A [public registry](https://github.com/typings/registry) is maintained by the community, and is used to resolve official type definitions for JavaScript packages.
 
 ### Init
 
@@ -42,7 +55,7 @@ typings init
 Options: [--upgrade]
 ```
 
-Initialize a new `typings.json` file. If you're currently using TSD, you can use `--upgrade` to convert your current project to `typings.json`.
+Initialize a new `typings.json` file. If you're currently using TSD, you can use `--upgrade` to convert `tsd.json` to `typings.json`.
 
 ### Install
 
@@ -73,13 +86,13 @@ Write a dependency to the `typings/` directory, optionally persisting it in `typ
 * `npm:<package>/<path>`
 * `bower:<package>/<path>`
 
-Where `path` can be a `typings.json` file, a `.d.ts` file, or empty. When the path is empty, or not a `d.ts` file, `typings.json` will be automatically appended to the path.
+Where `path` can be to `typings.json`, a `.d.ts` file, or empty. When the path is empty, or not a `.d.ts` file, `typings.json` will be appended to the path.
 
-**Please note:** `npm` and `bower` resolve using their respective algorithms over the local filesystem. They will need to be installed _before_ running `typings install`. The other schemes (`http`, `https`, `github`, `bitbucket`) resolve over HTTP(s). Finally, `file` is a direct pointer in the local filesystem.
+**Please note:** `npm` and `bower` resolve using their respective algorithms over the local filesystem. They will need to be installed _before_ running `typings install`. The other schemes (`http`, `https`, `github`, `bitbucket`) resolve over HTTP(s). Finally, `file` is a location in the local filesystem relative to the `typings.json` directory.
 
 #### Registry
 
-Typings installations without a location will be looked up in the [registry](https://github.com/typings/registry). For example, `typings install debug` will resolve to [this entry](https://github.com/typings/registry/blob/master/npm/debug.json) in the public registry. Anyone can contribute typings to the registry, just make a pull request.
+Installations without a specific location will looked up the [registry](https://github.com/typings/registry) using the [Typings API](https://github.com/typings/api). For example, `typings install debug` will resolve to [this data](https://github.com/typings/registry/blob/master/npm/debug.json). Anyone can contribute typings to the registry, just make a pull request.
 
 #### Example
 
@@ -89,7 +102,7 @@ Install `node` typings:
 typings install node --save --ambient
 ```
 
-The name is persisted in `typings.json`. The `--save` flag is used to write to `typings.json`, which you can use to re-install your typings later. The `--ambient` flag is used to specify that this dependency is ambient.
+The name is persisted in `typings.json`. The `--save` flag is used to write to `typings.json`, which you can use to re-install your typings later. The `--ambient` flag is used to confirm that this dependency is ambient.
 
 ### Uninstall
 
@@ -111,7 +124,7 @@ Remove a dependency from the `typings/` directory, and optionally remove from `t
 typings ls [--ambient]
 ```
 
-Print the `typings` dependency tree. (This command resolves on demand and is not cached)
+Print the `typings` dependency tree. This command resolves on demand and is not _currently_ cached.
 
 ### Search
 
@@ -131,29 +144,29 @@ typings bundle --name [string]
 Options: [--browser] [--out] [--source]
 ```
 
-Bundle the current projects typings into an ambient module.
+Bundle the current project types into an single ambient module.
 
 ## FAQ
 
 ### Why?
 
-* Typings uses external modules, not ambient modules (E.g. no `declare module "x"` in dependencies)
+* Typings makes external modules, not ambient modules, first class (E.g. no `declare module "x"` in dependencies)
   * A lot of ambient module declarations suffer from exposing implementation details incorrectly
-  * External module declarations are emitted by TypeScript already, and use with `moduleResolution`
-  * You can immediately contribute back to the author!
-* Typings should cleanly represent the module structure
-  * For example, supporting the `browser` field (Webpack, Browserify, etc.) can produce different types at runtime
-  * What about type definitions for every file? Some modules promote requiring into the dependencies for "add-ons"
+  * External module declarations are emitted by TypeScript already, and used with the `moduleResolution` option
+  * You can immediately contribute typings back to the author!
+* Typings cleanly represents the module structure
+  * Supporting the `browser` field (used by Webpack, Browserify, etc.) can produce different types
+  * Need type definitions for each file? Done. Some modules promote requiring into the dependencies for "add-ons"
 * TypeScript modules should be publish-able to any package manager
   * Ambient modules can not be published to a package manager
-  * Publishing ambient modules to a package manager can cripple your users who have duplicate declarations
+  * Publishing ambient modules to a package manager cripples your users that run into duplicate identifiers
 * Typings are decentralized
-  * Anyone can write and install their own type definition without friction
-  * The author of a type definition can maintain their type definition in isolation (issue, PRs, etc) from other typings
+  * Write and install your own type definitions without friction
+  * Author can maintain type definitions in isolation from other typings (using separate GitHub repos, for example)
 
 ### Configuration
 
-Typings supports configuration using [`rc`](https://github.com/dominictarr/rc). The configuration can come from CLI arguments, environment variables prefixed with `typings_` or a `.typingsrc` file.
+Typings supports configuration using [`rc`](https://github.com/dominictarr/rc). The config options can be set using CLI arguments, environment variables prefixed with `typings_` or a `.typingsrc` file.
 
 * **proxy** A HTTP(s) proxy URI for outgoing requests
 * **rejectUnauthorized** Reject invalid SSL certificates (default: `true`)
@@ -179,17 +192,17 @@ Or as a reference to the top of TypeScript files:
 /// <reference path="../typings/main.d.ts" />
 ```
 
-If you're building a front-end package it's recommended you use `typings/browser.d.ts` instead. The browser typings are compiled using the `browser` field overrides.
+If you're building a front-end package it's recommended you use `typings/browser.d.ts` instead. The browser typings are compiled by following the `browser` field overrides.
 
-**Please note:** If you're relying on "exclude" behavior instead, you can exclude `typings/browser.d.ts` and `typings/browser` (or replace `browser` with `main`, if you desire).
+**Please note:** If you're relying on "exclude" behavior instead, you can exclude `typings/browser.d.ts` and `typings/browser` (replace `browser` with `main`, if you desire).
 
 ### References
 
-During installation, any typings references (`/// <reference path="" />`) are removed. This is because there's no simple way to include the contents from the other file within the project. With legacy projects, these references tend to denote both dependencies and ambient dependencies, and can't be relied on in any formal way. Using the CLI will prompt ways to install them declaratively, after the fact.
+During installation, any references (E.g. `/// <reference path="..." />`) are stripped. There is no simple way to include the contents from the other file within the project. With legacy projects, these references can denote dependencies or ambient dependencies, so can't be relied on in any formal way. Installation will print the references that were stripped during installation, and you can continue installation of dependencies yourself.
 
 ### How Do I Use Typings With Git and Continuous Integration?
 
-If you're already publishing your module with TypeScript, you're might be using NPM scripts to automate the build. To integrate **Typings** into this flow, I recommend you run it as part of the `prepublish` or `build` steps. For example:
+If you're already publishing your module with TypeScript, you might be using NPM scripts to automate the build. To integrate **Typings** into this flow, I recommend you run it as part of the `prepublish` or `build` steps. For example:
 
 ```json
 {
@@ -222,12 +235,12 @@ Writing a new type definition is as simple as creating a new package. Start by c
 * **name** The name of this definition
 * **dependencies** A map of dependencies that need installing
 * **devDependencies** A map of development dependencies that need installing
-* **ambientDependencies** A map of environment dependencies that need installing
-* **ambientDevDependencies** A map of environment dev dependencies that need installing
+* **ambientDependencies** A map of environment dependencies that may need installing
+* **ambientDevDependencies** A map of environment dev dependencies that may need installing
 
 #### What Are Ambient Dependencies?
 
-Ambient dependencies are type definitions which provide information about an environment. Some examples of "environment" dependencies are `node`, `browserify`, `window` or `Array.prototype.map`. These are globals that exist, but you do not "require" them.
+Ambient dependencies are type definitions that provide information about the environment. Some examples of "environment" dependencies are Node.js, Browserify, `window` and even `Array.prototype.map`. These are globals that already exist, you do not "require" them. If your package exposes a module and/or ambient dependencies, it's recommended you expose a way to install the ambient definitions (explain installation in the docs, for instance).
 
 #### Should I Use The `typings` Field In `package.json`?
 
@@ -235,18 +248,18 @@ Maybe. If you're relying on typings to provide type dependencies, I recommend th
 
 #### Where do the type definitions install?
 
-Typings are compiled and written into the `typings/` directory alongside `typings.json`. More specifically, the structure looks like this:
+Typings are compiled and written into the `typings/` directory alongside `typings.json`. The structure looks like this:
 
-```
-typings/{main,browser}/{ambient,definitions}/{dependency}/*
+```sh
+typings/{main,browser}/{ambient,definitions}/<dependency>/<dependency>.d.ts
 typings/{main,browser}.d.ts
 ```
 
-Where `typings/{main,browser}.d.ts` is a compilation of references to installed definitions. Main and browser typings are written to separate directories for `tsconfig.json` exclude support - you can completely exclude either the primary or browser typings.
+Where `typings/{main,browser}.d.ts` is a collection of references to installed definitions. Main and browser typings are written to separate directories for `tsconfig.json` exclude support - you can completely exclude both the main or browser typings.
 
 ## Contributing
 
-The scripts to build the project are in `package.json`. Namely, `npm run test` and `npm run build`. To make compilation work the first time, you'll need to install Typings globally. Yes, it's recursive. Use `npm install -g typings` and run `typings install` before building, or look at `npm run bootstrap` to see how Typings is currently bootstrapping itself.
+The scripts to build the project are in `package.json`. Use `npm run test` and `npm run build`. For initial compilation, you will need to install the typings in `typings.json`. Yes, recursive dependencies. Use `npm install -g typings` and run `typings install` before building, or look at `npm run bootstrap` to see how Typings bootstraps itself.
 
 ## License
 
