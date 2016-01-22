@@ -195,11 +195,12 @@ function installer (args: Args & minimist.ParsedArgs) {
       const { results } = result
 
       if (results.length === 0) {
+        const prompt = !ambient ? 'Did you want to install an ambient typing? Try using "--ambient". ' : ''
+
         return Promise.reject(new TypingsError(
-          `Unable to find "${dependencyName}" in the registry. Maybe you ` +
-          `want to install ambient definitions using "--ambient"? ` +
-          `Alternatively, if you can contribute this typing, please help us ` +
-          `out: https://github.com/typings/registry`
+          `Unable to find "${dependencyName}" in the registry. ` + prompt +
+          `If you can contribute this type definition, please help us: ` +
+          `https://github.com/typings/registry`
         ))
       }
 
