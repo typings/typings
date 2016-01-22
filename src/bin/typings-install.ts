@@ -149,28 +149,9 @@ function installer (args: Args & minimist.ParsedArgs) {
     return getVersions(source, dependencyName, version)
       .then(function (project) {
         const { versions } = project
+        const [version] = versions
 
-        if (versions.length === 1) {
-          return versions[0]
-        }
-
-        return inquire([{
-          name: 'version',
-          type: 'list',
-          message: 'Select a version',
-          choices: versions.map((x, i) => {
-            const { version, compiler } = x
-
-            return {
-              name: version + (compiler ? ` (TypeScript >= ${compiler})` : ''),
-              value: String(i)
-            }
-          })
-        }])
-          .then((answers: any) => versions[answers.version])
-      })
-      .then(function (version) {
-        console.log(`Installing ${dependencyName}@${version.version} (${sourceName})...`)
+        console.log(`Installing ${dependencyName}@~${version.version} (${sourceName})...`)
 
         // Log extra info when the installation name is different to the registry.
         if (name != null && name !== saveName) {
