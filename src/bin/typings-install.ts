@@ -192,7 +192,7 @@ function installer (args: Args & minimist.ParsedArgs) {
         return inquire([{
           type: 'confirm',
           name: 'ok',
-          message: `Found typings for ${dependencyName} in ${source}. Ok?`
+          message: `Found ${dependencyName} typings for ${source}. Continue?`
         }])
           .then(function (answers: any) {
             if (answers.ok) {
@@ -204,7 +204,7 @@ function installer (args: Args & minimist.ParsedArgs) {
       return inquire([{
         type: 'list',
         name: 'source',
-        message: `Found typings for ${dependencyName} in multiple registries`,
+        message: `Found ${dependencyName} typings for multiple registries`,
         choices: results.map(result => {
           return {
             name: VALID_SOURCES[result.source],
