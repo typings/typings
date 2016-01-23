@@ -47,7 +47,7 @@ loader(search(args._[0], { name, source, limit, offset, ambient }), { verbose })
     const { results, total } = result
 
     if (total === 0) {
-      console.log(`No results found searching for ${ambient ? 'ambient' : 'regular'} definitions`)
+      console.log(`No results found searching ${ambient ? 'ambient' : 'module'} definitions`)
       return
     }
 
