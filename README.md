@@ -22,9 +22,11 @@ typings search react --ambient
 # Install ambient typings (and persist selection in `typings.json`).
 typings install react --ambient --save
 
-# Use `main.d.ts` (in `tsconfig.json` or as a reference).
+# Use `main.d.ts` (in `tsconfig.json` or as a `///` reference).
 cat typings/main.d.ts
 ```
+
+**Important: For existing TSD users, Typings will install from DefinitelyTyped using the `--ambient` flag. Regular dependencies are maintained in the [registry](https://github.com/typings/registry).**
 
 ## Features
 
