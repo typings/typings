@@ -429,11 +429,8 @@ test('compile', t => {
     }
 
     nock('http://example.com')
-      .get('/typings.json')
-      .reply(200, '{"main":"index.d.ts"}')
-
-    nock('http://example.com')
       .get('/index.d.ts')
+      .matchHeader('User-Agent', /^Typings <.*?>$/)
       .reply(200, 'export const helloWorld: string')
 
     return compile(node, { name: 'test', cwd: __dirname, ambient: false, meta: false })

@@ -89,7 +89,7 @@
   "devDependencies": {
     "blue-tape": "^0.1.11",
     "istanbul": "1.0.0-alpha.2",
-    "nock": "^5.2.1",
+    "nock": "^7.0.2",
     "pre-commit": "^1.0.6",
     "tap-spec": "^4.1.1",
     "ts-node": "^0.5.4",

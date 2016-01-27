@@ -17,7 +17,7 @@ import promiseFinally from 'promise-finally'
 import tch = require('touch')
 import { EOL } from 'os'
 import { join, dirname } from 'path'
-import { CONFIG_FILE, TYPINGS_DIR, DTS_MAIN_FILE, DTS_BROWSER_FILE, CACHE_DIR } from './config'
+import { CONFIG_FILE, TYPINGS_DIR, DTS_MAIN_FILE, DTS_BROWSER_FILE, CACHE_DIR, PRETTY_PROJECT_NAME, HOMEPAGE } from './config'
 import { isHttp, toDefinition } from './path'
 import { parseReferences, stringifyReferences } from './references'
 import { ConfigJson } from '../interfaces/main'
@@ -101,6 +101,9 @@ export function readHttp (url: string): Promise<string> {
 
   return popsicle.get({
     url,
+    headers: {
+      'User-Agent': `${PRETTY_PROJECT_NAME} <${HOMEPAGE}>`
+    },
     options: {
       agent,
       ca,
