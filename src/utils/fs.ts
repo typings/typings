@@ -100,7 +100,7 @@ export function parseConfig (config: ConfigJson, path: string): ConfigJson {
  */
 export function readHttp (url: string): Promise<string> {
   const { proxy, rejectUnauthorized, ca, key, cert, userAgent } = rc
-  const agent = proxy ? new ProxyAgent(proxy) : null
+  const agent = proxy ? new ProxyAgent(proxy) : process.env.HTTP_PROXY ? new ProxyAgent( process.env.HTTP_PROXY ) : null
 
   return popsicle.get({
     url,
