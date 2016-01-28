@@ -76,6 +76,7 @@
     "rimraf": "^2.4.4",
     "semver": "^5.0.1",
     "sort-keys": "^1.0.0",
+    "string-template": "^1.0.0",
     "strip-bom": "^2.0.0",
     "thenify": "^3.1.0",
     "touch": "^1.0.0",

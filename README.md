@@ -175,6 +175,7 @@ Typings supports configuration using [`rc`](https://github.com/dominictarr/rc). 
 * **ca** A string or array of strings of trusted certificates in PEM format
 * **key** Private key to use for SSL (default: `null`)
 * **cert** Public x509 certificate to use (default: `null`)
+* **userAgent** Set the `User-Agent` for HTTP requests (default: `typings/{typingsVersion} node/{nodeVersion} {platform} {arch}`)
 
 ### `main.d.ts` And `browser.d.ts`
 

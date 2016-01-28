@@ -430,7 +430,7 @@ test('compile', t => {
 
     nock('http://example.com')
       .get('/index.d.ts')
-      .matchHeader('User-Agent', /^Typings <.*?>$/)
+      .matchHeader('User-Agent', /^typings\/\d+\.\d+\.\d+ node\/v\d+\.\d+\.\d+.*$/)
       .reply(200, 'export const helloWorld: string')
 
     return compile(node, { name: 'test', cwd: __dirname, ambient: false, meta: false })

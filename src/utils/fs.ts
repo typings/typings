@@ -17,6 +17,7 @@ import promiseFinally from 'promise-finally'
 import tch = require('touch')
 import { EOL } from 'os'
 import { join, dirname } from 'path'
+import template = require('string-template')
 import { CONFIG_FILE, TYPINGS_DIR, DTS_MAIN_FILE, DTS_BROWSER_FILE, CACHE_DIR, PRETTY_PROJECT_NAME, HOMEPAGE } from './config'
 import { isHttp, toDefinition } from './path'
 import { parseReferences, stringifyReferences } from './references'
@@ -24,6 +25,8 @@ import { ConfigJson } from '../interfaces/main'
 import { CompiledOutput } from '../lib/compile'
 import rc from './rc'
 import debug from './debug'
+
+const pkg = require('../../package.json')
 
 // Create a file cache for popsicle.
 const requestFileCache = popsicleCache({
@@ -96,13 +99,18 @@ export function parseConfig (config: ConfigJson, path: string): ConfigJson {
  * Read a file over HTTP, using a file cache and status check.
  */
 export function readHttp (url: string): Promise<string> {
-  const { proxy, rejectUnauthorized, ca, key, cert } = rc
+  const { proxy, rejectUnauthorized, ca, key, cert, userAgent } = rc
   const agent = proxy ? new ProxyAgent(proxy) : null
 
   return popsicle.get({
     url,
     headers: {
-      'User-Agent': `${PRETTY_PROJECT_NAME} <${HOMEPAGE}>`
+      'User-Agent': template(userAgent, {
+        nodeVersion: process.version,
+        platform: process.platform,
+        arch: process.arch,
+        typingsVersion: pkg.version
+      })
     },
     options: {
       agent,

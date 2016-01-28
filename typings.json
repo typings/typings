@@ -3,6 +3,7 @@
     "debug": "github:typings/typed-debug#0a12b05a76400107c70a266dcd4c2b656baa7dae",
     "popsicle": "npm:popsicle",
     "promise-finally": "npm:promise-finally",
+    "string-template": "github:typings/typed-string-template#4620eee24201636ca45e6dbc2505066703c770da",
     "typescript": "npm:typescript"
   }
 }
