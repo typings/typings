@@ -16,7 +16,7 @@ npm install typings --global
 # Search for definitions.
 typings search tape
 
-# Find ambient typings (includes DefinitelyTyped).
+# Find ambient typings (includes DefinitelyTyped in lookup due to --ambient flag).
 typings search react --ambient
 
 # Install ambient typings (and persist selection in `typings.json`).
@@ -26,7 +26,35 @@ typings install react --ambient --save
 cat typings/main.d.ts
 ```
 
+## From TSD to typings
+
 **Important: For existing TSD users, Typings will install from DefinitelyTyped using the `--ambient` flag. Regular dependencies are maintained in the [registry](https://github.com/typings/registry).**
+
+You're possibly wondering what it's like going from using TSD to typings. To use typings as you used TSD the migration is not extreme. Where you previously would have:
+
+```
+tsd install react --save
+```
+
+You would now:
+
+```
+typings install react --ambient --save
+```
+
+Likewise, this:
+
+```
+tsd query react
+```
+
+becomes:
+
+```
+typings search react --ambient
+```
+
+In both cases the `--ambient` flag is required in order that Definitely Typed is included in the lookup.  DT can generally be viewed as a source of ambient definitions; both internal and external.  For clarity about what ambient definitions are it's worth taking a look at the [TypeScript Handbook](http://www.typescriptlang.org/Handbook#modules-working-with-other-javascript-libraries).
 
 ## Features
 
