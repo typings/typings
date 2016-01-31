@@ -81,9 +81,23 @@ function handle (args: Args & minimist.ParsedArgs) {
   const command = ALIASES[args._[0]]
 
   if (typeof command === 'string') {
-    const argv = args._.slice(1)
-    argv.unshift(join(__dirname, `typings-${command}.js`))
-    return spawn(process.execPath, argv, { stdio: 'inherit' })
+    const bin = join(__dirname, `typings-${command}.js`)
+    const argv = [bin].concat(args._.slice(1))
+    const proc = spawn(process.execPath, argv, { stdio: 'inherit' })
+
+    proc.on('close', (code?: number) => process.exit(code))
+
+    proc.on('error', (err: any) => {
+      if (err.code === 'ENOENT') {
+        console.error(`"${bin}" does not exist, try --help`)
+      } else if (err.code == 'EACCES') {
+        console.error(`"${bin}" is not executable, try chmod or run with root`)
+      }
+
+      process.exit(1)
+    })
+
+    return
   }
 
   const wrap = wordwrap(4, 80)
