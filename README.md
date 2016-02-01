@@ -30,7 +30,7 @@ cat typings/main.d.ts
 
 **Important: For existing TSD users, Typings will install from DefinitelyTyped using the `--ambient` flag. Regular dependencies are maintained in the [registry](https://github.com/typings/registry).**
 
-You're possibly wondering what it's like going from using TSD to typings. To use typings as you used TSD the migration is not extreme. Where you previously would have:
+You're possibly wondering what it's like going from using TSD to Typings. To use Typings as you used TSD the migration is not extreme. Where you previously would have:
 
 ```
 tsd install react --save
