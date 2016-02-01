@@ -68,7 +68,6 @@
     "object-pick": "^0.1.1",
     "parse-json": "^2.2.0",
     "popsicle": "^3.0.2",
-    "popsicle-cache": "^3.0.0",
     "popsicle-status": "^1.0.0",
     "promise-finally": "^2.0.1",
     "proxy-agent": "^2.0.0",

@@ -3,7 +3,6 @@ import thenify = require('thenify')
 import stripBom = require('strip-bom')
 import parse = require('parse-json')
 import popsicle = require('popsicle')
-import popsicleCache = require('popsicle-cache')
 import popsicleStatus = require('popsicle-status')
 import detectIndent = require('detect-indent')
 import sortKeys = require('sort-keys')
@@ -27,11 +26,6 @@ import rc from './rc'
 import debug from './debug'
 
 const pkg = require('../../package.json')
-
-// Create a file cache for popsicle.
-const requestFileCache = popsicleCache({
-  store: new popsicleCache.Store({ path: join(CACHE_DIR, 'http') })
-})
 
 const mainTypingsDir = join(TYPINGS_DIR, 'main/definitions')
 const browserTypingsDir = join(TYPINGS_DIR, 'browser/definitions')
@@ -125,7 +119,6 @@ export function readHttp (url: string): Promise<string> {
       popsicle.plugins.concatStream('string')
     ]
   })
-    .use(requestFileCache)
     .use(popsicleStatus(200))
     .then(response => {
       debug('http response', response.toJSON())
