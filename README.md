@@ -207,7 +207,11 @@ Typings supports configuration using [`rc`](https://github.com/dominictarr/rc). 
 
 ### `main.d.ts` And `browser.d.ts`
 
-To simplify integration with TypeScript, two files - `typings/main.d.ts` and `typings/browser.d.ts` - are generated which reference all the typings installed in the project. To use this, you can add the reference to `tsconfig.json` files:
+To simplify integration with TypeScript, two files - `typings/main.d.ts` and `typings/browser.d.ts` - are generated which reference all the typings installed in the project only one of which can be used at a time. If you're building a front-end package it's recommended you use `typings/browser.d.ts`. The browser typings are compiled by following the `browser` field overrides.
+
+To use either you can do ***one*** of the following: 
+
+* You can add the reference to `tsconfig.json` files:
 
 ```json
 {
@@ -217,15 +221,18 @@ To simplify integration with TypeScript, two files - `typings/main.d.ts` and `ty
 }
 ```
 
-Or as a reference to the top of TypeScript files:
+* Add as a reference to the top of TypeScript files:
 
 ```ts
 /// <reference path="../typings/main.d.ts" />
 ```
 
-If you're building a front-end package it's recommended you use `typings/browser.d.ts` instead. The browser typings are compiled by following the `browser` field overrides.
-
-**Please note:** If you're relying on "exclude" behavior instead, you can exclude `typings/browser.d.ts` and `typings/browser` (replace `browser` with `main`, if you desire).
+* Exclude the one you don't want from `tsconfig.json` (similar to `node_modules`) e.g: 
+```json
+{
+  "exclude":["typings/browser.d.ts","typings/browser","node_modules"]
+}
+```
 
 ### References
 
