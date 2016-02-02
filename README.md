@@ -211,7 +211,18 @@ To simplify integration with TypeScript, two files - `typings/main.d.ts` and `ty
 
 To use either you can do ***one*** of the following: 
 
-* You can add the reference to `tsconfig.json` files:
+* If you are using `exclude` in `tsconfig.json`, then exclude the one you don't want (similar to `node_modules`) e.g: 
+```json
+{
+  "exclude": [
+    "typings/browser.d.ts",
+    "typings/browser",
+    "node_modules"
+  ]
+}
+```
+
+* If you are using `files` in `tsconfig.json`, then add the one you want:
 
 ```json
 {
@@ -221,17 +232,10 @@ To use either you can do ***one*** of the following:
 }
 ```
 
-* Add as a reference to the top of TypeScript files:
+* If you are not using `tsconfig.json`, then add as a reference to the top of TypeScript files:
 
 ```ts
 /// <reference path="../typings/main.d.ts" />
-```
-
-* Exclude the one you don't want from `tsconfig.json` (similar to `node_modules`) e.g: 
-```json
-{
-  "exclude":["typings/browser.d.ts","typings/browser","node_modules"]
-}
 ```
 
 ### References
