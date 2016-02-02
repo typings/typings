@@ -301,7 +301,19 @@ Where `typings/{main,browser}.d.ts` is a collection of references to installed d
 
 ## Contributing
 
-The scripts to build the project are in `package.json`. Use `npm run test` and `npm run build`. For initial compilation, you will need to install the typings in `typings.json`. Yes, recursive dependencies. Use `npm install -g typings` and run `typings install` before building, or look at `npm run bootstrap` to see how Typings bootstraps itself.
+```sh
+# Installation
+## Fork this repo (https://github.com/typings/typings)
+git clone https://github.com/<your_username>/typings.git typings
+cd typings
+npm run bootstrap
+
+# Build
+npm run build
+
+# Test
+npm run test
+```
 
 ## License
 
