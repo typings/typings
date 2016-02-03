@@ -277,7 +277,6 @@ Writing a new type definition is as simple as creating a new package. Start by c
 
 * **main** The entry point to the definition (canonical to "main" in NPM's `package.json`)
 * **browser** A string or map of paths to override when resolving (following the [browser field specification](https://github.com/defunctzombie/package-browser-field-spec))
-* **ambient** Denote that this definition _must_ be installed as ambient
 * **name** The name of this definition
 * **dependencies** A map of dependencies that need installing
 * **devDependencies** A map of development dependencies that need installing
