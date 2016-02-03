@@ -199,6 +199,9 @@ Bundle the current project types into an single ambient module.
 Typings supports configuration using [`rc`](https://github.com/dominictarr/rc). The config options can be set using CLI arguments, environment variables prefixed with `typings_` or a `.typingsrc` file.
 
 * **proxy** A HTTP(s) proxy URI for outgoing requests
+* **httpProxy** The proxy to use for HTTP requests (default: `process.env.HTTP_PROXY`)
+* **httpsProxy** The proxy to use for HTTPS requests (default: `process.env.HTTPS_PROXY`)
+* **noProxy** A string of space-separated hosts to not proxy (default: `process.env.NO_PROXY`)
 * **rejectUnauthorized** Reject invalid SSL certificates (default: `true`)
 * **ca** A string or array of strings of trusted certificates in PEM format
 * **key** Private key to use for SSL (default: `null`)
@@ -209,9 +212,10 @@ Typings supports configuration using [`rc`](https://github.com/dominictarr/rc). 
 
 To simplify integration with TypeScript, two files - `typings/main.d.ts` and `typings/browser.d.ts` - are generated which reference all the typings installed in the project only one of which can be used at a time. If you're building a front-end package it's recommended you use `typings/browser.d.ts`. The browser typings are compiled by following the `browser` field overrides.
 
-To use either you can do ***one*** of the following: 
+To use either you can do ***one*** of the following:
 
-* If you are using `exclude` in `tsconfig.json`, then exclude the one you don't want (similar to `node_modules`) e.g: 
+* If you are using `exclude` in `tsconfig.json`, then exclude the one you don't want (similar to `node_modules`) e.g:
+
 ```json
 {
   "exclude": [
@@ -272,7 +276,7 @@ Writing a new type definition is as simple as creating a new package. Start by c
 ```
 
 * **main** The entry point to the definition (canonical to "main" in NPM's `package.json`)
-* **browser** A string or map of paths to override when resolving (canonical to "browser" in NPM's `package.json`)
+* **browser** A string or map of paths to override when resolving (following the [browser field specification](https://github.com/defunctzombie/package-browser-field-spec))
 * **ambient** Denote that this definition _must_ be installed as ambient
 * **name** The name of this definition
 * **dependencies** A map of dependencies that need installing
@@ -303,8 +307,8 @@ Where `typings/{main,browser}.d.ts` is a collection of references to installed d
 
 ```sh
 # Installation
-## Fork this repo (https://github.com/typings/typings)
-git clone https://github.com/<your_username>/typings.git typings
+# Fork this repo (https://github.com/typings/typings)
+# Clone the fork (E.g. `https://github.com/<your_username>/typings.git`)
 cd typings
 npm run bootstrap
 
