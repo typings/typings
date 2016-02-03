@@ -1,4 +1,5 @@
 import extend = require('xtend')
+import Promise = require('any-promise')
 import { removeDependency, transformConfig, DefinitionOptions } from './utils/fs'
 import { findProject } from './utils/find'
 

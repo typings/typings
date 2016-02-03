@@ -3,6 +3,7 @@
 import minimist = require('minimist')
 import extend = require('xtend')
 import chalk = require('chalk')
+import Promise = require('any-promise')
 import { install, installDependency, InstallDependencyOptions } from '../typings'
 import { loader, inquire, handleError, archifyDependencyTree } from '../utils/cli'
 import { PROJECT_NAME } from '../utils/config'

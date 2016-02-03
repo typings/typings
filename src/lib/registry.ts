@@ -1,5 +1,5 @@
 import invariant = require('invariant')
-import Promise = require('native-or-bluebird')
+import Promise = require('any-promise')
 import { stringify } from 'querystring'
 import pick = require('object-pick')
 import { readJsonFrom } from '../utils/fs'
