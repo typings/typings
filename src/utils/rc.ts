@@ -4,6 +4,9 @@ import { PROJECT_NAME } from './config'
 
 export interface RcConfig {
   proxy?: string
+  httpProxy?: string
+  httpsProxy?: string
+  noProxy?: string
   rejectUnauthorized?: boolean
   ca?: string | string[]
   key?: string
