@@ -1,5 +1,5 @@
 import test = require('blue-tape')
-import Promise = require('native-or-bluebird')
+import Promise = require('any-promise')
 import { EOL } from 'os'
 import { join } from 'path'
 import { bundle } from './bundle'

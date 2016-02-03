@@ -1,10 +1,26 @@
 {
   "dependencies": {
+    "any-promise": "github:typings/typed-any-promise#74ba6cf22149ff4de39c2338a9cb84f9ded6f042",
+    "archy": "github:typings/typed-archy#3706c5e4df4efcc8cec8849a1c493cebd0830bea",
+    "array-uniq": "github:typings/typed-array-uniq#fe1767e9b1baa0fd9f7a55fbcbf2fd8f08296d42",
+    "chalk": "github:typings/typed-chalk#a7e422c5455e70292e5675a727d43a7b05fc3e58",
+    "columnify": "github:typings/typed-columnify#855f119ac0310bc0dc924b7c26dc1426e2aa43a5",
     "debug": "github:typings/typed-debug#0a12b05a76400107c70a266dcd4c2b656baa7dae",
+    "detect-indent": "github:typings/typed-detect-indent#5576659901b4219189fde838c94e5c73daa9bfc7",
+    "make-error-cause": "npm:make-error-cause",
+    "minimist": "github:typings/typed-minimist#9bfb8ebb1cf82abe2e16b00d6e0f59492224728e",
     "popsicle": "npm:popsicle",
     "popsicle-proxy-agent": "npm:popsicle-proxy-agent",
     "promise-finally": "npm:promise-finally",
     "string-template": "github:typings/typed-string-template#4620eee24201636ca45e6dbc2505066703c770da",
+    "thenify": "github:typings/typed-thenify#edbd46753be5bb34b916787fcede5e9b1281a2e2",
     "typescript": "npm:typescript"
+  },
+  "devDependencies": {
+    "blue-tape": "github:typings/typed-blue-tape#a4e41a85d6f760e7c60088127968eae7d3a556fa",
+    "nock": "github:typings/typed-nock#0b7c6be782a62fc36e74239fbecccf73c1aed98c"
+  },
+  "ambientDependencies": {
+    "node": "github:DefinitelyTyped/DefinitelyTyped/node/node.d.ts#1c56e368e17bb28ca57577250624ca5bd561aa81"
   }
 }

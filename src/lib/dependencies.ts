@@ -1,8 +1,7 @@
 import extend = require('xtend')
 import invariant = require('invariant')
 import zipObject = require('zip-object')
-import partial = require('util-partial')
-import Promise = require('native-or-bluebird')
+import Promise = require('any-promise')
 import { resolve, dirname, join } from 'path'
 import { resolve as resolveUrl } from 'url'
 import { readJson, readConfigFrom } from '../utils/fs'
@@ -176,7 +175,7 @@ function resolveBowerDependencyFrom (
         const dependencyMap = extend(bowerJson.dependencies)
         const devDependencyMap = extend(options.dev ? bowerJson.devDependencies : {})
 
-        return Promise.all<any>([
+        return Promise.all([
           resolveBowerDependencyMap(componentPath, dependencyMap, options, tree),
           resolveBowerDependencyMap(componentPath, devDependencyMap, options, tree),
           maybeResolveTypeDependencyFrom(join(src, '..', CONFIG_FILE), raw, options, tree)
@@ -226,7 +225,7 @@ function resolveBowerDependencyMap (
 
     return resolveBowerDependencyFrom(modulePath, `bower:${name}`, componentPath, resolveOptions, parent)
   }))
-    .then(partial(zipObject, keys))
+    .then(results => zipObject(keys, results))
 }
 
 /**
@@ -268,7 +267,7 @@ function resolveNpmDependencyFrom (src: string, raw: string, options: Options, p
         const dependencyMap = extend(packageJson.dependencies, packageJson.peerDependencies)
         const devDependencyMap = extend(options.dev ? packageJson.devDependencies : {})
 
-        return Promise.all<any>([
+        return Promise.all([
           resolveNpmDependencyMap(src, dependencyMap, options, tree),
           resolveNpmDependencyMap(src, devDependencyMap, options, tree),
           maybeResolveTypeDependencyFrom(join(src, '..', CONFIG_FILE), raw, options, tree)
@@ -298,7 +297,7 @@ function resolveNpmDependencyMap (src: string, dependencies: any, options: Optio
 
     return resolveNpmDependency(join(name, 'package.json'), `npm:${name}`, resolveOptions, parent)
   }))
-    .then(partial(zipObject, keys))
+    .then(results => zipObject(keys, results))
 }
 
 /**
@@ -344,7 +343,7 @@ function resolveTypeDependencyFrom (src: string, raw: string, options: Options, 
         const ambientDependencyMap = extend(ambient ? config.ambientDependencies : {})
         const ambientDevDependencyMap = extend(ambient && dev ? config.ambientDevDependencies : {})
 
-        return Promise.all<any>([
+        return Promise.all([
           resolveTypeDependencyMap(src, dependencyMap, options, tree),
           resolveTypeDependencyMap(src, devDependencyMap, options, tree),
           resolveTypeDependencyMap(src, ambientDependencyMap, options, tree),
@@ -384,7 +383,7 @@ function resolveTypeDependencyMap (src: string, dependencies: any, options: Opti
 
     return resolveDependency(parseDependency(dependencies[name]), resolveOptions, parent)
   }))
-    .then(partial(zipObject, keys))
+    .then(results => zipObject(keys, results))
 }
 
 /**

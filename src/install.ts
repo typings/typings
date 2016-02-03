@@ -1,5 +1,5 @@
 import extend = require('xtend')
-import Promise = require('native-or-bluebird')
+import Promise = require('any-promise')
 import { dirname } from 'path'
 import { resolveDependency, resolveTypeDependencies } from './lib/dependencies'
 import compile, { Options as CompileOptions, CompiledOutput } from './lib/compile'
@@ -137,5 +137,5 @@ function writeToConfig (dependency: Dependency, options: InstallDependencyOption
     })
   }
 
-  return Promise.resolve<void>()
+  return Promise.resolve()
 }

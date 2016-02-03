@@ -1,4 +1,4 @@
-import Promise = require('native-or-bluebird')
+import Promise = require('any-promise')
 import { resolveAllDependencies } from './lib/dependencies'
 import compile, { CompiledOutput } from './lib/compile'
 

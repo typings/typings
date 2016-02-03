@@ -1,7 +1,7 @@
 import * as ts from 'typescript'
 import extend = require('xtend')
 import has = require('has')
-import Promise = require('native-or-bluebird')
+import Promise = require('any-promise')
 import { EOL } from 'os'
 import { join, relative } from 'path'
 import { DependencyTree, Overrides } from '../interfaces/main'

@@ -1,4 +1,4 @@
-import Promise = require('native-or-bluebird')
+import Promise = require('any-promise')
 import { join } from 'path'
 import { ConfigJson } from './interfaces/main'
 import { writeJson, isFile, readJson } from './utils/fs'

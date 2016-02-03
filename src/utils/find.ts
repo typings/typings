@@ -1,5 +1,5 @@
 import { join, dirname } from 'path'
-import Promise = require('native-or-bluebird')
+import Promise = require('any-promise')
 import { isFile } from '../utils/fs'
 import { CONFIG_FILE } from './config'
 
@@ -24,7 +24,7 @@ function findUpParent (dir: string, filename: string, from: string): Promise<str
   const parentDir = dirname(dir)
 
   if (dir === parentDir) {
-    return Promise.reject(new Error(`Unable to find "${filename}" from "${from}"`))
+    return Promise.reject<void>(new Error(`Unable to find "${filename}" from "${from}"`))
   }
 
   return findUp(parentDir, filename, from)

@@ -1,5 +1,5 @@
 import test = require('blue-tape')
-import Promise = require('native-or-bluebird')
+import Promise = require('any-promise')
 import thenify = require('thenify')
 import { unlink } from 'fs'
 import { join } from 'path'

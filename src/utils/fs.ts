@@ -1,4 +1,5 @@
 import * as fs from 'graceful-fs'
+import Promise = require('any-promise')
 import thenify = require('thenify')
 import stripBom = require('strip-bom')
 import parse = require('parse-json')
@@ -8,7 +9,6 @@ import detectIndent = require('detect-indent')
 import sortKeys = require('sort-keys')
 import mdp = require('mkdirp')
 import uniq = require('array-uniq')
-import Promise = require('native-or-bluebird')
 import lockfile = require('lockfile')
 import rmrf = require('rimraf')
 import popsicleProxy = require('popsicle-proxy-agent')
@@ -34,15 +34,15 @@ const ambientBrowserTypingsDir = join(TYPINGS_DIR, 'browser/ambient')
 
 export type Stats = fs.Stats
 
-export const touch = thenify(tch)
-export const stat = thenify(fs.stat)
-export const readFile = thenify<string, string, string>(fs.readFile)
-export const writeFile = thenify<string, string | Buffer, void>(fs.writeFile)
-export const mkdirp = thenify<string, void>(mdp)
-export const unlink = thenify<string, void>(fs.unlink)
-export const lock = thenify<string, lockfile.Options, void>(lockfile.lock)
-export const unlock = thenify(lockfile.unlock)
-export const rimraf = thenify(rmrf)
+export const touch: (path: string, options?: tch.Options) => Promise<void> = thenify<string, tch.Options, void>(tch)
+export const stat: (path: string) => Promise<Stats> = thenify(fs.stat)
+export const readFile: (path: string, encoding: string) => Promise<string> = thenify<string, string, string>(fs.readFile)
+export const writeFile: (path: string, contents: string | Buffer) => Promise<void> = thenify<string, string | Buffer, void>(fs.writeFile)
+export const mkdirp: (path: string) => Promise<void> = thenify<string, void>(mdp)
+export const unlink: (path: string) => Promise<void> = thenify<string, void>(fs.unlink)
+export const lock: (path: string, options?: lockfile.Options) => Promise<void> = thenify<string, lockfile.Options, void>(lockfile.lock)
+export const unlock: (path: string) => Promise<void> = thenify<string, void>(lockfile.unlock)
+export const rimraf: (path: string) => Promise<void> = thenify<string, void>(rmrf)
 
 /**
  * Verify a path exists and is a file.

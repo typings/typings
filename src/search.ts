@@ -1,4 +1,5 @@
 import extend = require('xtend')
+import Promise = require('any-promise')
 import { search as searchRegistry, SearchResults } from './lib/registry'
 
 export interface Options {
