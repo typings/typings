@@ -11,7 +11,7 @@ import uniq = require('array-uniq')
 import Promise = require('native-or-bluebird')
 import lockfile = require('lockfile')
 import rmrf = require('rimraf')
-import ProxyAgent = require('proxy-agent')
+import popsicleProxy = require('popsicle-proxy-agent')
 import promiseFinally from 'promise-finally'
 import tch = require('touch')
 import { EOL } from 'os'
@@ -93,8 +93,7 @@ export function parseConfig (config: ConfigJson, path: string): ConfigJson {
  * Read a file over HTTP, using a file cache and status check.
  */
 export function readHttp (url: string): Promise<string> {
-  const { proxy, rejectUnauthorized, ca, key, cert, userAgent } = rc
-  const agent = proxy ? new ProxyAgent(proxy) : null
+  const { proxy, httpProxy, httpsProxy, noProxy, rejectUnauthorized, ca, key, cert, userAgent } = rc
 
   return popsicle.get({
     url,
@@ -107,7 +106,6 @@ export function readHttp (url: string): Promise<string> {
       })
     },
     options: {
-      agent,
       ca,
       key,
       cert,
@@ -119,6 +117,7 @@ export function readHttp (url: string): Promise<string> {
       popsicle.plugins.concatStream('string')
     ]
   })
+    .use(popsicleProxy({ proxy, httpProxy, httpsProxy, noProxy }))
     .use(popsicleStatus(200))
     .then(response => {
       debug('http response', response.toJSON())
