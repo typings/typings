@@ -202,6 +202,34 @@ test('compile', t => {
         })
     })
 
+    t.test('compile export default', t => {
+      const FIXTURE_DIR = join(FIXTURES_DIR, 'compile-export-default')
+
+      const file: DependencyTree = {
+        src: join(FIXTURE_DIR, CONFIG_FILE),
+        main: 'index.d.ts',
+        raw: undefined,
+        dependencies: {},
+        devDependencies: {},
+        ambientDependencies: {},
+        ambientDevDependencies: {}
+      }
+
+      return compile(file, { name: 'test', cwd: __dirname, ambient: false, meta: false })
+        .then(results => {
+          t.equal(results.main, [
+            'declare module \'test/index\' {',
+            'const foo: string;',
+            '',
+            'export default foo;',
+            '}',
+            'declare module \'test\' {',
+            'export { default } from \'test/index\';',
+            '}'
+          ].join(EOL))
+        })
+    })
+
     t.test('compile an ambient definition', t => {
       const FIXTURE_DIR = join(FIXTURES_DIR, 'compile-ambient')
 

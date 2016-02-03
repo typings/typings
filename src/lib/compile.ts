@@ -610,8 +610,10 @@ function processTree (
   }
 
   function readThrough (node: ts.Node) {
-    code += reader(position, node.pos)
-    position = node.pos
+    if (node.pos > position) {
+      code += reader(position, node.pos)
+      position = node.pos
+    }
   }
 
   function visit (node: ts.Node) {
