@@ -60,6 +60,7 @@
     "insight": "^0.7.0",
     "invariant": "^2.2.0",
     "is-absolute": "^0.2.3",
+    "listify": "^1.0.0",
     "lockfile": "^1.0.1",
     "log-update": "^1.0.2",
     "make-error-cause": "^1.0.1",
