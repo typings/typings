@@ -4,6 +4,7 @@ import minimist = require('minimist')
 import extend = require('xtend')
 import chalk = require('chalk')
 import Promise = require('any-promise')
+import listify = require('listify')
 import { install, installDependency, InstallDependencyOptions } from '../typings'
 import { loader, inquire, handleError, archifyDependencyTree } from '../utils/cli'
 import { PROJECT_NAME } from '../utils/config'
@@ -69,12 +70,12 @@ function printResult (output: PrintOutput, options?: { name: string }) {
     const references = Object.keys(output.references)
 
     if (references.length) {
-      console.log(`References ${chalk.bold(`(not installed)`)}:`)
+      console.log(chalk.bold('References (stripped):'))
 
       for (const reference of references) {
         const info = output.references[reference]
 
-        console.log(`  ${reference} ${chalk.gray(`(from ${info.map(x => x.name).join(', ')})`)}`)
+        console.log(`  ${reference} ${chalk.gray(`(from ${listify(info.map(x => x.name))})`)}`)
       }
 
       console.log('')
@@ -85,12 +86,12 @@ function printResult (output: PrintOutput, options?: { name: string }) {
     const missings = Object.keys(output.missing)
 
     if (missings.length) {
-      console.log(`Possible ambient modules ${chalk.bold(`(not installed)`)}:`)
+      console.log(chalk.bold('Missing dependencies:'))
 
       for (const missing of missings) {
         const info = output.missing[missing]
 
-        console.log(`  ${missing} ${chalk.gray(`(from ${info.map(x => x.name).join(', ')})`)}`)
+        console.log(`  ${missing} ${chalk.gray(`(from ${listify(info.map(x => x.name))})`)}`)
       }
 
       console.log('')

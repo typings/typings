@@ -7,6 +7,7 @@
     "columnify": "github:typings/typed-columnify#855f119ac0310bc0dc924b7c26dc1426e2aa43a5",
     "debug": "github:typings/typed-debug#0a12b05a76400107c70a266dcd4c2b656baa7dae",
     "detect-indent": "github:typings/typed-detect-indent#5576659901b4219189fde838c94e5c73daa9bfc7",
+    "listify": "github:typings/typed-listify#ff7fcd328b8285b38c9e941945bde33e8f249147",
     "make-error-cause": "npm:make-error-cause",
     "minimist": "github:typings/typed-minimist#9bfb8ebb1cf82abe2e16b00d6e0f59492224728e",
     "popsicle": "npm:popsicle",
