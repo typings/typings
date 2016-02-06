@@ -180,7 +180,7 @@ Bundle the current project types into an single ambient module.
 
 ### Why?
 
-* Typings makes external modules, not ambient modules, first class (E.g. no `declare module "x"` in dependencies)
+* Typings makes external modules, not ambient modules, first class.  (Curious as to what this means?  Read [this](/docs/how-typings-makes-external-modules-first-class.md))
   * A lot of ambient module declarations suffer from exposing implementation details incorrectly
   * External module declarations are emitted by TypeScript already, and used with the `moduleResolution` option
   * You can immediately contribute typings back to the author!
