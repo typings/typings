@@ -15,9 +15,10 @@
   "scripts": {
     "lint": "# tslint \"src/**/*.ts\"",
     "build": "rm -rf dist/ && tsc",
+    "dependency-check": "dependency-check . --entry dist/bin/typings-bundle.js --entry dist/bin/typings-init.js --entry dist/bin/typings-install.js --entry dist/bin/typings-list.js --entry dist/bin/typings-search.js --entry dist/bin/typings-uninstall.js --unused --no-dev -i bluebird",
     "test-spec": "ts-node node_modules/blue-tape/bin/blue-tape.js \"src/**/*.spec.ts\" | tap-spec",
     "test-cov": "ts-node node_modules/istanbul/lib/cli.js cover -e .ts --print none -x \"*.d.ts\" -x \"*.spec.ts\" blue-tape -- \"src/**/*.spec.ts\" | tap-spec",
-    "test": "npm run lint && npm run test-cov",
+    "test": "npm run lint && npm run build && npm run dependency-check && npm run test-cov",
     "bootstrap": "mkdir -p typings && touch typings/main.d.ts && SKIP_PREPUBLISH=true npm install && npm run build 2> /dev/null; cat dist/init.js > /dev/null && node dist/bin/typings.js install",
     "prepublish": "if [ ! $SKIP_PREPUBLISH ]; then npm run build; fi"
   },
@@ -74,7 +75,6 @@
     "promise-finally": "^2.0.1",
     "rc": "^1.1.5",
     "rimraf": "^2.4.4",
-    "semver": "^5.0.1",
     "sort-keys": "^1.0.0",
     "string-template": "^1.0.0",
     "strip-bom": "^2.0.0",
@@ -88,6 +88,7 @@
   },
   "devDependencies": {
     "blue-tape": "^0.1.11",
+    "dependency-check": "^2.5.1",
     "istanbul": "1.0.0-alpha.2",
     "nock": "^7.0.2",
     "pre-commit": "^1.0.6",
