@@ -5,7 +5,7 @@ import compile, { CompiledOutput } from './lib/compile'
 /**
  * Bundle configuration options.
  */
-export interface Options {
+export interface BundleOptions {
   name?: string
   source: string
 }
@@ -13,7 +13,7 @@ export interface Options {
 /**
  * Bundle the current typings project into a single ambient definition.
  */
-export function bundle (options: Options): Promise<CompiledOutput> {
+export function bundle (options: BundleOptions): Promise<CompiledOutput> {
   const { source: cwd } = options
 
   return resolveAllDependencies({ cwd, dev: false, ambient: false })

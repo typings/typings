@@ -12,7 +12,7 @@ const OLD_DEFINITELYTYPED_REPO = 'borisyankov/DefinitelyTyped'
 /**
  * Options for initializing a configuration.
  */
-export interface Options {
+export interface InitOptions {
   cwd: string
   upgrade?: boolean
 }
@@ -73,14 +73,14 @@ function upgradeTsdJson (tsdJson: TsdJson): ConfigJson {
 /**
  * Upgrade from `tsd.json`.
  */
-function upgrade (options: Options) {
+function upgrade (options: InitOptions) {
   return readJson(join(options.cwd, TSD_JSON_FILE)).then(upgradeTsdJson)
 }
 
 /**
  * Initialize a configuration file here.
  */
-export function init (options: Options) {
+export function init (options: InitOptions) {
   const path = join(options.cwd, CONFIG_FILE)
 
   return isFile(path)
