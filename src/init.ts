@@ -43,6 +43,15 @@ interface TsdJson {
 }
 
 /**
+ * The files to check for existing names when naming a package
+ */
+
+const CONFIG_NAMES: string[] = [
+  'package.json',
+  'bower.json'
+]
+
+/**
  * Update an old `tsd.json` format to the new format.
  */
 function upgradeTsdJson (tsdJson: TsdJson): ConfigJson {
@@ -78,6 +87,23 @@ function upgrade (options: InitOptions) {
 }
 
 /**
+ * Make a smart guess of the project from either the `package.json` or `bower.json` files.
+ */
+
+function guessProjectName (options: InitOptions) : string {
+  for (let i = 0; i < CONFIG_NAMES.length; i++) {
+    try {
+      const pack = require(join(options.cwd, CONFIG_NAMES[i]))
+      if (pack.name != null) {
+        return pack.name
+      }
+    } catch (e) {}
+  }
+
+  return null
+}
+
+/**
  * Initialize a configuration file here.
  */
 export function init (options: InitOptions) {
@@ -92,6 +118,9 @@ export function init (options: InitOptions) {
       if (options.upgrade) {
         return upgrade(options)
       }
+
+      let config = DEFAULT_CONFIG
+      config.name = guessProjectName(options)
 
       return DEFAULT_CONFIG
     })
