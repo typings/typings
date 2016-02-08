@@ -38,7 +38,7 @@ export const touch: (path: string, options?: tch.Options) => Promise<void> = the
 export const stat: (path: string) => Promise<Stats> = thenify(fs.stat)
 export const readFile: (path: string, encoding: string) => Promise<string> = thenify<string, string, string>(fs.readFile)
 export const writeFile: (path: string, contents: string | Buffer) => Promise<void> = thenify<string, string | Buffer, void>(fs.writeFile)
-export const mkdirp: (path: string) => Promise<void> = thenify<string, void>(mdp)
+export const mkdirp: (path: string) => Promise<string> = thenify<string, string>(mdp)
 export const unlink: (path: string) => Promise<void> = thenify<string, void>(fs.unlink)
 export const lock: (path: string, options?: lockfile.Options) => Promise<void> = thenify<string, lockfile.Options, void>(lockfile.lock)
 export const unlock: (path: string) => Promise<void> = thenify<string, void>(lockfile.unlock)
