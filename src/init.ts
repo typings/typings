@@ -1,4 +1,5 @@
 import Promise = require('any-promise')
+import extend = require('xtend')
 import { join } from 'path'
 import { ConfigJson } from './interfaces/main'
 import { writeJson, isFile, readJson } from './utils/fs'
@@ -43,10 +44,9 @@ interface TsdJson {
 }
 
 /**
- * The files to check for existing names when naming a package
+ * The files to check for existing names when naming a package.
  */
-
-const CONFIG_NAMES: string[] = [
+const PACKAGE_FILES: string[] = [
   'package.json',
   'bower.json'
 ]
@@ -54,8 +54,8 @@ const CONFIG_NAMES: string[] = [
 /**
  * Update an old `tsd.json` format to the new format.
  */
-function upgradeTsdJson (tsdJson: TsdJson): ConfigJson {
-  const typingsJson: ConfigJson = {}
+function upgradeTsdJson (tsdJson: TsdJson, config?: ConfigJson): ConfigJson {
+  const typingsJson: ConfigJson = extend(config)
   let repo = tsdJson.repo || DEFINITELYTYPED_REPO
 
   // Rewrite the old repo name which probably hasn't been updated in `tsd.json`.
@@ -82,25 +82,27 @@ function upgradeTsdJson (tsdJson: TsdJson): ConfigJson {
 /**
  * Upgrade from `tsd.json`.
  */
-function upgrade (options: InitOptions) {
-  return readJson(join(options.cwd, TSD_JSON_FILE)).then(upgradeTsdJson)
+function upgrade (options: InitOptions, config?: ConfigJson) {
+  return readJson(join(options.cwd, TSD_JSON_FILE)).then(tsdJson => upgradeTsdJson(tsdJson, config))
 }
 
 /**
- * Make a smart guess of the project from either the `package.json` or `bower.json` files.
+ * Make a smart guess of the project name from other config files.
  */
-
-function guessProjectName (options: InitOptions) : string {
-  for (let i = 0; i < CONFIG_NAMES.length; i++) {
-    try {
-      const pack = require(join(options.cwd, CONFIG_NAMES[i]))
-      if (pack.name != null) {
-        return pack.name
+function guessProjectName (options: InitOptions): Promise<string> {
+  return PACKAGE_FILES.reduce((promise, packageFileName) => {
+    return promise.then(function (name) {
+      if (name != null) {
+        return name
       }
-    } catch (e) {}
-  }
 
-  return null
+      return readJson(join(options.cwd, packageFileName))
+        .then(
+          (packageJson) => packageJson.name,
+          () => undefined
+        )
+    })
+  }, Promise.resolve<string>(undefined))
 }
 
 /**
@@ -114,15 +116,14 @@ export function init (options: InitOptions) {
       if (exists) {
         return Promise.reject(new TypeError(`A ${CONFIG_FILE} file already exists`))
       }
-
+    })
+    .then(() => guessProjectName(options))
+    .then(name => {
       if (options.upgrade) {
-        return upgrade(options)
+        return upgrade(options, { name })
       }
 
-      let config = DEFAULT_CONFIG
-      config.name = guessProjectName(options)
-
-      return DEFAULT_CONFIG
+      return extend({ name }, DEFAULT_CONFIG)
     })
     .then(function (config) {
       return writeJson(path, config, 2)
