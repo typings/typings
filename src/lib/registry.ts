@@ -1,7 +1,7 @@
 import invariant = require('invariant')
 import Promise = require('any-promise')
 import { stringify } from 'querystring'
-import pick = require('object-pick')
+import pick = require('object.pick')
 import { readJsonFrom } from '../utils/fs'
 
 /**
