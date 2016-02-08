@@ -45,4 +45,20 @@ test('init', t => {
         return thenify(unlink)(path)
       })
   })
+
+  t.test('guess project name', t => {
+    const FIXTURE_DIR = join(__dirname, '__test__/init-guess-name')
+    const path = join(FIXTURE_DIR, CONFIG_FILE)
+
+    return init({ cwd: FIXTURE_DIR})
+      .then(function () {
+        return readJson(path)
+      })
+      .then(function (config) {
+        t.equals(config.name, 'typings-test')
+      })
+      .then(function () {
+        return thenify(unlink)(path)
+      })     
+  })
 })
