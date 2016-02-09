@@ -5,7 +5,7 @@
 [![Build status][travis-image]][travis-url]
 [![Test coverage][coveralls-image]][coveralls-url]
 
-> The type definition manager for TypeScript.
+> The manager for TypeScript definitions.
 
 ## Quick Start
 
