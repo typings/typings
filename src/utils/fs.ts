@@ -5,6 +5,7 @@ import stripBom = require('strip-bom')
 import parse = require('parse-json')
 import popsicle = require('popsicle')
 import popsicleStatus = require('popsicle-status')
+import popsicleRetry = require('popsicle-retry')
 import detectIndent = require('detect-indent')
 import sortKeys = require('sort-keys')
 import mdp = require('mkdirp')
@@ -118,6 +119,7 @@ export function readHttp (url: string): Promise<string> {
     ]
   })
     .use(popsicleProxy({ proxy, httpProxy, httpsProxy, noProxy }))
+    .use(popsicleRetry({ maxRetries: 3, retryDelay: 5000 }))
     .use(popsicleStatus(200))
     .then(response => {
       debug('http response', response.toJSON())
