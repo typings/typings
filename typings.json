@@ -24,6 +24,7 @@
     "parse-json": "github:typings/typed-parse-json#74152f9c8b831227fc4eb3533fcd01b8906e2694",
     "popsicle": "npm:popsicle",
     "popsicle-proxy-agent": "npm:popsicle-proxy-agent",
+    "popsicle-retry": "npm:popsicle-retry",
     "popsicle-status": "npm:popsicle-status",
     "promise-finally": "npm:promise-finally",
     "proxyquire": "github:typings/typed-proxyquire#e94c99bbac8d350e28edd70471d9460a5534927b",
