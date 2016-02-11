@@ -17,8 +17,11 @@ export const VALID_SOURCES: { [source: string]: string } = {
   npm: 'NPM',
   github: 'GitHub',
   bower: 'Bower',
-  ambient: 'Ambient',
-  common: 'Common'
+  common: 'Common',
+  shared: 'Shared',
+  lib: 'Library',
+  env: 'Environment',
+  global: 'Global'
 }
 
 /**
