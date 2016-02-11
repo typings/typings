@@ -57,7 +57,7 @@
     "elegant-spinner": "^1.0.1",
     "graceful-fs": "^4.1.2",
     "has": "^1.0.1",
-    "inquirer": "^0.11.0",
+    "inquirer": "^0.12.0",
     "insight": "^0.7.0",
     "invariant": "^2.2.0",
     "is-absolute": "^0.2.3",
@@ -88,7 +88,7 @@
     "zip-object": "^0.1.0"
   },
   "devDependencies": {
-    "blue-tape": "^0.1.11",
+    "blue-tape": "^0.2.0",
     "dependency-check": "^2.5.1",
     "istanbul": "1.0.0-alpha.2",
     "nock": "^7.0.2",
