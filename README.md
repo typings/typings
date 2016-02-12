@@ -60,6 +60,7 @@ In both cases the `--ambient` flag is required in order that Definitely Typed is
 
 * Package manager parity
   * Familiar commands like `init`, `install`, `rm` and `ls`
+  * Support for installation of type definitions based on the true version number of the package you are using.  (Rather than on a SHA hash as with TSD.)  [Read more.](/docs/typings-the-registy-and-versions.md)
 * Installation from GitHub, BitBucket, NPM dependencies, Bower dependencies and HTTP(s)
   * If a project uses Typings, you can install it locally - try `typings install npm:popsicle`
 * Simple typings configuration file
