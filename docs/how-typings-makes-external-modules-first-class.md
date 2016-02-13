@@ -4,7 +4,7 @@ Often the best way to understand something is through example.  Let's imagine yo
 
 In your code you're then free to use jQuery as you like, for instance:
 
-```
+```ts
 import * as littleOldJ from 'oldJ';
 ```
 
@@ -24,7 +24,7 @@ Still a little confused?  Stick with me; we'll step through an example which sho
 
 There's a very straightforward type definition for [`domready`](https://github.com/ded/domready) in the Typings Registry.  The code that makes up the definition is as simple as:
 
-```
+```ts
 declare function domready(callback: () => any) : void;
 
 export = domready;
@@ -32,7 +32,7 @@ export = domready;
 
 Couldn't be simpler.  To install that definition it's a case of `typings install domready` which will create a `typings/main/definitions/domready/domready.d.ts` file in your repo:
 
-```
+```ts
 // Compiled using typings@0.6.5
 // Source: https://raw.githubusercontent.com/unional/typed-domready/881449d638c89897b1e70172ab5413b8886b4ef9/main.d.ts
 declare module 'domready/main' {
@@ -61,7 +61,7 @@ domready
 
 Typings looked up domready in the Typings Registry at this location: https://github.com/typings/registry/blob/master/npm/domready.json.  That file contained this data:
 
-```
+```json
 {
   "versions": {
     "1.0.8": "github:unional/typed-domready#881449d638c89897b1e70172ab5413b8886b4ef9"
@@ -73,7 +73,7 @@ Plainly `github:unional/typed-domready#881449d638c89897b1e70172ab5413b8886b4ef9`
 
 And here's something you should notice; https://github.com/unional/typed-domready contains a key file: `typings.json`:
 
-```
+```json
 {
   "name": "domready",
   "main": "main.d.ts",
