@@ -13,6 +13,10 @@ export function isHttp (url: string) {
  * Check if a path looks like a definition file.
  */
 export function isDefinition (path: string): boolean {
+  if (isHttp(path)) {
+    path = parseUrl(path).pathname;
+  }
+
   return /\.d\.ts$/.test(path)
 }
 
