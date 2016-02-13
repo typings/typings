@@ -95,8 +95,12 @@ typings install <pkg>[@<version>] [ --source [npm | github | bower | ambient | c
 typings install file:<path>
 typings install github:<github username>/<github project>[/<path>][#<commit>]
 typings install bitbucket:<bitbucket username>/<bitbucket project>[/<path>][#<commit>]
-typings install <http:// url>
+typings install npm:<package>
+typings install bower:<package>
+typings install <https?:// url>
 ```
+
+**Please note:** `npm` and `bower` resolve using their respective algorithms over the local filesystem. They will need to be installed _before_ running `typings install`. The other schemes (`http`, `https`, `github`, `bitbucket`) resolve over HTTP(s). Finally, `file` is a location in the local filesystem relative to the `typings.json` directory.
 
 Write a dependency to the `typings/` directory, optionally persisting it in `typings.json`.
 
@@ -106,19 +110,6 @@ Write a dependency to the `typings/` directory, optionally persisting it in `typ
 * **--save-dev, -D** Save as a dev dependency in `typings.json`
 * **--ambient, -A** Write as an ambient dependency (use with `--save` and `--save-dev`)
 * **--name, -n** The name of the dependency (required for non-registry dependencies)
-
-#### Possible Locations
-
-* `http://<domain>/<path>`
-* `file:<path>`
-* `github:<org>/<repo>/<path>#<commit>`
-* `bitbucket:<org>/<repo>/<path>#<commit>`
-* `npm:<package>/<path>`
-* `bower:<package>/<path>`
-
-Where `path` can be to `typings.json`, a `.d.ts` file, or empty. When the path is empty, or not a `.d.ts` file, `typings.json` will be appended to the path.
-
-**Please note:** `npm` and `bower` resolve using their respective algorithms over the local filesystem. They will need to be installed _before_ running `typings install`. The other schemes (`http`, `https`, `github`, `bitbucket`) resolve over HTTP(s). Finally, `file` is a location in the local filesystem relative to the `typings.json` directory.
 
 #### Registry
 

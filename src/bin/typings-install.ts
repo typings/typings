@@ -47,7 +47,9 @@ ${PROJECT_NAME} install <pkg>[@<version>] [ --source [${Object.keys(VALID_SOURCE
 ${PROJECT_NAME} install file:<path>
 ${PROJECT_NAME} install github:<github username>/<github project>[/<path>][#<commit>]
 ${PROJECT_NAME} install bitbucket:<bitbucket username>/<bitbucket project>[/<path>][#<commit>]
-${PROJECT_NAME} install <http:// url>
+${PROJECT_NAME} install npm:<package>
+${PROJECT_NAME} install bower:<package>
+${PROJECT_NAME} install <https?:// url>
 
 Aliases: i, in
 Options: [--name] [--save|--save-dev] [--ambient] [--production]
