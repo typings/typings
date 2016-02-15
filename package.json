@@ -75,7 +75,7 @@
     "popsicle-status": "^1.0.1",
     "promise-finally": "^2.0.1",
     "rc": "^1.1.5",
-    "rimraf": "^2.4.4",
+    "rimraf": "^2.5.2",
     "sort-keys": "^1.0.0",
     "string-template": "^1.0.0",
     "strip-bom": "^2.0.0",
