@@ -18,7 +18,7 @@ Function with overloads
 ```ts
 declare function xtend <A> (a: A): A;
 declare function xtend <A, B> (a: A, b: B): A & B;
-export = extend;
+export = xtend;
 ```
 
 * https://github.com/typed-typings/npm-xtend
