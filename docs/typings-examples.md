@@ -53,9 +53,6 @@ export = tape;
 
 * https://github.com/typed-typings/npm-tape
 
-## Exporting class
-TODO
-
 ## Exporting class + static methods + utility (ES6)
 ```ts
 declare class Promise<R> {
@@ -71,11 +68,6 @@ export = Promise;
 
 * https://github.com/typed-typings/npm-bluebird
 
-
-## Exporting multiple subpath modules
-TODO
-Examples: `core-js`, `material-ui`
-
 ## Named export (ES6)
 
 Export directly without namespace or module.
@@ -87,6 +79,3 @@ export class SemVer {}
 ```
 
 * https://github.com/typed-typings/npm-semver
-
-## Default export (ES6)
-TODO
