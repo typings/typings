@@ -67,20 +67,26 @@ interface PrintOutput {
 /**
  * Print the result to the user.
  */
-function printResult (output: PrintOutput, options?: { name: string }) {
+function printResult (output: PrintOutput, options?: { name: string, save: boolean, saveDev: boolean, ambient: boolean }) {
   if (output.references) {
     const references = Object.keys(output.references)
 
     if (references.length) {
-      console.log(chalk.bold('References (stripped):'))
-
-      for (const reference of references) {
+      const strippedReferences = references.map(reference => {
         const info = output.references[reference]
-
-        console.log(`  ${reference} ${chalk.gray(`(from ${listify(info.map(x => x.name))})`)}`)
-      }
-
+        return { reference, referenceName: listify(info.map(x => x.name)) }
+      });
+      
+      console.log(chalk.bold('References (stripped):'))
+      strippedReferences.forEach(r => console.log(`  ${r.reference} ${chalk.gray(`(from ${r.referenceName})`)}`))
       console.log('')
+      
+      if (options.ambient) {
+        console.log(chalk.bold('As you\'re installing ambient references you may want to install the stripped references as well.  You can do that by executing the following commands:'))
+        const flags = Object.keys(options).filter(f => f !== 'name').map(f => ` --${f}`)
+        strippedReferences.forEach(r => console.log(`  typings install '${r.reference}'${ flags }`))
+        console.log('')
+      }
     }
   }
 
@@ -120,7 +126,7 @@ function installer (args: Args & minimist.ParsedArgs) {
     function handle (options: InstallDependencyOptions) {
       return loader(installDependency(location, options), args)
         .then(output => {
-          printResult(output, { name: options.name })
+          printResult(output, { name: options.name, save: options.save, saveDev: options.saveDev, ambient: options.ambient })
         })
     }
 
