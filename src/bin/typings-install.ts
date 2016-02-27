@@ -67,24 +67,37 @@ interface PrintOutput {
 /**
  * Print the result to the user.
  */
-function printResult (output: PrintOutput, options?: { name: string }) {
+function printResult (output: PrintOutput, args: Args) {
   if (output.references) {
     const references = Object.keys(output.references)
 
     if (references.length) {
-      console.log(chalk.bold('References (stripped):'))
+      console.log(chalk.bold(`Unused References:`))
+      console.log()
+      console.log('Typings has stripped some references during installation. You can install the stripped references by executing the following commands:')
+      console.log()
 
-      for (const reference of references) {
-        const info = output.references[reference]
+      let flags = ''
 
-        console.log(`  ${reference} ${chalk.gray(`(from ${listify(info.map(x => x.name))})`)}`)
+      if (args.save) {
+        flags += ' --save'
+      } else if (args.saveDev) {
+        flags += ' --save-dev'
+      }
+
+      if (args.ambient) {
+        flags += ' --ambient'
+      }
+
+      for (const path of references) {
+        console.log(`typings install '${chalk.bold(path)}'${flags} ${chalk.dim(`# From ${listify(output.references[path].map(x => JSON.stringify(x.name)))}`)}`)
       }
 
       console.log('')
     }
   }
 
-  console.log(archifyDependencyTree(output.tree, options))
+  console.log(archifyDependencyTree(output.tree, args))
 }
 
 /**
@@ -97,15 +110,13 @@ function installer (args: Args & minimist.ParsedArgs) {
 
   if (!args._.length) {
     return loader(install(options), args)
-      .then(output => printResult(output))
+      .then(output => printResult(output, args))
   }
 
   function installLocation (location: string, options: InstallDependencyOptions) {
     function handle (options: InstallDependencyOptions) {
       return loader(installDependency(location, options), args)
-        .then(output => {
-          printResult(output, { name: options.name })
-        })
+        .then(output => printResult(output, args))
     }
 
     if (typeof options.name === 'string') {
@@ -139,7 +150,7 @@ function installer (args: Args & minimist.ParsedArgs) {
         const { versions } = project
         const [version] = versions
 
-        console.log(`Installing ${dependencyName}@~${version.version} (${sourceName})...`)
+        console.log(`Installing ${dependencyName}@${version.version} (${sourceName})...`)
 
         // Log extra info when the installation name is different to the registry.
         if (name != null && name !== saveName) {
