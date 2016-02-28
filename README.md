@@ -4,6 +4,7 @@
 [![NPM downloads][downloads-image]][downloads-url]
 [![Build status][travis-image]][travis-url]
 [![Test coverage][coveralls-image]][coveralls-url]
+[![Gitter](https://badges.gitter.im/typings/typings.svg)](https://gitter.im/typings/typings?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 > The manager for TypeScript definitions.
 
