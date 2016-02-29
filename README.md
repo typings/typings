@@ -4,6 +4,7 @@
 [![NPM downloads][downloads-image]][downloads-url]
 [![Build status][travis-image]][travis-url]
 [![Test coverage][coveralls-image]][coveralls-url]
+[![Gitter][gitter-image]][gitter-url]
 
 > The manager for TypeScript definitions.
 
@@ -323,3 +324,5 @@ MIT
 [travis-url]: https://travis-ci.org/typings/typings
 [coveralls-image]: https://img.shields.io/coveralls/typings/typings.svg?style=flat
 [coveralls-url]: https://coveralls.io/r/typings/typings?branch=master
+[gitter-image]: https://badges.gitter.im/typings/typings.svg
+[gitter-url]: https://gitter.im/typings/typings?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge
