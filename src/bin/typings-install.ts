@@ -80,10 +80,10 @@ function printResult (output: PrintOutput, options?: { name: string, save?: bool
       if (options.ambient) {
         console.log(chalk.bold('As you\'re installing ambient references you may want to install the stripped references as well. You can do that by executing the following commands:'))
         const flags = [].concat(
-            options.save ? ['save'] : [],
-            options.saveDev ? ['saveDev'] : [],
-            'ambient'
-        )
+            options.save ? ['--save'] : [],
+            options.saveDev ? ['--save-dev'] : [],
+            '--ambient'
+        ).join(' ')
         references.forEach(r => console.log(`  typings install '${r}'${ flags }`))
         console.log('')
       }
