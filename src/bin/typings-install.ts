@@ -84,7 +84,7 @@ function printResult (output: PrintOutput, options?: { name: string, save?: bool
             options.saveDev ? ['saveDev'] : [],
             'ambient'
         )
-        strippedReferences.forEach(r => console.log(`  typings install '${r.reference}'${ flags }`))
+        references.forEach(r => console.log(`  typings install '${r}'${ flags }`))
         console.log('')
       }
     }
