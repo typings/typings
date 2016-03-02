@@ -84,22 +84,6 @@ function printResult (output: PrintOutput, options?: { name: string }) {
     }
   }
 
-  if (output.missing) {
-    const missings = Object.keys(output.missing)
-
-    if (missings.length) {
-      console.log(chalk.bold('Missing dependencies:'))
-
-      for (const missing of missings) {
-        const info = output.missing[missing]
-
-        console.log(`  ${missing} ${chalk.gray(`(from ${listify(info.map(x => x.name))})`)}`)
-      }
-
-      console.log('')
-    }
-  }
-
   console.log(archifyDependencyTree(output.tree, options))
 }
 
