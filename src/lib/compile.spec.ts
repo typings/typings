@@ -230,6 +230,46 @@ test('compile', t => {
         })
     })
 
+    t.test('compile module augmentation', t => {
+      const FIXTURE_DIR = join(FIXTURES_DIR, 'compile-module-augmentation')
+
+      const file: DependencyTree = {
+        src: join(FIXTURE_DIR, CONFIG_FILE),
+        main: 'index.d.ts',
+        raw: undefined,
+        dependencies: {},
+        devDependencies: {},
+        ambientDependencies: {},
+        ambientDevDependencies: {}
+      }
+
+      return compile(file, { name: 'test', cwd: __dirname, ambient: false, meta: false })
+        .then(results => {
+          t.equal(results.main, [
+            'declare module \'test/import\' {',
+            'function main (): boolean;',
+            '',
+            'export { main }',
+            '}',
+            '',
+            'declare module \'test/index\' {',
+            'import * as imported from \'test/import\'',
+            '',
+            'module \'test/import\' {',
+            '  namespace main {',
+            '    export function augmented (): boolean;',
+            '  }',
+            '}',
+            '',
+            'export { imported }',
+            '}',
+            'declare module \'test\' {',
+            'export * from \'test/index\';',
+            '}'
+          ].join(EOL))
+        })
+    })
+
     t.test('compile an ambient definition', t => {
       const FIXTURE_DIR = join(FIXTURES_DIR, 'compile-ambient')
 
@@ -301,7 +341,6 @@ test('compile', t => {
 
           t.equal(result.main, contents)
           t.equal(result.browser, contents)
-          t.deepEqual(result.missing, {})
         })
     })
   })
@@ -401,10 +440,6 @@ test('compile', t => {
           'export = main;',
           '}'
         ].join(EOL))
-
-        t.deepEqual(result.missing, {
-          dep: [{ browser: false, main: true, name: 'main' }]
-        })
       })
   })
 

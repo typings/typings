@@ -39,7 +39,6 @@ interface Reference {
 interface CompiledResult {
   contents: string
   references: Reference[]
-  missing: Reference[]
 }
 
 /**
@@ -57,7 +56,6 @@ export interface CompiledOutput {
   main: string
   browser: string
   references: ReferenceMap
-  missing: ReferenceMap
 }
 
 /**
@@ -76,8 +74,7 @@ export default function compile (tree: DependencyTree, options: Options): Promis
         tree,
         main: main.contents,
         browser: browser.contents,
-        references: mergeReferences(main.references, browser.references, true),
-        missing: mergeReferences(main.missing, browser.missing, false)
+        references: mergeReferences(main.references, browser.references)
       }
     })
 }
@@ -85,20 +82,13 @@ export default function compile (tree: DependencyTree, options: Options): Promis
 /**
  * Create a reference map with the original sources.
  */
-function mergeReferences (main: Reference[], browser: Reference[], isPaths: boolean): ReferenceMap {
+function mergeReferences (main: Reference[], browser: Reference[]): ReferenceMap {
   const map: ReferenceMap = {}
 
   // Add each entry to the map, deduping as we go.
   function addEntry (entry: Reference, browser: boolean) {
     const { path, raw, src, name } = entry
-    let location: string
-
-    if (isPaths) {
-      location = resolveDependency(raw, relativeTo(src, path))
-    } else {
-      location = path
-    }
-
+    const location = resolveDependency(raw, relativeTo(src, path))
     const values = map[location] || (map[location] = [])
 
     for (const value of values) {
@@ -315,8 +305,7 @@ function stringifyDependencyPath (path: string, options: StringifyOptions): Prom
     if (!stringifyOptions) {
       return Promise.resolve({
         contents: null,
-        references: [],
-        missing: [{ name, path, raw, src }]
+        references: []
       })
     }
 
@@ -332,12 +321,16 @@ function stringifyDependencyPath (path: string, options: StringifyOptions): Prom
     .then(
       function (rawContents) {
         const info = ts.preProcessFile(rawContents)
-        const ambientModules = info.ambientExternalModules || []
 
         // Skip output of lib files.
         if (info.isLibFile) {
           return
         }
+
+        const importedFiles = info.importedFiles.map(x => resolveFromWithModuleName(resolved, x.fileName))
+        const referencedFiles = info.referencedFiles.map(x => resolveFrom(resolved, x.fileName))
+        const moduleAugmentations = (info.ambientExternalModules || []).map(x => resolveFromWithModuleName(resolved, x))
+        const ambientModules = moduleAugmentations.filter(x => importedFiles.indexOf(x) === -1)
 
         if (ambientModules.length && !ambient) {
           return Promise.reject(new TypingsError(
@@ -346,9 +339,6 @@ function stringifyDependencyPath (path: string, options: StringifyOptions): Prom
             `(${ambientModules.map(JSON.stringify).join(', ')}).`
           ))
         }
-
-        const importedFiles = info.importedFiles.map(x => resolveFromWithModuleName(resolved, x.fileName))
-        const referencedFiles = info.referencedFiles.map(x => resolveFrom(resolved, x.fileName))
 
         // All dependencies MUST be imported for ambient modules.
         if (ambient) {
@@ -384,14 +374,12 @@ function stringifyDependencyPath (path: string, options: StringifyOptions): Prom
             const stringified = stringifyFile(resolved, rawContents, stringifyOptions)
 
             let references = referencedFiles.map(path => ({ name, path, raw, src }))
-            let missing: Reference[] = []
             let contents: string[] = []
 
             for (const imported of imports) {
               // Some dependencies and imports are skipped.
               if (imported) {
                 references = references.concat(imported.references)
-                missing = missing.concat(imported.missing)
 
                 if (imported.contents != null) {
                   contents.push(imported.contents)
@@ -405,8 +393,7 @@ function stringifyDependencyPath (path: string, options: StringifyOptions): Prom
 
             return {
               contents: contents.join(EOL + EOL),
-              references,
-              missing
+              references
             }
           })
       },
@@ -508,7 +495,8 @@ function stringifyFile (path: string, rawContents: string, options: StringifyOpt
       node.kind === ts.SyntaxKind.StringLiteral &&
       (
         node.parent.kind === ts.SyntaxKind.ExportDeclaration ||
-        node.parent.kind === ts.SyntaxKind.ImportDeclaration
+        node.parent.kind === ts.SyntaxKind.ImportDeclaration ||
+        node.parent.kind === ts.SyntaxKind.ModuleDeclaration
       )
     ) {
       return ` '${importPath((<ts.StringLiteral> node).text)}'`
