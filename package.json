@@ -13,7 +13,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "lint": "echo \"deactivated for now: tslint \\\"src/**/*.ts\\\"",
+    "lint": "echo deactivated for now: tslint src/**/*.ts",
     "build": "rimraf dist && tsc",
     "dependency-check": "dependency-check . --entry dist/bin/typings-bundle.js --entry dist/bin/typings-init.js --entry dist/bin/typings-install.js --entry dist/bin/typings-list.js --entry dist/bin/typings-search.js --entry dist/bin/typings-uninstall.js --unused --no-dev -i bluebird",
     "test-spec": "ts-node node_modules/blue-tape/bin/blue-tape.js \"src/**/*.spec.ts\" | tap-spec",
