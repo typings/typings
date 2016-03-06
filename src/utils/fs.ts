@@ -278,8 +278,18 @@ export function removeDependency (options: DefinitionOptions) {
 
   // Remove the dependency from typings.
   function remove (path: string, file: string, dtsFile: string) {
-    return promiseFinally(rimraf(path), () => {
-      return transformDtsFile(dtsFile, typings => typings.filter(x => x !== file))
+    const libName: string = path.split('/').slice(-1)[0]
+    const dtsType: string = dtsFile.split('/').slice(-1)[0]
+
+    isFile(file).then((flag) => {
+      if (!flag) {
+        return console.warn(`[${dtsType}] not installed in ${libName}`)
+      } else {
+        return promiseFinally(rimraf(path), () => {
+          console.log(`[${dtsType}] unbuild ${libName}`)
+          return transformDtsFile(dtsFile, typings => typings.filter(x => x !== file))
+        })
+      }
     })
   }
 
