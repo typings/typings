@@ -13,14 +13,14 @@
     "LICENSE"
   ],
   "scripts": {
-    "lint": "# tslint \"src/**/*.ts\"",
-    "build": "rm -rf dist/ && tsc",
+    "lint": "echo deactivated for now: tslint src/**/*.ts",
+    "build": "rimraf dist && tsc",
     "dependency-check": "dependency-check . --entry dist/bin/typings-bundle.js --entry dist/bin/typings-init.js --entry dist/bin/typings-install.js --entry dist/bin/typings-list.js --entry dist/bin/typings-search.js --entry dist/bin/typings-uninstall.js --unused --no-dev -i bluebird",
     "test-spec": "ts-node node_modules/blue-tape/bin/blue-tape.js \"src/**/*.spec.ts\" | tap-spec",
     "test-cov": "ts-node node_modules/istanbul/lib/cli.js cover -e .ts --print none -x \"*.d.ts\" -x \"*.spec.ts\" blue-tape -- \"src/**/*.spec.ts\" | tap-spec",
     "test": "npm run lint && npm run build && npm run dependency-check && npm run test-cov",
-    "bootstrap": "mkdir -p typings && touch typings/main.d.ts && SKIP_PREPUBLISH=true npm install && npm run build 2> /dev/null; cat dist/init.js > /dev/null && node dist/bin/typings.js install",
-    "prepublish": "if [ ! $SKIP_PREPUBLISH ]; then npm run build; fi"
+    "bootstrap": "npm install shelljs && node scripts-bootstrap.js && node dist/bin/typings.js install",
+    "prepublish": "node scripts-prepublish.js"
   },
   "repository": {
     "type": "git",
@@ -93,6 +93,8 @@
     "istanbul": "1.0.0-alpha.2",
     "nock": "^7.2.2",
     "pre-commit": "^1.0.6",
+    "rimraf": "^2.5.2",
+    "shelljs": "^0.6.0",
     "tap-spec": "^4.1.1",
     "ts-node": "^0.5.4",
     "tslint": "^3.5.0"
