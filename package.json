@@ -19,7 +19,7 @@
     "test-spec": "ts-node node_modules/blue-tape/bin/blue-tape.js \"src/**/*.spec.ts\" | tap-spec",
     "test-cov": "ts-node node_modules/istanbul/lib/cli.js cover -e .ts --print none -x \"*.d.ts\" -x \"*.spec.ts\" blue-tape -- \"src/**/*.spec.ts\" | tap-spec",
     "test": "npm run lint && npm run build && npm run dependency-check && npm run test-cov",
-    "bootstrap": "mkdir typings && touch typings/main.d.ts && node scripts-bootstrap.js && node dist/bin/typings.js install",
+    "bootstrap": "npm install shelljs && node scripts-bootstrap.js && node dist/bin/typings.js install",
     "prepublish": "node scripts-prepublish.js"
   },
   "repository": {
