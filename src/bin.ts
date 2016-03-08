@@ -6,7 +6,7 @@ import { join } from 'path'
 import updateNotifier = require('update-notifier')
 import extend = require('xtend')
 import { EventEmitter } from 'events'
-import { handle, logInfo, logWarning } from './support/cli'
+import { handle, logWarning } from './support/cli'
 import { Emitter } from 'typings-core'
 
 import * as bundle from './bin-bundle'
@@ -99,18 +99,6 @@ updateNotifier({ pkg }).notify()
 
 // Execute with normalizations applied.
 exec(args)
-
-// Keep track of emitted references.
-const references: string[] = []
-
-// Log messages on stripped references.
-emitter.on('reference', function ({ reference, name }) {
-  if (references.indexOf(reference) === -1) {
-    logInfo(`Stripped reference "${reference}" during installation of "${name}"`, 'reference')
-
-    references.push(reference)
-  }
-})
 
 // Log warnings on enoent events.
 emitter.on('enoent', function ({ path }) {
