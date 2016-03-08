@@ -14,7 +14,7 @@
   "scripts": {
     "lint": "tslint 'src/**/*.ts'",
     "build": "rm -rf dist/ && tsc",
-    "dependency-check": "dependency-check . --entry dist/bin.js --unused --no-dev -i bluebird",
+    "dependency-check": "dependency-check . --entry dist/bin.js --missing --no-dev && dependency-check . --entry dist/bin.js --unused --no-dev -i bluebird",
     "test": "npm run lint && npm run build && npm run dependency-check",
     "prepublish": "node -e \"require('typings-core').install({ cwd: process.cwd() })\" && npm run build"
   },
