@@ -4,7 +4,13 @@ import { viewEntry, viewVersions } from 'typings-core'
 
 export function help () {
   console.log(`
-typings view <package> [--versions] [--ambient]
+typings view <pkg>
+
+  <pkg>  A registry expression like \`[<source>!]<pkg>\`
+
+Options:
+  [--versions]    List all package versions
+  [-A|--ambient]  View \`<pkg>\` from the default ambient source
 
 Aliases: info
 `)

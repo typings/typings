@@ -6,9 +6,12 @@ import { list } from 'typings-core'
 
 export function help () {
   console.log(`
-typings ls [--ambient] [--production]
+typings list
 
-Aliases: la, ll, list
+Options:
+  [--production] List only production dependencies (omit dev dependencies)
+
+Aliases: la, ll, ls
 `)
 }
 

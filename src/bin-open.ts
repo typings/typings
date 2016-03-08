@@ -3,6 +3,8 @@ import { open } from 'typings-core'
 export function help () {
   console.log(`
 typings open <location>
+
+  <location>  A known Typings location with scheme
 `)
 }
 

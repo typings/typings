@@ -5,9 +5,12 @@ import { bundle } from 'typings-core'
 
 export function help () {
   console.log(`
-typings bundle --name [string]
+typings bundle --out <directory>
 
-Options: [--out] [--ambient]
+Options:
+  [--out|-o] <directory> The bundled output directory
+  [--name] <name>        Bundle module name
+  [--ambient|-A]         Bundle as an ambient definition
 `)
 }
 
