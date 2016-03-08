@@ -50,7 +50,8 @@
     "minimist": "^1.2.0",
     "typings-core": "^0.2.3",
     "update-notifier": "^0.6.0",
-    "wordwrap": "^1.0.0"
+    "wordwrap": "^1.0.0",
+    "xtend": "^4.0.1"
   },
   "devDependencies": {
     "dependency-check": "^2.5.1",
