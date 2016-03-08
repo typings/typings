@@ -4,14 +4,14 @@ import Promise = require('any-promise')
 import { bundle } from 'typings-core'
 
 export function help () {
-  console.log(`
+  return `
 typings bundle --out <directory>
 
 Options:
   [--out|-o] <directory> The bundled output directory
   [--name] <name>        Bundle module name
   [--ambient|-A]         Bundle as an ambient definition
-`)
+`
 }
 
 export interface Options {

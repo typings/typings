@@ -1,5 +1,6 @@
 # Examples
-Here are some examples you can model after when writing your own typings.
+
+Here are some examples you can use as a model when writing your own type definitions.
 
 ## Single function
 
@@ -13,7 +14,7 @@ export = domready
 
 * https://github.com/typed-typings/npm-domready
 
-Function with overloads
+Function with overloads.
 
 ```ts
 declare function xtend <A> (a: A): A;
@@ -30,7 +31,7 @@ Exposing a collection of utility functions and classes.
 ```ts
 declare module JsDiff {
   class Diff {}
-  function diffChars(): any
+  function diffChars(): any;
 }
 
 export = JsDiff;
@@ -43,9 +44,10 @@ export = JsDiff;
 Exposing a function, with utility methods.
 
 ```ts
-declare function tape(): any;
-declare module tape {
-  export function skip(): any;
+declare function tape (): any;
+
+declare namespace tape {
+  export function skip (): any;
 }
 
 export = tape;
@@ -54,15 +56,17 @@ export = tape;
 * https://github.com/typed-typings/npm-tape
 
 ## Exporting class + static methods + utility (ES6)
+
 ```ts
-declare class Promise<R> {
+declare class Promise <R> {
   static resolve(): Promise<void>;
 }
 
 declare module Promise {
   export interface SpreadOption {}
-  export function setScheduler(): any;
+  export function setScheduler (): any;
 }
+
 export = Promise;
 ```
 
@@ -70,7 +74,7 @@ export = Promise;
 
 ## Named export (ES6)
 
-Export directly without namespace or module.
+Export directly using ES6 semantics without a module or namespace.
 
 ```ts
 export function valid(): any;

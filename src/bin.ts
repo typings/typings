@@ -8,53 +8,10 @@ import extend = require('xtend')
 import { EventEmitter } from 'events'
 import { handle, logWarning } from './support/cli'
 import { Emitter } from 'typings-core'
-
-import * as bundle from './bin-bundle'
-import * as init from './bin-init'
-import * as uninstall from './bin-uninstall'
-import * as install from './bin-install'
-import * as list from './bin-list'
-import * as search from './bin-search'
-import * as open from './bin-open'
-import * as view from './bin-view'
+import { aliases } from './aliases'
 
 const pkg = require('../package.json')
 const IS_PRODUCTION = process.env.NODE_ENV === 'production'
-
-interface Aliases {
-  [cmd: string]: {
-    exec (args: string[], options: Object): any;
-    help (args: string[], options: Object): any;
-  }
-}
-
-const ALIASES: Aliases = {
-  // Install.
-  i: install,
-  in: install,
-  install: install,
-  // Remove.
-  r: uninstall,
-  rm: uninstall,
-  remove: uninstall,
-  uninstall: uninstall,
-  // Init.
-  init: init,
-  // List.
-  ls: list,
-  ll: list,
-  la: list,
-  list: list,
-  // Bundle.
-  bundle: bundle,
-  // Search.
-  search: search,
-  // Open.
-  open: open,
-  // View.
-  view: view,
-  info: view
-}
 
 interface Argv {
   help: boolean
@@ -110,12 +67,12 @@ emitter.on('enoent', function ({ path }) {
  */
 function exec (options: Args): any {
   if (options._.length) {
-    const command = ALIASES[options._[0]]
+    const command = aliases[options._[0]]
     const args = options._.slice(1)
 
     if (command != null) {
       if (options.help) {
-        return handle(command.help(args, options), options)
+        return console.log(command.help())
       }
 
       return handle(command.exec(args, options), options)
@@ -131,7 +88,7 @@ function exec (options: Args): any {
 Usage: typings <command>
 
 Commands:
-${wrap(Object.keys(ALIASES).sort().join(', '))}
+${wrap(Object.keys(aliases).sort().join(', '))}
 
 typings <command> -h   Get help for <command>
 typings <command> -V   Enable verbose logging

@@ -1,11 +1,11 @@
 import { open } from 'typings-core'
 
 export function help () {
-  console.log(`
+  return `
 typings open <location>
 
   <location>  A known Typings location with scheme
-`)
+`
 }
 
 export function exec (args: string[]) {

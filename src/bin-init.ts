@@ -4,12 +4,12 @@ import Promise = require('any-promise')
 import { init } from 'typings-core'
 
 export function help () {
-  console.log(`
+  return `
 typings init
 
 Options:
   [--upgrade]    Upgrade \`tsd.json\` to \`typings.json\`
-`)
+`
 }
 
 export interface Options {

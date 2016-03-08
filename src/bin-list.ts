@@ -5,14 +5,14 @@ import { archifyDependencyTree } from './support/cli'
 import { list } from 'typings-core'
 
 export function help () {
-  console.log(`
+  return `
 typings list
 
 Options:
   [--production] List only production dependencies (omit dev dependencies)
 
 Aliases: la, ll, ls
-`)
+`
 }
 
 export interface Options {

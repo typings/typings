@@ -4,7 +4,7 @@ import Promise = require('any-promise')
 import { uninstallDependency } from 'typings-core'
 
 export function help () {
-  console.log(`
+  return `
 typings uninstall <name> [--save|--save-dev|--save-peer] [--ambient]
 
 Options:
@@ -16,7 +16,7 @@ Options:
     [-DA]           Remove from "ambientDevDependencies"
 
 Aliases: r, rm, remove, un
-`)
+`
 }
 
 export interface Options {

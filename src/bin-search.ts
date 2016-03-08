@@ -5,7 +5,7 @@ import columnify = require('columnify')
 import { search } from 'typings-core'
 
 export function help () {
-  console.log(`
+  return `
 typings search [query]
 
 Options:
@@ -16,7 +16,7 @@ Options:
   [--limit] <x>       Limit to "x" results (default: 20, max: 100)
   [--order] <order>   Direction to sort results (default: "asc", enum: "asc" or "desc")
   [--sort] <column>   Order results by a column (E.g. "versions", "name", ...)
-`)
+`
 }
 
 export interface Options {
