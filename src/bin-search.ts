@@ -6,9 +6,15 @@ import { search } from 'typings-core'
 
 export function help () {
   console.log(`
-typings search [query] [--ambient]
+typings search [query]
 
-Options: [--name] [--source] [--offset] [--limit]
+Options:
+ [--ambient]         Search for ambient module
+                     Also search in DefinitelyTyped
+ [--name] <name>     ???
+ [--source] <source> Search from: npm|dt|global
+ [--offset] <x>      Skip first x results
+ [--limit] <x>       Limit to x results
 `)
 }
 

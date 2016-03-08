@@ -8,6 +8,13 @@ export function help () {
 typings uninstall <name> [--save|--save-dev|--save-peer] [--ambient]
 
 Aliases: r, rm, remove, un
+Options:
+ [-S|--save]      Remove from dependency list
+ [-D|--save-dev]  Remove from devDependency list
+ [-P|--save-peer] Remove from peerDependency list
+ [-A|-ambient]    ???
+ [-SA]            Remove from ambientDependency list
+ [-DA]            Remove from ambientDevDependency list
 `)
 }
 
