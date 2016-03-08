@@ -6,9 +6,14 @@ import { search } from 'typings-core'
 
 export function help () {
   console.log(`
-typings search [query] [--ambient]
+typings search [query]
 
-Options: [--name] [--source] [--offset] [--limit]
+Options:
+ [--ambient]         Search for ambient module
+ [--name] <name>     ???
+ [--source] <source> Source to seach from: npm|registry|DT?
+ [--offset] <x>      Skip first x results
+ [--limit] <x>       Limit to x results
 `)
 }
 

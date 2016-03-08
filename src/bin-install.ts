@@ -18,13 +18,13 @@ typings install <https?:// url>
 
 Aliases: i, in
 Options:
-  [--name] <module name> Target module name
-  [-S|--save]            Save as dependency
-  [-D|--save-dev]        Save as devDependency
-  [--save-peer]          Save as peerDependency
-  [-A|--ambient]         Install as ambient module
-    [-SA]                Save as ambientDependency
-    [-DA]                Save as ambientDevDependency
+  [--name] <name> Target module name
+  [-S|--save      Save as dependency
+  [-D|--save-dev] Save as devDependency
+  [-P|-save-peer] Save as peerDependency
+  [-A|--ambient]  Install as ambient module
+    [-SA]         Save as ambientDependency
+    [-DA]         Save as ambientDevDependency
   [--production]
 `)
 }

@@ -11,8 +11,8 @@ Aliases: r, rm, remove, un
 Options:
  [-S|--save]      Remove from dependency list
  [-D|--save-dev]  Remove from devDependency list
- [--save-peer]    Remove from peerDependency list
- [--ambient]      ???
+ [-P|--save-peer] Remove from peerDependency list
+ [-A|-ambient]    ???
  [-SA]            Remove from ambientDependency list
  [-DA]            Remove from ambientDevDependency list
 `)

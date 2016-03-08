@@ -8,8 +8,8 @@ export function help () {
 typings bundle -o|--out <directory>
 
 Options:
-  [--name] <module name> Target module name
-  [-A|--ambient]            Bundle as ambient module
+  [--name] <name>  Target module name
+  [-A|--ambient]   Bundle as ambient module
 `)
 }
 

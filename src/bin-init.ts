@@ -8,7 +8,7 @@ export function help () {
 typings init
 
 Options:
-  [--upgrade] Upgrade tsd.json to typings.json
+  [--upgrade]    Upgrade tsd.json to typings.json
 `)
 }
 

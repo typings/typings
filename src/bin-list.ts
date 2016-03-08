@@ -10,8 +10,8 @@ typings ls [--ambient] [--production]
 
 Aliases: la, ll, list
 Options:
-  [-A|--ambient]  Search for ambient module
-                  Also search in DefinitelyTyped
+  [-A|--ambient] Search for ambient module
+                 Also search in DefinitelyTyped
   [--production]
 `)
 }

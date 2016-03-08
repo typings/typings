@@ -8,8 +8,8 @@ typings view <package> [--versions] [--ambient]
 
 Aliases: info
 Options:
-  [-V|--versions]      View specific versions
-  [-A|--ambient]       View ambient module??
+  [--versions]     View specific versions
+  [-A|--ambient]   View ambient module??
 `)
 }
 
