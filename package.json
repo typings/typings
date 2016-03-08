@@ -47,10 +47,7 @@
     "bluebird": "^3.1.1",
     "chalk": "^1.0.0",
     "columnify": "^1.5.2",
-    "elegant-spinner": "^1.0.1",
-    "log-update": "^1.0.2",
     "minimist": "^1.2.0",
-    "promise-finally": "^2.1.0",
     "typings-core": "^0.2.3",
     "update-notifier": "^0.6.0",
     "wordwrap": "^1.0.0"

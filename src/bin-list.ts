@@ -1,10 +1,8 @@
 #!/usr/bin/env node
 
 import Promise = require('any-promise')
-import { loader, archifyDependencyTree } from './support/cli'
+import { archifyDependencyTree } from './support/cli'
 import { list } from 'typings-core'
-
-// TODO: Enable `list` command in core.
 
 export function help () {
   console.log(`
@@ -21,7 +19,7 @@ export interface Options {
 }
 
 export function exec (args: string[], options: Options): Promise<void> {
-  return loader(list(options), options)
+  return list(options)
     .then(function (tree) {
       console.log(archifyDependencyTree(tree))
     })

@@ -2,7 +2,6 @@
 
 import Promise = require('any-promise')
 import { uninstallDependency } from 'typings-core'
-import { loader } from './support/cli'
 
 export function help () {
   console.log(`
@@ -22,10 +21,7 @@ export interface Options {
 }
 
 export function exec (names: string[], options: Options) {
-  return loader(
-    Promise.all(names.map(name => {
-      return uninstallDependency(name, options)
-    })),
-    options
-  )
+  return Promise.all(names.map(name => {
+    return uninstallDependency(name, options)
+  }))
 }

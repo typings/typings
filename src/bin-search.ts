@@ -3,7 +3,6 @@
 import Promise = require('any-promise')
 import columnify = require('columnify')
 import { search } from 'typings-core'
-import { loader } from './support/cli'
 
 export function help () {
   console.log(`
@@ -28,7 +27,7 @@ export function exec (args: string[], options: Options): Promise<void> {
   const query = args[0]
   const { ambient, source, offset, limit, order, sort } = options
 
-  return loader(search({ ambient, source, query, offset, limit, order, sort }), options)
+  return search({ ambient, source, query, offset, limit, order, sort })
     .then(function ({ results, total }) {
       if (total === 0) {
         console.log('No results found for search')

@@ -2,7 +2,7 @@
 
 import Promise = require('any-promise')
 import { install, installDependencyRaw, Emitter } from 'typings-core'
-import { loader, archifyDependencyTree } from './support/cli'
+import { archifyDependencyTree, logInfo } from './support/cli'
 
 export function help () {
   console.log(`
@@ -31,13 +31,27 @@ export interface Options {
   emitter: Emitter
 }
 
-export function exec (args: string[], options: Options) {
+export function exec (args: string[], options: Options): Promise<void> {
+  const { emitter } = options
+
   if (args.length === 0) {
-    return loader(install(options), options)
+    return install(options)
       .then(({ tree }) => {
         console.log(archifyDependencyTree(tree, options))
       })
   }
+
+  // Keep track of emitted references.
+  const references: string[] = []
+
+  // Log messages on stripped references.
+  emitter.on('reference', function ({ reference, name }) {
+    if (references.indexOf(reference) === -1) {
+      logInfo(`Stripped reference "${reference}" during installation of "${name}"`, 'reference')
+
+      references.push(reference)
+    }
+  })
 
   return Promise.all(args.map(arg => {
     return installDependencyRaw(arg, options)

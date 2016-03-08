@@ -1,8 +1,5 @@
-import logUpdate = require('log-update')
-import spinner = require('elegant-spinner')
 import chalk = require('chalk')
 import Promise = require('any-promise')
-import promiseFinally from 'promise-finally'
 import archy = require('archy')
 import * as os from 'os'
 import { DependencyTree } from 'typings-core'
@@ -17,34 +14,15 @@ export interface PrintOptions {
 }
 
 /**
- * Wrap async execution with a spinner.
- */
-export function loader <T> (promise: T | Promise<T>, options: PrintOptions): Promise<T> {
-  let end: () => void = () => undefined
-
-  if ((process.stdout as any).isTTY) {
-    const frame = spinner()
-    const update = () => logUpdate.stderr(frame())
-    const interval = setInterval(update, 50)
-
-    end = () => {
-      clearInterval(interval)
-      logUpdate.stderr.clear()
-      logUpdate.stderr.done()
-    }
-  }
-
-  return promiseFinally(Promise.resolve(promise), end)
-    .catch(err => handleError(err, options))
-}
-
-/**
  * Log a trivial string, without bells or whistles.
  */
 export function log (message: string) {
   console.error(message)
 }
 
+/**
+ * Format a message line.
+ */
 function formatLine (color: Function, type: string, line: string, prefix?: string) {
   return `${chalk.bgBlack.white('typings')} ${color(type)} ${prefix ? chalk.magenta(`${prefix} `) : ''}${line}`
 }

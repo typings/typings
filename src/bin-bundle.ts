@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 import Promise = require('any-promise')
-import { loader } from './support/cli'
 import { bundle } from 'typings-core'
 
 export function help () {
@@ -21,5 +20,5 @@ export interface Options {
 }
 
 export function exec (args: string[], options: Options): Promise<any> {
-  return loader(bundle(options), options)
+  return bundle(options)
 }
