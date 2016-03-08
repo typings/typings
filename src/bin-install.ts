@@ -12,16 +12,21 @@ typings install [<name>=]<location>
   <name>      Module name of the installed definition
   <location>  The location to read from (described below)
 
-typings install [<source>!]<pkg>[@<version>][#<tag>]
-typings install file:<path>
-typings install github:<org>/<repo>[/<path>][#<commitish>]
-typings install bitbucket:<org>/<repo>[/<path>][#<commitish>]
-typings install npm:<pkg>[/<path>]
-typings install bower:<pkg>[/<path>]
-typings install http(s)://<domain>/<path>
+Valid Locations:
+  [<source>!]<pkg>[@<version>][#<tag>]
+  file:<path>
+  github:<org>/<repo>[/<path>][#<commitish>]
+  bitbucket:<org>/<repo>[/<path>][#<commitish>]
+  npm:<pkg>[/<path>]
+  bower:<pkg>[/<path>]
+  http(s)://<host>/<path>
 
   <source>    The registry mirror (E.g. "npm", "bower", "env", "global", "dt", ...)
   <path>      Path to a \`.d.ts\` file or \`typings.json\`
+  <host>      A domain name (with optional port)
+  <version>   A semver range (E.g. ">=4.0")
+  <tag>       The specific tag of a registry entry
+  <commitish> A git commit, tag or branch
 
 Options:
   [--save|-S]       Persist to "dependencies"
