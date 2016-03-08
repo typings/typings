@@ -11,6 +11,7 @@ typings list
 Aliases: la, ll, ls
 Options:
   [--production] List only production dependencies
+                 i.e. skip all dev dependencies
 `)
 }
 

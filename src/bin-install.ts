@@ -23,13 +23,14 @@ typings install <https?://path>
 Aliases: i, in
 Options:
   [--name] <name> Target module name
-  [-S|--save      Save as dependency
+  [-S|--save]     Save as dependency
   [-D|--save-dev] Save as devDependency
   [-P|-save-peer] Save as peerDependency
   [-A|--ambient]  Install as ambient module
     [-SA]         Save as ambientDependency
     [-DA]         Save as ambientDevDependency
-  [--production]  Install without [ambient]DevDependency
+  [--production]  Install only production dependencies
+                  i.e. skip all dev dependencies
 `)
 }
 
