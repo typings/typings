@@ -48,7 +48,7 @@
     "chalk": "^1.0.0",
     "columnify": "^1.5.2",
     "minimist": "^1.2.0",
-    "typings-core": "^0.2.3",
+    "typings-core": "^0.2.4",
     "update-notifier": "^0.6.0",
     "wordwrap": "^1.0.0",
     "xtend": "^4.0.1"
