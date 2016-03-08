@@ -7,7 +7,8 @@ export function help () {
   console.log(`
 typings init
 
-Options: [--upgrade]
+Options:
+  [--upgrade] Upgrade tsd.json to typings.json
 `)
 }
 

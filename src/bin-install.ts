@@ -17,7 +17,15 @@ typings install bower:<package>
 typings install <https?:// url>
 
 Aliases: i, in
-Options: [--name] [--save|--save-dev|--save-peer] [--ambient] [--production]
+Options:
+  [--name] <module name> Target module name
+  [-S|--save]            Save as dependency
+  [-D|--save-dev]        Save as devDependency
+  [--save-peer]          Save as peerDependency
+  [-A|--ambient]         Install as ambient module
+    [-SA]                Save as ambientDependency
+    [-DA]                Save as ambientDevDependency
+  [--production]
 `)
 }
 
