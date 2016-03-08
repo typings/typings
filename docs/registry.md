@@ -1,6 +1,6 @@
-# Typings, the Registy and Versions
+# Typings, The Registy and Versions
 
-Typings supports multiple versions of type definitions for **different versions** of a single library.  
+Typings supports multiple versions of type definitions for **different versions** of a single library.
 
 In contrast, TSD was bound to Definitely Typed which officially only supports the latest and greatest type definitions. Installation of older type definitions with TSD relied on the user knowing an unmemorable SHA hash. Also, there was no way for older type definitions to continue to be evolved side by side with existing typings.
 

@@ -5,7 +5,7 @@ import { install, installDependencyRaw, Emitter } from 'typings-core'
 import { archifyDependencyTree, logInfo } from './support/cli'
 
 export function help () {
-  console.log(`
+  return `
 typings install (with no arguments, in package directory)
 typings install [<name>=]<location>
 
@@ -33,7 +33,7 @@ Options:
   [--production]    Install only production dependencies (omits dev dependencies)
 
 Aliases: i, in
-`)
+`
 }
 
 export interface Options {
