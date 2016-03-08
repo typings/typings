@@ -3,7 +3,7 @@
     "target": "es5",
     "outDir": "dist/",
     "module": "commonjs",
-    "moduleResolution": "classic",
+    "moduleResolution": "node",
     "declaration": true,
     "noImplicitAny": true,
     "removeComments": true,
@@ -11,13 +11,7 @@
     "newLine": "LF"
   },
   "files": [
-    "src/bin/typings.ts",
-    "src/bin/typings-bundle.ts",
-    "src/bin/typings-init.ts",
-    "src/bin/typings-install.ts",
-    "src/bin/typings-list.ts",
-    "src/bin/typings-search.ts",
-    "src/bin/typings-uninstall.ts",
+    "src/bin.ts",
     "src/typings.ts",
     "typings/main.d.ts"
   ]

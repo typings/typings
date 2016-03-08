@@ -29,7 +29,7 @@ cat typings/main.d.ts
 
 ## From TSD to typings
 
-**Important: For existing TSD users, Typings will install from DefinitelyTyped using the `--ambient` flag. Regular dependencies are maintained in the [registry](https://github.com/typings/registry).**
+**Important: For existing TSD users, Typings will install from DefinitelyTyped using the `--ambient` flag. Other dependencies are maintained in the [registry](https://github.com/typings/registry).**
 
 You're possibly wondering what it's like going from using TSD to Typings. To use Typings as you used TSD the migration is not extreme. Where you previously would have:
 
@@ -93,7 +93,8 @@ Initialize a new `typings.json` file. If you're currently using TSD, you can use
 
 ```sh
 typings install # (with no arguments, in package directory)
-typings install <pkg>[@<version>] [ --source [npm | github | bower | ambient | common] ]
+typings install <name>=<location>
+typings install [<source>!]<pkg>[@<version>]
 typings install file:<path>
 typings install github:<github username>/<github project>[/<path>][#<commit>]
 typings install bitbucket:<bitbucket username>/<bitbucket project>[/<path>][#<commit>]
@@ -130,7 +131,7 @@ The name is persisted in `typings.json`. The `--save` flag is used to write to `
 ### Uninstall
 
 ```sh
-typings uninstall <pkg> [--ambient] [--save | --save-dev]
+typings uninstall <name> [--ambient] [--save|--save-dev|--save-peer]
 ```
 
 Remove a dependency from the `typings/` directory, and optionally remove from `typings.json`.
@@ -144,7 +145,7 @@ Remove a dependency from the `typings/` directory, and optionally remove from `t
 ### List
 
 ```sh
-typings ls [--ambient]
+typings ls [--production]
 ```
 
 Print the `typings` dependency tree. This command resolves on demand and is not _currently_ cached.
@@ -152,9 +153,9 @@ Print the `typings` dependency tree. This command resolves on demand and is not 
 ### Search
 
 ```sh
-typings search [query] [--ambient]
+typings search [query]
 
-Options: [--name] [--source] [--offset] [--limit]
+Options: [--ambient] [--name] [--source] [--offset] [--limit]
 ```
 
 Search the registry for available typings.
@@ -164,7 +165,7 @@ Search the registry for available typings.
 ```sh
 typings bundle --name [string]
 
-Options: [--browser] [--out] [--source]
+Options: [--out] [--ambient]
 ```
 
 Bundle the current project types into an single ambient module.
@@ -200,12 +201,16 @@ Typings supports configuration using [`rc`](https://github.com/dominictarr/rc). 
 * **key** Private key to use for SSL (default: `null`)
 * **cert** Public x509 certificate to use (default: `null`)
 * **userAgent** Set the `User-Agent` for HTTP requests (default: `typings/{typingsVersion} node/{nodeVersion} {platform} {arch}`)
+* **githubToken** Set your GitHub for resolving `github:` locations
+* **registryURL** Override the registry URL
+* **defaultSource** Override the default installation source (E.g. when doing `typings install debug`) (default: `npm`)
+* **defaultAmbientSource** Override the default ambient installation source (E.g. when doing `typings install node -A`) (default: `dt`)
 
 ### `main.d.ts` And `browser.d.ts`
 
 To simplify integration with TypeScript, two files - `typings/main.d.ts` and `typings/browser.d.ts` - are generated which reference all the typings installed in the project only one of which can be used at a time. If you're building a front-end package it's recommended you use `typings/browser.d.ts`. The browser typings are compiled by following the `browser` field overrides.
 
-To use either you can do ***one*** of the following:
+To use either you can do **one** of the following:
 
 * If you are using `exclude` in `tsconfig.json`, then exclude the one you don't want (similar to `node_modules`) e.g:
 
@@ -272,6 +277,7 @@ Writing a new type definition is as simple as creating a new package. Start by c
 * **browser** A string or map of paths to override when resolving (following the [browser field specification](https://github.com/defunctzombie/package-browser-field-spec))
 * **ambient** Denote that this definition _must_ be installed as ambient
 * **name** The name of this definition
+* **version** The semver range this definition is typed for
 * **dependencies** A map of dependencies that need installing
 * **devDependencies** A map of development dependencies that need installing
 * **ambientDependencies** A map of environment dependencies that may need installing
@@ -290,7 +296,7 @@ Maybe. If you're relying on typings to provide type dependencies, I recommend th
 Typings are compiled and written into the `typings/` directory alongside `typings.json`. The structure looks like this:
 
 ```sh
-typings/{main,browser}/{ambient,definitions}/<dependency>/<dependency>.d.ts
+typings/{main,browser}/{ambient,definitions}/<dependency>/index.d.ts
 typings/{main,browser}.d.ts
 ```
 

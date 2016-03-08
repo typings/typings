@@ -5,22 +5,18 @@
   "main": "dist/typings.js",
   "preferGlobal": true,
   "bin": {
-    "typings": "dist/bin/typings.js"
+    "typings": "dist/bin.js"
   },
   "files": [
     "dist/",
-    "typings.json",
-    "LICENSE"
+    "typings.json"
   ],
   "scripts": {
-    "lint": "# tslint \"src/**/*.ts\"",
+    "lint": "tslint 'src/**/*.ts'",
     "build": "rm -rf dist/ && tsc",
-    "dependency-check": "dependency-check . --entry dist/bin/typings-bundle.js --entry dist/bin/typings-init.js --entry dist/bin/typings-install.js --entry dist/bin/typings-list.js --entry dist/bin/typings-search.js --entry dist/bin/typings-uninstall.js --unused --no-dev -i bluebird",
-    "test-spec": "ts-node node_modules/blue-tape/bin/blue-tape.js \"src/**/*.spec.ts\" | tap-spec",
-    "test-cov": "ts-node node_modules/istanbul/lib/cli.js cover -e .ts --print none -x \"*.d.ts\" -x \"*.spec.ts\" blue-tape -- \"src/**/*.spec.ts\" | tap-spec",
-    "test": "npm run lint && npm run build && npm run dependency-check && npm run test-cov",
-    "bootstrap": "mkdir -p typings && touch typings/main.d.ts && SKIP_PREPUBLISH=true npm install && npm run build 2> /dev/null; cat dist/init.js > /dev/null && node dist/bin/typings.js install",
-    "prepublish": "if [ ! $SKIP_PREPUBLISH ]; then npm run build; fi"
+    "dependency-check": "dependency-check . --entry dist/bin.js --unused --no-dev -i bluebird",
+    "test": "npm run lint && npm run build && npm run dependency-check",
+    "prepublish": "node -e \"require('typings-core').install({ cwd: process.cwd() })\" && npm run build"
   },
   "repository": {
     "type": "git",
@@ -48,53 +44,23 @@
   "dependencies": {
     "any-promise": "^1.0.0",
     "archy": "^1.0.0",
-    "array-uniq": "^1.0.2",
     "bluebird": "^3.1.1",
     "chalk": "^1.0.0",
     "columnify": "^1.5.2",
-    "debug": "^2.2.0",
-    "detect-indent": "^4.0.0",
     "elegant-spinner": "^1.0.1",
-    "graceful-fs": "^4.1.2",
-    "has": "^1.0.1",
-    "inquirer": "^0.12.0",
-    "insight": "^0.7.0",
-    "invariant": "^2.2.0",
-    "is-absolute": "^0.2.3",
-    "listify": "^1.0.0",
-    "lockfile": "^1.0.1",
     "log-update": "^1.0.2",
-    "make-error-cause": "^1.0.1",
     "minimist": "^1.2.0",
-    "mkdirp": "^0.5.1",
-    "object.pick": "^1.1.1",
-    "parse-json": "^2.2.0",
-    "popsicle": "^4.0.0",
-    "popsicle-proxy-agent": "^1.0.0",
-    "popsicle-retry": "^1.0.1",
-    "popsicle-status": "^1.0.1",
-    "promise-finally": "^2.0.1",
-    "rc": "^1.1.5",
-    "rimraf": "^2.5.2",
-    "sort-keys": "^1.0.0",
-    "string-template": "^1.0.0",
-    "strip-bom": "^2.0.0",
-    "thenify": "^3.1.0",
-    "touch": "^1.0.0",
-    "typescript": "1.8.7",
+    "promise-finally": "^2.1.0",
+    "typings-core": "^0.2.3",
     "update-notifier": "^0.6.0",
-    "wordwrap": "^1.0.0",
-    "xtend": "^4.0.0",
-    "zip-object": "^0.1.0"
+    "wordwrap": "^1.0.0"
   },
   "devDependencies": {
-    "blue-tape": "^0.2.0",
     "dependency-check": "^2.5.1",
-    "istanbul": "1.0.0-alpha.2",
     "nock": "^7.2.2",
     "pre-commit": "^1.0.6",
-    "tap-spec": "^4.1.1",
     "ts-node": "^0.5.4",
-    "tslint": "^3.5.0"
+    "tslint": "^3.5.0",
+    "typescript": "^1.8.7"
   }
 }

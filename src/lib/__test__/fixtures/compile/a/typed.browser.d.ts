@@ -1,1 +1,0 @@
-export function browser (): boolean
