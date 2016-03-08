@@ -10,8 +10,9 @@ typings search [query]
 
 Options:
  [--ambient]         Search for ambient module
+                     Also search in DefinitelyTyped
  [--name] <name>     ???
- [--source] <source> Source to seach from: npm|registry|DT?
+ [--source] <source> Search from: npm|dt|global
  [--offset] <x>      Skip first x results
  [--limit] <x>       Limit to x results
 `)

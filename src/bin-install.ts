@@ -8,13 +8,17 @@ export function help () {
   console.log(`
 typings install (with no arguments, in package directory)
 typings install <name>=<location>
+  <name>        Target module name
+  <location>    file|github|npm etc. (see below)
 typings install [<source>!]<pkg>[@<version>]
+  <source>      npm|registry
 typings install file:<path>
+  <path>        Path points to either '.d.ts' or 'typings.json'
 typings install github:<github username>/<github project>[/<path>][#<commit>]
 typings install bitbucket:<bitbucket username>/<bitbucket project>[/<path>][#<commit>]
 typings install npm:<package>
 typings install bower:<package>
-typings install <https?:// url>
+typings install <https?://path>
 
 Aliases: i, in
 Options:
@@ -25,7 +29,7 @@ Options:
   [-A|--ambient]  Install as ambient module
     [-SA]         Save as ambientDependency
     [-DA]         Save as ambientDevDependency
-  [--production]
+  [--production]  Install without [ambient]DevDependency
 `)
 }
 

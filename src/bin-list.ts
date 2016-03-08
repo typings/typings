@@ -6,13 +6,11 @@ import { list } from 'typings-core'
 
 export function help () {
   console.log(`
-typings ls [--ambient] [--production]
+typings list
 
-Aliases: la, ll, list
+Aliases: la, ll, ls
 Options:
-  [-A|--ambient] Search for ambient module
-                 Also search in DefinitelyTyped
-  [--production]
+  [--production] List only production dependencies
 `)
 }
 
