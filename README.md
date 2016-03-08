@@ -309,10 +309,9 @@ Where `typings/{main,browser}.d.ts` is a collection of references to installed d
 # Fork this repo (https://github.com/typings/typings)
 # Clone the fork (E.g. `https://github.com/<your_username>/typings.git`)
 cd typings
-npm run bootstrap
 
-# You will see errors such as "src/bundle.ts(1,26): error TS2307: Cannot find module 'any-promise'"
-# Just ignore them. "npm run build" and "npm run test" will work correctly
+# Install modules
+npm install
 
 # Build
 npm run build
