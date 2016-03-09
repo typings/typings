@@ -107,12 +107,13 @@ export function handleError (error: Error, options: PrintOptions): any {
  */
 export interface ArchifyOptions {
   name?: string
+  tree: DependencyTree
 }
 
 /**
  * Convert a dependency tree for "archy" to render.
  */
-export function archifyDependencyTree (tree: DependencyTree, options: ArchifyOptions = {}) {
+export function archifyDependencyTree (options: ArchifyOptions) {
   const result: archy.Tree = {
     label: options.name,
     nodes: []
@@ -164,7 +165,7 @@ export function archifyDependencyTree (tree: DependencyTree, options: ArchifyOpt
     return result
   }
 
-  const archyTree = traverse(result, tree)
+  const archyTree = traverse(result, options.tree)
 
   // Print "no dependencies" on empty tree.
   if (archyTree.nodes.length === 0) {

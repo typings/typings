@@ -24,6 +24,6 @@ export interface Options {
 export function exec (args: string[], options: Options): Promise<void> {
   return list(options)
     .then(function (tree) {
-      console.log(archifyDependencyTree(tree))
+      console.log(archifyDependencyTree({ tree }))
     })
 }

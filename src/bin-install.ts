@@ -56,8 +56,8 @@ export function exec (args: string[], options: Options): Promise<void> {
 
   if (args.length === 0) {
     return install(options)
-      .then(({ tree }) => {
-        console.log(archifyDependencyTree(tree, options))
+      .then((result) => {
+        console.log(archifyDependencyTree(result))
       })
   }
 
@@ -78,7 +78,7 @@ export function exec (args: string[], options: Options): Promise<void> {
   }))
     .then(results => {
       for (const result of results) {
-        console.log(archifyDependencyTree(result.tree, options))
+        console.log(archifyDependencyTree(result))
       }
     })
 }
