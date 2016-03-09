@@ -2,6 +2,7 @@
 
 import Promise = require('any-promise')
 import { uninstallDependency } from 'typings-core'
+import { logError } from './support/cli'
 
 export function help () {
   return `
@@ -29,8 +30,13 @@ export interface Options {
   help: boolean
 }
 
-export function exec (names: string[], options: Options) {
-  return Promise.all(names.map(name => {
+export function exec (args: string[], options: Options) {
+  if (args.length === 0) {
+    logError(help())
+    return
+  }
+
+  return Promise.all(args.map(name => {
     return uninstallDependency(name, options)
   }))
 }
