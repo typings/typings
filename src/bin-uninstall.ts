@@ -30,6 +30,8 @@ export interface Options {
 }
 
 export function exec (names: string[], options: Options) {
+  if (names.length === 0) help()
+
   return Promise.all(names.map(name => {
     return uninstallDependency(name, options)
   }))
