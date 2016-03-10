@@ -106,7 +106,6 @@ Search the Typings Registry for type defintions.
 typings search [query]
 
 Options:
-  [--ambient]         Search for ambient definitions (E.g. "global", "env" and "dt")
   [--name] <name>     Search for definitions by exact name (E.g. only "react")
   [--source] <source> The registry mirror (E.g. "npm", "bower", "env", "global", "dt", ...)
   [--offset] <x>      Skip first "x" results (default: 0)

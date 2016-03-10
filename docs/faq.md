@@ -89,6 +89,7 @@ Writing a new type definition is as simple as creating a new package. Start by c
 * **browser** A string or map of paths to override when resolving (following the [browser field specification](https://github.com/defunctzombie/package-browser-field-spec))
 * **ambient** Denote that this definition _must_ be installed as ambient
 * **name** The name of this definition
+* **postmessage** A message to emit to users after installation
 * **version** The semver range this definition is typed for
 * **dependencies** A map of dependencies that need installing
 * **devDependencies** A map of development dependencies that need installing
