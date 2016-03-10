@@ -8,6 +8,8 @@
 
 > The manager for TypeScript definitions.
 
+**Updating from 0.6 to 0.7?** Make sure you `rm -rf typings/` and re-install them, the directory structure has changed.
+
 ## Quick Start
 
 ```sh
@@ -49,7 +51,7 @@ typings install debug --save
 
 A [public registry](https://github.com/typings/registry) is maintained by the community, and is used to resolve official type definitions for JavaScript packages.
 
-### Read More
+## Read More
 
 * [Commands](docs/commands.md)
 * [Coming from TSD?](docs/tsd.md)
