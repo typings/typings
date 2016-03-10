@@ -19,10 +19,10 @@ npm install typings --global
 # Search for definitions.
 typings search tape
 
-# Find ambient definitions (includes DefinitelyTyped in lookup due to --ambient flag).
-typings search react --ambient
+# Find an available definition (by name).
+typings search --name react
 
-# Install ambient typings (and persist selection in `typings.json`).
+# Install typings (DT is "ambient", make sure to enable the flag and persist the selection in `typings.json`).
 typings install react --ambient --save
 
 # Use `main.d.ts` (in `tsconfig.json` or as a `///` reference).

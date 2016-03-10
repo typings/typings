@@ -30,9 +30,9 @@ export interface Options {
 
 export function exec (args: string[], options: Options): Promise<void> {
   const query = args[0]
-  const { source, offset, limit, order, sort } = options
+  const { name, source, offset, limit, order, sort } = options
 
-  return search({ source, query, offset, limit, order, sort })
+  return search({ name, source, query, offset, limit, order, sort })
     .then(function ({ results, total }) {
       if (total === 0) {
         console.log('No results found for search')
