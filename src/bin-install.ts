@@ -2,6 +2,7 @@
 
 import Promise = require('any-promise')
 import { install, installDependencyRaw, Emitter } from 'typings-core'
+import listify = require('listify')
 import { archifyDependencyTree, logInfo } from './support/cli'
 
 export function help () {
@@ -70,6 +71,18 @@ export function exec (args: string[], options: Options): Promise<void> {
       logInfo(`Stripped reference "${reference}" during installation of "${name}"`, 'reference')
 
       references.push(reference)
+    }
+  })
+
+  // Log ambient dependencies list.
+  emitter.on('ambientdependencies', function ({ raw, dependencies }) {
+    const deps = Object.keys(dependencies).map(x => JSON.stringify(x))
+
+    if (deps.length) {
+      logInfo(
+        `This definition lists ambient dependencies on ${listify(deps)}`,
+        'ambient dependencies'
+      )
     }
   })
 

@@ -9,7 +9,6 @@ export function help () {
 typings search [query]
 
 Options:
-  [--ambient]         Search for ambient definitions (E.g. "global", "env" and "dt")
   [--name] <name>     Search for definitions by exact name (E.g. only "react")
   [--source] <source> The registry mirror (E.g. "npm", "bower", "env", "global", "dt", ...)
   [--offset] <x>      Skip first "x" results (default: 0)
@@ -24,7 +23,6 @@ export interface Options {
   source: string
   offset: string
   limit: string
-  ambient: boolean
   order: string
   sort: string
   verbose: boolean
@@ -32,9 +30,9 @@ export interface Options {
 
 export function exec (args: string[], options: Options): Promise<void> {
   const query = args[0]
-  const { ambient, source, offset, limit, order, sort } = options
+  const { source, offset, limit, order, sort } = options
 
-  return search({ ambient, source, query, offset, limit, order, sort })
+  return search({ source, query, offset, limit, order, sort })
     .then(function ({ results, total }) {
       if (total === 0) {
         console.log('No results found for search')

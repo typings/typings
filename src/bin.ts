@@ -2,11 +2,11 @@
 
 import minimist = require('minimist')
 import wordwrap = require('wordwrap')
-import { join } from 'path'
+import { join, relative } from 'path'
 import updateNotifier = require('update-notifier')
 import extend = require('xtend')
 import { EventEmitter } from 'events'
-import { handle, logWarning } from './support/cli'
+import { handle, logWarning, logInfo } from './support/cli'
 import { Emitter } from 'typings-core'
 import { aliases } from './aliases'
 
@@ -60,6 +60,25 @@ exec(args)
 // Log warnings on enoent events.
 emitter.on('enoent', function ({ path }) {
   logWarning(`Path "${path}" is missing`, 'ENOENT')
+})
+
+// Log warning when typings come packaged.
+emitter.on('hastypings', function ({ path, source, name, typings }) {
+  logWarning(
+    `Typings for "${name}" already exist in "${relative(cwd, typings)}". You should ` +
+    `let TypeScript resolve the packaged typings and uninstall the copy installed by Typings`,
+    'has typings'
+  )
+})
+
+// Emit postmessage events.
+emitter.on('postmessage', function ({ message, name }) {
+  logInfo(message, `${name} postmessage`)
+})
+
+// Log bad locations.
+emitter.on('badlocation', function ({ type, raw }) {
+  logWarning(`"${raw}" is a mutable location and may change, consider specifying a commit hash`, 'badlocation')
 })
 
 /**
