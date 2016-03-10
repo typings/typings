@@ -63,7 +63,7 @@ emitter.on('enoent', function ({ path }) {
 })
 
 // Log warning when typings come packaged.
-emitter.on('hastypings', function ({ path, source, name, typings }) {
+emitter.on('hastypings', function ({ name, typings }) {
   logWarning(
     `Typings for "${name}" already exist in "${relative(cwd, typings)}". You should ` +
     `let TypeScript resolve the packaged typings and uninstall the copy installed by Typings`,
@@ -77,7 +77,7 @@ emitter.on('postmessage', function ({ message, name }) {
 })
 
 // Log bad locations.
-emitter.on('badlocation', function ({ type, raw }) {
+emitter.on('badlocation', function ({ raw }) {
   logWarning(`"${raw}" is a mutable location and may change, consider specifying a commit hash`, 'badlocation')
 })
 

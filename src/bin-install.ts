@@ -75,7 +75,7 @@ export function exec (args: string[], options: Options): Promise<void> {
   })
 
   // Log ambient dependencies list.
-  emitter.on('ambientdependencies', function ({ raw, dependencies }) {
+  emitter.on('ambientdependencies', function ({ dependencies }) {
     const deps = Object.keys(dependencies).map(x => JSON.stringify(x))
 
     if (deps.length) {
