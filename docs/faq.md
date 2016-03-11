@@ -4,7 +4,7 @@ Help us answer your common questions here!
 
 ## Why?
 
-* Typings makes external modules, not ambient modules, first class.  (Curious as to what this means?  Read [this](/docs/how-typings-makes-external-modules-first-class.md))
+* Typings makes external modules, not ambient modules, first class.  (Curious as to what this means?  Read [this](/docs/external-modules.md))
   * A lot of ambient module declarations suffer from exposing implementation details incorrectly
   * External module declarations are emitted by TypeScript already, and used with the `moduleResolution` option
   * You can immediately contribute typings back to the author!
