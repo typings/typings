@@ -30,10 +30,28 @@ In both cases the `--ambient` flag is required in order that DefinitelyTyped is 
 
 # Upgrade
 
-Simple: 
+Delete the old `typings` directory: 
+
+```
+rm -rf typings
+```
+
+Use the old `tsd.json` to load the config for `typings` and then delete that as well: 
 
 ```
 $ typings init --upgrade
 $ rm tsd.json
 $ typings install
 ```
+
+Finally based on if you are working primarily on the browser or nodejs specify an exclude in your `tsconfig.json` e.g.: 
+
+```json
+ {
+  "exclude": [
+    "typings/browser.d.ts",
+    "typings/browser",
+    "node_modules"
+  ]
+}
+ ```
