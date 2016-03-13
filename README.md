@@ -1,4 +1,4 @@
-# Typings
+# ![Typings](https://cdn.rawgit.com/typings/typings/master/logo.svg)
 
 [![NPM version][npm-image]][npm-url]
 [![NPM downloads][downloads-image]][downloads-url]
