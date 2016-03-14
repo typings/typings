@@ -81,6 +81,11 @@ emitter.on('badlocation', function ({ raw }) {
   logWarning(`"${raw}" is a mutable location and may change, consider specifying a commit hash`, 'badlocation')
 })
 
+// Log deprecated registry versions.
+emitter.on('deprecated', function ({ date, raw }) {
+  logWarning(`"${raw}" has been deprecated from the registry since ${date.toLocaleString()}`)
+})
+
 /**
  * Handle the CLI commands.
  */
