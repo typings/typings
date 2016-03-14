@@ -68,19 +68,19 @@ export function exec (args: string[], options: Options): Promise<void> {
   // Log messages on stripped references.
   emitter.on('reference', function ({ reference, name }) {
     if (references.indexOf(reference) === -1) {
-      logInfo(`Stripped reference "${reference}" during installation of "${name}"`, 'reference')
+      logInfo(`Stripped reference "${reference}" during installation from "${name}"`, 'reference')
 
       references.push(reference)
     }
   })
 
   // Log ambient dependencies list.
-  emitter.on('ambientdependencies', function ({ dependencies }) {
+  emitter.on('ambientdependencies', function ({ name, dependencies }) {
     const deps = Object.keys(dependencies).map(x => JSON.stringify(x))
 
     if (deps.length) {
       logInfo(
-        `This definition lists ambient dependencies on ${listify(deps)}`,
+        `"${name}" lists ambient dependencies on ${listify(deps)} and should be installed`,
         'ambient dependencies'
       )
     }
