@@ -81,7 +81,7 @@ export function exec (args: string[], options: Options): Promise<void> {
     if (deps.length) {
       logInfo(
         `"${name}" lists ambient dependencies on ${listify(deps)} and should be installed`,
-        'ambient dependencies'
+        'ambientdependencies'
       )
     }
   })

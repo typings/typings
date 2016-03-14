@@ -59,7 +59,7 @@ exec(args)
 
 // Log warnings on enoent events.
 emitter.on('enoent', function ({ path }) {
-  logWarning(`Path "${path}" is missing`, 'ENOENT')
+  logWarning(`Path "${path}" is missing`, 'enoent')
 })
 
 // Log warning when typings come packaged.
@@ -67,13 +67,13 @@ emitter.on('hastypings', function ({ name, typings }) {
   logWarning(
     `Typings for "${name}" already exist in "${relative(cwd, typings)}". You should ` +
     `let TypeScript resolve the packaged typings and uninstall the copy installed by Typings`,
-    'has typings'
+    'hastypings'
   )
 })
 
 // Emit postmessage events.
 emitter.on('postmessage', function ({ message, name }) {
-  logInfo(message, `${name} postmessage`)
+  logInfo(`${name}: ${message}`, 'postmessage')
 })
 
 // Log bad locations.
@@ -83,7 +83,7 @@ emitter.on('badlocation', function ({ raw }) {
 
 // Log deprecated registry versions.
 emitter.on('deprecated', function ({ date, raw }) {
-  logWarning(`"${raw}" has been deprecated from the registry since ${date.toLocaleString()}`)
+  logWarning(`"${raw}" has been deprecated from the registry since ${date.toLocaleString()}`, 'deprecated')
 })
 
 /**
