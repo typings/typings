@@ -6,7 +6,7 @@
 [![Test coverage][coveralls-image]][coveralls-url]
 [![Gitter][gitter-image]][gitter-url]
 
-> The manager for TypeScript definitions.
+> The TypeScript Definition Manager.
 
 **Updating from 0.6 to 0.7?** Make sure you `rm -rf typings/` and re-install them, the directory structure has changed.
 

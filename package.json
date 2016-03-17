@@ -1,7 +1,7 @@
 {
   "name": "typings",
   "version": "0.7.9",
-  "description": "The manager for TypeScript definitions",
+  "description": "The TypeScript Definition Manager",
   "main": "dist/typings.js",
   "preferGlobal": true,
   "bin": {
