@@ -2,7 +2,7 @@
 
 **Important: For existing TSD users, Typings will install from DefinitelyTyped using the `--ambient` flag. Other dependencies are maintained in the [registry](https://github.com/typings/registry).**
 
-You're possibly wondering what it's like going from using TSD to Typings. To use Typings as you used TSD the migration is not extreme. Where you previously would have:
+You're possibly wondering what it's like going from using TSD to Typings. Using Typings is very similar to using TSD. Where you previously would have:
 
 ```
 tsd install react --save
@@ -26,7 +26,7 @@ becomes:
 typings search react --ambient
 ```
 
-In both cases the `--ambient` flag is required in order that DefinitelyTyped is included in the lookup. DT can generally be viewed as a source of ambient definitions; both internal and external. For clarity about what ambient definitions are it's worth taking a look at the [TypeScript Handbook](http://www.typescriptlang.org/Handbook#modules-working-with-other-javascript-libraries).
+In both cases the `--ambient` flag is required; it includes DefinitelyTyped in the lookup. DT can generally be viewed as a source of ambient definitions (both internal and external). For clarity about what ambient definitions are, it's worth taking a look at the [TypeScript Handbook](http://www.typescriptlang.org/Handbook#modules-working-with-other-javascript-libraries).
 
 # Upgrade
 
@@ -44,7 +44,7 @@ $ rm tsd.json
 $ typings install
 ```
 
-Finally based on if you are working primarily on the browser or nodejs specify an exclude in your `tsconfig.json` e.g.: 
+Finally, based on if you are working primarily on the browser or Node.js, specify an `"exclude"` in your `tsconfig.json`; e.g.: 
 
 ```json
  {
