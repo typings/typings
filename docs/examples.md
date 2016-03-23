@@ -25,6 +25,7 @@ The declaration files included in the package should be accurate.
 ## Ambient (Global) Typings
 
 ### Namespace
+
 ```ts
 // ABC.d.ts
 declare namespace ABC {
@@ -75,6 +76,7 @@ export = JsDiff;
 * https://github.com/typed-typings/npm-diff
 
 ### Function + Utility
+
 Exposing a function, with utility methods.
 
 ```ts
@@ -90,6 +92,7 @@ export = tape;
 * https://github.com/typed-typings/npm-tape
 
 ### Exporting Class + Static Methods + Utility
+
 ```ts
 declare class Promise <R> {
   static resolve(): Promise<void>;
