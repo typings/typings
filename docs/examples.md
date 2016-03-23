@@ -4,13 +4,13 @@ Here are some examples you can use as a model when writing your typings.
 
 There are a few kinds of source package:
 
-1. Package that is part of the environment.
-2. Package that should be loaded in a script tag.
+1. Package that is part of the environment
+2. Package that should be loaded in a script tag
 3. Package that written in CommonJs / NodeJs style
   1. Package that also pollutes the global namespace
 4. Package that written in ES6+
   1. Package that also pollutes the global namespace
-5. Package that written in TypeScript and compiled to JavaScript with declaration `.d.ts` files.
+5. Package that written in TypeScript and compiled to JavaScript with declaration `.d.ts` files
 
 For 1 and 2, you will create an ambient (global) typing.
 
