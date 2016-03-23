@@ -16,7 +16,7 @@ For 1 and 2, you will create an ambient (global) typing.
 
 For 3, you will create an external module typing using `export =`.
 
-For 4, you will create an external module typing using ESM syntax (ES6/ES2015 default export and named export).
+For 4, you will create an external module typing using ES6 module syntax (default export and named export).
 
 For 5, you probably don't need to write typings for it.
 The declaration files included in the package should be accurate.
