@@ -4,23 +4,15 @@ Help us answer your common questions here!
 
 ## Why?
 
-* Typings makes external modules, not ambient modules, first class.  (Curious as to what this means?  Read [this](/docs/external-modules.md))
-  * A lot of ambient module declarations suffer from exposing implementation details incorrectly
-  * External module declarations are emitted by TypeScript already, and used with the `moduleResolution` option
-  * You can immediately contribute typings back to the author!
-* Typings cleanly represents the module structure
-  * Supporting the `browser` field (used by Webpack, Browserify, etc.) can produce different types
-  * Need type definitions for each file? Done. Some modules promote requiring into the dependencies for "add-ons"
-* TypeScript modules should be publish-able to any package manager
-  * Ambient modules can not be published to a package manager
-  * Publishing ambient modules to a package manager cripples your users that run into duplicate identifiers
-* Typings are decentralized
-  * Write and install your own type definitions without friction
-  * Author can maintain type definitions in isolation from other typings (using separate GitHub repos, for example)
+Typings takes external module definitions and wraps them up into namespaced, global declarations. Curious as to what this means? Read [this](/docs/external-modules.md).
+
+The idea is, with external module definitions, you can't implement any leaky information that will break other consumers. Once you omit all the leaky details, you can properly version dependencies - though it requires some hacky namespacing from Typings to work with the TypeScript compiler.
+
+Type definitions for Typings can also come from anywhere on the internet, allowing new consumers of definitions that were previously restricted to a subset of tooling to distribute type definitions.
 
 ## `main.d.ts` And `browser.d.ts`
 
-To simplify integration with TypeScript, two files - `typings/main.d.ts` and `typings/browser.d.ts` - are generated which reference all the typings installed in the project only one of which can be used at a time. If you're building a front-end package it's recommended you use `typings/browser.d.ts`. The browser typings are compiled by following the `browser` field overrides.
+Two files, `typings/main.d.ts` and `typings/browser.d.ts`, are generated. They reference all the typings installed in the project, but only one should be used at a time. If you're building a front-end package, it's recommended you use `typings/browser.d.ts`. The browser typings are compiled by following the `browser` field overrides.
 
 To use either you can do **one** of the following:
 
@@ -46,7 +38,7 @@ To use either you can do **one** of the following:
 }
 ```
 
-* If you are not using `tsconfig.json`, then add as a reference to the top of TypeScript files:
+* If you are not using `tsconfig.json`, add as a reference to the top of TypeScript files:
 
 ```ts
 /// <reference path="../typings/main.d.ts" />
@@ -54,7 +46,7 @@ To use either you can do **one** of the following:
 
 ## References
 
-During installation, any references (E.g. `/// <reference path="..." />`) are stripped. There is no simple way to include the contents from the other file within the project. With legacy projects, these references can denote dependencies or ambient dependencies, so can't be relied on in any formal way. Installation will print the references that were stripped during installation, and you can continue installation of dependencies yourself.
+During installation, all references (E.g. `/// <reference path="..." />`) are stripped. They are stripped because of their ambiguous nature - it can not be determined if the reference should be included within the source or is a dependency. 90% of the time, it's better to strip. If the reference is something you require for the project to work, you can always install the references as dependencies manually.
 
 ## How Do I Use Typings With Git and Continuous Integration?
 
@@ -73,36 +65,23 @@ If you're using some other set up, just run `typings install` before you execute
 
 ## How Do I Write Typings Definitions?
 
-Writing a new type definition is as simple as creating a new package. Start by creating a new `typings.json` file, then add dependencies as normal. When you publish to GitHub, locally, alongside your package (NPM or Bower) or even to your own website, someone else can reference it and use it.
+Writing a type definition is as simple as creating a new package. Start by creating a new `typings.json` file, and add dependencies as normal. When you publish to GitHub, locally, alongside your package (NPM or Bower) or even to your own website, someone else can reference it and use it.
 
-```json
-{
-  "name": "typings",
-  "main": "path/to/definition.d.ts",
-  "author": "Blake Embrey <hello@blakeembrey.com>",
-  "description": "The TypeScript definition dependency manager",
-  "dependencies": {}
-}
-```
+The formal interface is available in [`typings/core`](https://github.com/typings/core/blob/master/src/interfaces/config.ts).
 
-* **main** The entry point to the definition (canonical to "main" in NPM's `package.json`)
-* **browser** A string or map of paths to override when resolving (following the [browser field specification](https://github.com/defunctzombie/package-browser-field-spec))
-* **ambient** Denote that this definition _must_ be installed as ambient
-* **name** The name of this definition
-* **postmessage** A message to emit to users after installation
-* **version** The semver range this definition is typed for
-* **dependencies** A map of dependencies that need installing
-* **devDependencies** A map of development dependencies that need installing
-* **ambientDependencies** A map of environment dependencies that may need installing
-* **ambientDevDependencies** A map of environment dev dependencies that may need installing
+## Configuration
+
+Typings supports configuration using [`rc`](https://github.com/dominictarr/rc). The config options can be set using CLI arguments, environment variables prefixed with `typings_` or a `.typingsrc` file.
+
+The formal interface is available in [`typings/core`](https://github.com/typings/core/blob/master/src/interfaces/rc.ts).
 
 ## What Are Ambient Dependencies?
 
-Ambient dependencies are type definitions that provide information about the environment. Some examples of "environment" dependencies are Node.js, Browserify, `window` and even `Array.prototype.map`. These are globals that already exist, you do not "require" them. If your package exposes a module and/or ambient dependencies, it's recommended you expose a way to install the ambient definitions (explain installation in the docs, for instance).
+Ambient dependencies are type definitions that are global or otherwise provide information about the environment. Some examples of "environment" dependencies are Node.js, Browserify, `window` and even `Array.prototype.map`. These are globals that exist at runtime, you do not "require" them. If your package exposes a module and/or ambient dependencies, it's recommended you expose a way to install the ambient definitions (explain installation in the docs, for instance).
 
 ## Should I Use The `typings` Field In `package.json`?
 
-Maybe. If you're relying on typings to provide type dependencies, I recommend that you omit the `typings` entry for now. If you don't use the `typings.json` file, add `typings` in `package.json`. This is because TypeScript 1.6+ comes with node module resolution built-in, but unless all the packages in the NPM dependency tree have their own typings entry inline you'll be breaking TypeScript users of your library. Typings has complete support for the node module resolution strategy used in TypeScript.
+If you're a module author, absolutely. However, it can't be used properly if any of your exposed API surface (the `.d.ts` files) have dependencies that come from Typings.
 
 ## Where do the type definitions install?
 
