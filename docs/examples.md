@@ -22,7 +22,8 @@ For 5, you probably don't need to write typings for it.
 The declaration files included in the package should be accurate.
 
 
-## Ambient (global) typing
+## Ambient (Global) Typings
+
 ### Namespace
 ```ts
 // ABC.d.ts
@@ -34,8 +35,10 @@ declare namespace ABC {
 ABC.foo();
 ```
 
-## External Module with `export =`
-### Single function
+## External Module With `export =`
+
+### Single Function
+
 Exposing a single function.
 
 ```ts
@@ -56,7 +59,8 @@ export = xtend;
 
 * https://github.com/typed-typings/npm-xtend
 
-### Utility library
+### Utility Library
+
 Exposing a collection of utility functions and classes.
 
 ```ts
@@ -70,7 +74,7 @@ export = JsDiff;
 
 * https://github.com/typed-typings/npm-diff
 
-### Function + utility
+### Function + Utility
 Exposing a function, with utility methods.
 
 ```ts
@@ -85,7 +89,7 @@ export = tape;
 
 * https://github.com/typed-typings/npm-tape
 
-### Exporting class + static methods + utility
+### Exporting Class + Static Methods + Utility
 ```ts
 declare class Promise <R> {
   static resolve(): Promise<void>;
@@ -101,8 +105,10 @@ export = Promise;
 
 * https://github.com/typed-typings/npm-bluebird
 
-## External Module with ESM syntax
-### Named export
+## External Module with ESM Syntax
+
+### Named Export
+
 Export directly using ES6 semantics without a module or namespace.
 
 ```ts
