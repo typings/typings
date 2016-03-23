@@ -108,7 +108,7 @@ export = Promise;
 
 * https://github.com/typed-typings/npm-bluebird
 
-## External Module with ESM Syntax
+## External Module with ES6 Syntax
 
 ### Named Export
 
