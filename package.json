@@ -13,7 +13,7 @@
   ],
   "scripts": {
     "lint": "tslint 'src/**/*.ts'",
-    "build": "rm -rf dist/ && tsc",
+    "build": "rimraf dist/ && tsc",
     "docs": "node scripts/docs-commands.js",
     "dependency-check": "dependency-check . --entry dist/bin.js --missing --no-dev && dependency-check . --entry dist/bin.js --unused --no-dev -i bluebird",
     "test": "npm run lint && npm run build && npm run dependency-check",
@@ -58,6 +58,7 @@
   "devDependencies": {
     "dependency-check": "^2.5.1",
     "nock": "^7.2.2",
+    "rimraf": "^2.5.2",
     "ts-node": "^0.7.0",
     "tslint": "^3.5.0",
     "typescript": "^1.8.7"
