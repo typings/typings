@@ -69,6 +69,8 @@ Writing a type definition is as simple as creating a new package. Start by creat
 
 The formal interface is available in [`typings/core`](https://github.com/typings/core/blob/master/src/interfaces/config.ts).
 
+You can also use [`generator-typings`](https://github.com/typings/generator-typings) to prepare the plumbing work for you.
+
 ## Configuration
 
 Typings supports configuration using [`rc`](https://github.com/dominictarr/rc). The config options can be set using CLI arguments, environment variables prefixed with `typings_` or a `.typingsrc` file.
