@@ -2,25 +2,23 @@
 
 Here are some examples you can use as a model when writing your typings.
 
-There are a few kinds of source package:
+There are a number of kinds of source package which you may write type definitions for:
 
-1. Package that is part of the environment
-2. Package that should be loaded in a script tag
-3. Package that written in CommonJs / NodeJs style
+1. Package that, when loaded, extends the global scope environment with a number of new functions / variables / classes etc (eg [mocha](https://github.com/typed-typings/env-mocha))
+2. Package that should be loaded using a script tag (eg [knockout](https://github.com/typed-contrib/knockout/tree/master/global))
+3. Package that should be loaded with a CommonJs / NodeJs compatible loader such as npm, browserify, webpack etc (eg [knockout again!](https://github.com/typed-contrib/knockout))
   1. Package that also pollutes the global namespace
 4. Package that written in ES6+
   1. Package that also pollutes the global namespace
-5. Package that written in TypeScript and compiled to JavaScript with declaration `.d.ts` files
+5. Package that is written in TypeScript and compiled to JavaScript with declaration `.d.ts` files (eg [globalize-so-what-cha-want](https://www.npmjs.com/package/globalize-so-what-cha-want))
 
-For 1 and 2, you will create an ambient (global) typing.
+For 1 and 2, you would create an ambient (global) typing.
 
-For 3, you will create an external module typing using `export =`.
+For 3, you would create an external module typing using `export =`.
 
-For 4, you will create an external module typing using ES6 module syntax (default export and named export).
+For 4, you would create an external module typing using ES6 module syntax (default export and named export).
 
-For 5, you probably don't need to write typings for it.
-The declaration files included in the package should be accurate.
-
+For 5, you probably don't need to write typings for it; The declaration files included in the package should be accurate and the TypeScript compiler should automatcally try to use them upon consumption.
 
 ## Ambient (Global) Typings
 
