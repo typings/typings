@@ -57,7 +57,7 @@
   },
   "devDependencies": {
     "dependency-check": "^2.5.1",
-    "nock": "^7.2.2",
+    "nock": "^7.7.1",
     "rimraf": "^2.5.2",
     "ts-node": "^0.7.0",
     "tslint": "^3.5.0",
