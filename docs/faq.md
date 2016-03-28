@@ -1,7 +1,7 @@
 # FAQ
 
 - [Why do I need this?](#why)
-- [I'm getting a bunch of Duplicate Identifier(s)](#maindts-and-browserdts)
+- [I'm getting a bunch of Duplicate Identifiers](#maindts-and-browserdts)
 - [My ambient dependencie(s) are not installed](#references)
 - [How Do I Use Typings With Git and Continuous Integration?](#how-do-i-use-typings-with-git-and-continuous-integration)
 - [How do I write typings definitions?](#writing-typings-definitions)
