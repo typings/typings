@@ -10,6 +10,8 @@
 - [Should I use The `typings` field In `package.json`?](#should-i-use-the-typings-field-in-packagejson)
 - [Where do the type definitions install?](#where-do-the-type-definitions-install)
 
+Your have a different question? Open an issue and help us answer your question here!
+
 ## Why?
 
 Typings takes external module definitions and wraps them up into namespaced, global declarations. Curious as to what this means? Read [this](/docs/external-modules.md).
