@@ -1,6 +1,16 @@
 # FAQ
 
-Help us answer your common questions here!
+- [Why do I need this?](#why)
+- [I'm getting a bunch of Duplicate Identifiers](#module-resolutions)
+- [My ambient dependencie(s) are not installed](#references)
+- [How do I use typings with git and continuous integration?](#how-do-i-use-typings-with-git-and-continuous-integration)
+- [How do I write typings definitions?](#writing-typings-definitions)
+- [How to configure typings?](#configuration)
+- [What are ambient dependencies?](#what-are-ambient-dependencies)
+- [Should I use The `typings` field In `package.json`?](#should-i-use-the-typings-field-in-packagejson)
+- [Where do the type definitions install?](#where-do-the-type-definitions-install)
+
+Your have a different question? Open an issue and help us answer your question here!
 
 ## Why?
 
@@ -10,9 +20,9 @@ The idea is, with external module definitions, you can't implement any leaky inf
 
 Type definitions for Typings can also come from anywhere on the internet, allowing new consumers of definitions that were previously restricted to a subset of tooling to distribute type definitions.
 
-## `main.d.ts` And `browser.d.ts`
+## Module Resolutions
 
-Two files, `typings/main.d.ts` and `typings/browser.d.ts`, are generated. They reference all the typings installed in the project, but only one should be used at a time. If you're building a front-end package, it's recommended you use `typings/browser.d.ts`. The browser typings are compiled by following the `browser` field overrides.
+When you install typings, two files, `typings/main.d.ts` and `typings/browser.d.ts`, are generated. They reference all the typings installed in the project, but only one should be used at a time. If you're building a front-end package, it's recommended you use `typings/browser.d.ts`. The browser typings are compiled by following the `browser` field overrides.
 
 To use either you can do **one** of the following:
 
@@ -63,7 +73,7 @@ If you're already publishing your module with TypeScript, you might be using NPM
 
 If you're using some other set up, just run `typings install` before you execute the build step. This will install the type definitions from `typings.json` before the TypeScript compiler runs.
 
-## How Do I Write Typings Definitions?
+## Writing Typings Definitions
 
 Writing a type definition is as simple as creating a new package. Start by creating a new `typings.json` file, and add dependencies as normal. When you publish to GitHub, locally, alongside your package (NPM or Bower) or even to your own website, someone else can reference it and use it.
 
