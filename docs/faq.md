@@ -3,11 +3,11 @@
 - [Why do I need this?](#why)
 - [I'm getting a bunch of Duplicate Identifiers](#maindts-and-browserdts)
 - [My ambient dependencie(s) are not installed](#references)
-- [How Do I Use Typings With Git and Continuous Integration?](#how-do-i-use-typings-with-git-and-continuous-integration)
+- [How do I use typings with git and continuous integration?](#how-do-i-use-typings-with-git-and-continuous-integration)
 - [How do I write typings definitions?](#writing-typings-definitions)
 - [How to configure typings?](#configuration)
 - [What are ambient dependencies?](#what-are-ambient-dependencies)
-- [Should I Use The `typings` Field In `package.json`?](#should-i-use-the-typings-field-in-packagejson)
+- [Should I use The `typings` field In `package.json`?](#should-i-use-the-typings-field-in-packagejson)
 - [Where do the type definitions install?](#where-do-the-type-definitions-install)
 
 ## Why?
