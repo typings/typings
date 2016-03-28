@@ -1,5 +1,9 @@
 language: node_js
 
+branches:
+  only:
+    - master
+    
 notifications:
   email:
     on_success: never
@@ -12,8 +16,4 @@ node_js:
   - "4"
   - "stable"
 
-branches:
-  only:
-    - master
-    
 after_script: "npm install coveralls@2 && cat ./coverage/lcov.info | coveralls"
