@@ -1,7 +1,7 @@
 # FAQ
 
 - [Why do I need this?](#why)
-- [I'm getting a bunch of Duplicate Identifiers](#maindts-and-browserdts)
+- [I'm getting a bunch of Duplicate Identifiers](#module-resolutions)
 - [My ambient dependencie(s) are not installed](#references)
 - [How do I use typings with git and continuous integration?](#how-do-i-use-typings-with-git-and-continuous-integration)
 - [How do I write typings definitions?](#writing-typings-definitions)
@@ -20,7 +20,7 @@ The idea is, with external module definitions, you can't implement any leaky inf
 
 Type definitions for Typings can also come from anywhere on the internet, allowing new consumers of definitions that were previously restricted to a subset of tooling to distribute type definitions.
 
-## `main.d.ts` And `browser.d.ts`
+## Module Resolutions
 
 When you install typings, two files, `typings/main.d.ts` and `typings/browser.d.ts`, are generated. They reference all the typings installed in the project, but only one should be used at a time. If you're building a front-end package, it's recommended you use `typings/browser.d.ts`. The browser typings are compiled by following the `browser` field overrides.
 
