@@ -82,8 +82,12 @@ emitter.on('badlocation', function ({ raw }) {
 })
 
 // Log deprecated registry versions.
-emitter.on('deprecated', function ({ date, raw }) {
-  logWarning(`"${raw}" has been deprecated from the registry since ${date.toLocaleString()}`, 'deprecated')
+emitter.on('deprecated', function ({ date, raw, parent }) {
+  if (parent == null) {
+    logWarning(`${date.toLocaleString()}: "${raw}" is deprecated (outdated or removed)`, 'deprecated')
+  } else {
+    logWarning(`${date.toLocaleString()}: "${raw}" has been deprecated (used by "${parent.raw}")`, 'deprecated')
+  }
 })
 
 /**
