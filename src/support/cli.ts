@@ -2,7 +2,7 @@ import chalk = require('chalk')
 import Promise = require('any-promise')
 import archy = require('archy')
 import * as os from 'os'
-import { DependencyTree } from 'typings-core'
+import { DependencyTree, DependencyBranch } from 'typings-core'
 
 const pkg = require('../../package.json')
 
@@ -111,6 +111,15 @@ export interface ArchifyOptions {
 }
 
 /**
+ * Make the dependency into the CLI name.
+ */
+function toDependencyName (name: string, node: DependencyTree, suffix?: string) {
+  const fullname = node.version ? `${name}@${node.version}` : name
+
+  return suffix ? `${fullname} ${suffix}` : fullname
+}
+
+/**
  * Convert a dependency tree for "archy" to render.
  */
 export function archifyDependencyTree (options: ArchifyOptions) {
@@ -119,48 +128,30 @@ export function archifyDependencyTree (options: ArchifyOptions) {
     nodes: []
   }
 
+  // Append a list of dependency to the node list.
+  function children (nodes: (string | archy.Tree)[], dependencies: DependencyBranch, suffix?: string) {
+    for (const name of Object.keys(dependencies).sort()) {
+      const tree = dependencies[name]
+
+      nodes.push(traverse(
+        {
+          label: toDependencyName(name, tree, suffix),
+          nodes: []
+        },
+        tree
+      ))
+    }
+  }
+
+  // Recursively traverse the dependencies to print the tree.
   function traverse (result: archy.Tree, tree: DependencyTree) {
     const { nodes } = result
 
-    for (const name of Object.keys(tree.dependencies).sort()) {
-      nodes.push(traverse(
-        {
-          label: name,
-          nodes: []
-        },
-        tree.dependencies[name]
-      ))
-    }
-
-    for (const name of Object.keys(tree.devDependencies).sort()) {
-      nodes.push(traverse(
-        {
-          label: `${name} ${chalk.gray('(dev)')}`,
-          nodes: []
-        },
-        tree.devDependencies[name]
-      ))
-    }
-
-    for (const name of Object.keys(tree.ambientDependencies).sort()) {
-      nodes.push(traverse(
-        {
-          label: `${name} ${chalk.gray('(ambient)')}`,
-          nodes: []
-        },
-        tree.ambientDependencies[name]
-      ))
-    }
-
-    for (const name of Object.keys(tree.ambientDevDependencies).sort()) {
-      nodes.push(traverse(
-        {
-          label: `${name} ${chalk.gray('(ambient dev)')}`,
-          nodes: []
-        },
-        tree.ambientDevDependencies[name]
-      ))
-    }
+    children(nodes, tree.dependencies)
+    children(nodes, tree.devDependencies, chalk.gray('(dev)'))
+    children(nodes, tree.peerDependencies, chalk.gray('(peer)'))
+    children(nodes, tree.ambientDependencies, chalk.gray('(ambient)'))
+    children(nodes, tree.ambientDevDependencies, chalk.gray('(ambient dev)'))
 
     return result
   }
