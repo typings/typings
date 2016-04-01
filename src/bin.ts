@@ -85,8 +85,10 @@ emitter.on('badlocation', function ({ raw }) {
 emitter.on('deprecated', function ({ date, raw, parent }) {
   if (parent == null) {
     logWarning(`${date.toLocaleString()}: "${raw}" is deprecated (outdated or removed)`, 'deprecated')
-  } else {
+  } else if (parent.raw) {
     logWarning(`${date.toLocaleString()}: "${raw}" has been deprecated (used by "${parent.raw}")`, 'deprecated')
+  } else {
+    logWarning(`${date.toLocaleString()}: "${raw}" has been deprecated`, 'deprecated')
   }
 })
 
