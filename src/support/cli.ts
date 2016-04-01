@@ -126,7 +126,9 @@ export function archifyDependencyTree (options: ArchifyOptions) {
       const node = tree.dependencies[name]
       nodes.push(traverse(
         {
-          label: `${name}@${node.version}`,
+          label: node.version ?
+            `${name}@${node.version}` :
+            `${name}`,
           nodes: []
         },
         node
@@ -137,7 +139,9 @@ export function archifyDependencyTree (options: ArchifyOptions) {
       const node = tree.devDependencies[name]
       nodes.push(traverse(
         {
-          label: `${name}@${node.version} ${chalk.gray('(dev)')}`,
+          label: node.version ?
+            `${name}@${node.version} ${chalk.gray('(dev)')}` :
+            `${name} ${chalk.gray('(dev)')}`,
           nodes: []
         },
         node
@@ -148,7 +152,9 @@ export function archifyDependencyTree (options: ArchifyOptions) {
       const node = tree.ambientDependencies[name]
       nodes.push(traverse(
         {
-          label: `${name}@${node.version} ${chalk.gray('(ambient)')}`,
+          label: node.version ?
+            `${name}@${node.version} ${chalk.gray('(ambient)')}` :
+            `${name} ${chalk.gray('(ambient)')}`,
           nodes: []
         },
         node
@@ -159,7 +165,9 @@ export function archifyDependencyTree (options: ArchifyOptions) {
       const node = tree.ambientDevDependencies[name]
       nodes.push(traverse(
         {
-          label: `${name}@${node.version} ${chalk.gray('(ambient dev)')}`,
+          label: node.version ?
+            `${name}@${node.version} ${chalk.gray('(ambient dev)')}` :
+            `${name} ${chalk.gray('(ambient dev)')}`,
           nodes: []
         },
         node
