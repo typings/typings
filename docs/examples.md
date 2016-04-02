@@ -2,23 +2,23 @@
 
 There are a number of kinds of source package which you may write typings for:
 
-1. Packages that, when loaded, extend the global scope environment with a number of new functions / variables / classes etc. An example is [mocha](https://github.com/mochajs/mocha) which has [an ambient / global typing](https://github.com/typed-typings/env-mocha) and is listed in the [Typings Registry under env](https://github.com/typings/registry/blob/master/env/mocha.json).
+1. Packages that, when loaded, extend the global scope environment with a number of new functions / variables / classes etc. An example is [mocha](https://github.com/mochajs/mocha) which has [an ambient / global type definition](https://github.com/typed-typings/env-mocha) and is listed in the [Typings Registry under env](https://github.com/typings/registry/blob/master/env/mocha.json).
 
-2. Packages that should be loaded using a script tag. An example is [knockout](https://github.com/knockout/knockout) which has [this ambient / global typing](https://github.com/typed-contrib/knockout/tree/master/global) and is listed in the [Typings Registry under global](https://github.com/typings/registry/blob/master/global/knockout.json).
+2. Packages that should be loaded using a script tag. An example is [knockout](https://github.com/knockout/knockout) which has [this ambient / global type definition](https://github.com/typed-contrib/knockout/tree/master/global) and is listed in the [Typings Registry under global](https://github.com/typings/registry/blob/master/global/knockout.json).
 
-3. Packages that should be loaded with a CommonJs / NodeJs compatible loader such as npm, browserify, webpack etc. An example is [knockout on npm](https://www.npmjs.com/package/knockout) which has an [external module typing](https://github.com/typed-contrib/knockout) and is listed in the [Typings Registry under npm](https://github.com/typings/registry/blob/master/npm/knockout.json))
+3. Packages that should be loaded with a CommonJs / NodeJs compatible loader such as npm, browserify, webpack etc. An example is [knockout on npm](https://www.npmjs.com/package/knockout) which has an [external module type definition](https://github.com/typed-contrib/knockout) and is listed in the [Typings Registry under npm](https://github.com/typings/registry/blob/master/npm/knockout.json))
 
 4. Packages that are written in ES6+
 
 5. Packages that are written in TypeScript and compiled to JavaScript with declaration `.d.ts` files (eg [globalize-so-what-cha-want](https://www.npmjs.com/package/globalize-so-what-cha-want))
 
-For 1 and 2, you would create an ambient (global) typing.
+For 1 and 2, you would create an ambient (global) type definition.
 
-For 3, you would create an external module typing using `export =`.
+For 3, you would create an external module type definition using `export =`.
 
-For 4, you would create an external module typing using ES6 module syntax (default export and named export).
+For 4, you would create an external module type definition using ES6 module syntax (default export and named export).
 
-For 5, there should be no need to write a typing. The declaration files included in the package should be automatically detected and used by the TypeScript compiler upon consumption of the package.
+For 5, there should be no need to write a type definition. The declaration files included in the package should be automatically detected and used by the TypeScript compiler upon consumption of the package.
 
 For cases 1-4, here are some examples you can use as a model when writing your typings:
 
