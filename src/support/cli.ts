@@ -123,42 +123,54 @@ export function archifyDependencyTree (options: ArchifyOptions) {
     const { nodes } = result
 
     for (const name of Object.keys(tree.dependencies).sort()) {
+      const node = tree.dependencies[name]
       nodes.push(traverse(
         {
-          label: name,
+          label: node.version ?
+            `${name}@${node.version}` :
+            `${name}`,
           nodes: []
         },
-        tree.dependencies[name]
+        node
       ))
     }
 
     for (const name of Object.keys(tree.devDependencies).sort()) {
+      const node = tree.devDependencies[name]
       nodes.push(traverse(
         {
-          label: `${name} ${chalk.gray('(dev)')}`,
+          label: node.version ?
+            `${name}@${node.version} ${chalk.gray('(dev)')}` :
+            `${name} ${chalk.gray('(dev)')}`,
           nodes: []
         },
-        tree.devDependencies[name]
+        node
       ))
     }
 
     for (const name of Object.keys(tree.ambientDependencies).sort()) {
+      const node = tree.ambientDependencies[name]
       nodes.push(traverse(
         {
-          label: `${name} ${chalk.gray('(ambient)')}`,
+          label: node.version ?
+            `${name}@${node.version} ${chalk.gray('(ambient)')}` :
+            `${name} ${chalk.gray('(ambient)')}`,
           nodes: []
         },
-        tree.ambientDependencies[name]
+        node
       ))
     }
 
     for (const name of Object.keys(tree.ambientDevDependencies).sort()) {
+      const node = tree.ambientDevDependencies[name]
       nodes.push(traverse(
         {
-          label: `${name} ${chalk.gray('(ambient dev)')}`,
+          label: node.version ?
+            `${name}@${node.version} ${chalk.gray('(ambient dev)')}` :
+            `${name} ${chalk.gray('(ambient dev)')}`,
           nodes: []
         },
-        tree.ambientDevDependencies[name]
+        node
       ))
     }
 
