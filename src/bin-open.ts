@@ -5,7 +5,7 @@ export function help () {
   return `
 typings open <location>
 
-  <location>  A known Typings location with scheme
+  <location>  A known Typings location with scheme (see typings install -h)
 `
 }
 
