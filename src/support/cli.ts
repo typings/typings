@@ -124,7 +124,7 @@ function toDependencyName (name: string, node: DependencyTree, suffix?: string) 
  */
 export function archifyDependencyTree (options: ArchifyOptions) {
   const result: archy.Tree = {
-    label: options.name,
+    label: options.name ? toDependencyName(options.name, options.tree) : '',
     nodes: []
   }
 
