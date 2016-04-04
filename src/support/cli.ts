@@ -113,7 +113,7 @@ export interface ArchifyOptions {
 /**
  * Make the dependency into the CLI name.
  */
-function toDependencyName (name: string = chalk.gray('(no name)'), node: DependencyTree, suffix?: string) {
+function toDependencyName (name: string, node: DependencyTree, suffix?: string) {
   const fullname = node.version ? `${name}@${node.version}` : name
 
   return suffix ? `${fullname} ${suffix}` : fullname
@@ -124,7 +124,7 @@ function toDependencyName (name: string = chalk.gray('(no name)'), node: Depende
  */
 export function archifyDependencyTree (options: ArchifyOptions) {
   const result: archy.Tree = {
-    label: toDependencyName(options.name, options.tree),
+    label: options.name ? toDependencyName(options.name, options.tree) : '',
     nodes: []
   }
 
