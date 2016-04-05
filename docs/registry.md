@@ -1,4 +1,4 @@
-# Typings, The Registy and Versions
+# Typings, The Registry and Versions
 
 Typings supports multiple versions of type definitions for **different versions** of a single library.
 
