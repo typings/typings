@@ -44,6 +44,17 @@ $ rm tsd.json
 $ typings install
 ```
 
+Add the new `main.d.ts` to your your `tsconfig.json`:
+
+```json
+ {
+  "filesGlob": [
+    "src/**/*.ts",
+    "typings/main.d.ts"
+  ]
+}
+ ```
+
 Finally, based on if you are working primarily on the browser or Node.js, specify an `"exclude"` in your `tsconfig.json`; e.g.: 
 
 ```json
