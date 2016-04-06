@@ -44,7 +44,7 @@ $ rm tsd.json
 $ typings install
 ```
 
-Finally, based on if you are working primarily on the browser or Node.js, specify an `"exclude"` in your `tsconfig.json`; e.g.: 
+Finally, based on if you are working primarily on the browser or Node.js, specify either an `"exclude"` or `"files"` in your `tsconfig.json`; e.g.: 
 
 ```json
  {
@@ -53,5 +53,13 @@ Finally, based on if you are working primarily on the browser or Node.js, specif
     "typings/browser",
     "node_modules"
   ]
+}
+
+// or
+{
+  "files": [
+    "node_modules",
+    "typings/main.d.ts"
+  }
 }
  ```
