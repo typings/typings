@@ -7,7 +7,8 @@
 - [How do I write typings definitions?](#writing-typings-definitions)
 - [How to configure typings?](#configuration)
 - [What are ambient dependencies?](#what-are-ambient-dependencies)
-- [Should I use The `typings` field In `package.json`?](#should-i-use-the-typings-field-in-packagejson)
+- [Should I use the `typings` field in `package.json`?](#should-i-use-the-typings-field-in-packagejson)
+- [Should I commit the `typings` folder to git repository?](#typings-folder)
 - [Where do the type definitions install?](#where-do-the-type-definitions-install)
 
 Your have a different question? Open an issue and help us answer your question here!
@@ -95,7 +96,11 @@ Ambient dependencies are type definitions that are global or otherwise provide i
 
 If you're a module author, absolutely. However, it can't be used properly if any of your exposed API surface (the `.d.ts` files) have dependencies that come from Typings.
 
-## Where do the type definitions install?
+## `typings` Folder
+
+In normal circumstances, you don't need to commit the typings folder, unless you have problem accessing the typings (e.g. your build server is blocked from accessing the Internet).
+
+## Where Do The Type Definitions Install?
 
 Typings are compiled and written into the `typings/` directory alongside `typings.json`. The structure looks like this:
 
