@@ -101,7 +101,7 @@ Typings are compiled and written into the `typings/` directory alongside `typing
 
 ```sh
 typings/{main,browser}/{ambient,definitions}/<dependency>/index.d.ts
-typings/{main,browser}.d.ts
+typings/{main,browser}/index.d.ts
 ```
 
 Where `typings/{main,browser}.d.ts` is a collection of references to installed definitions. Main and browser typings are written to separate directories for `tsconfig.json` exclude support - you can completely exclude both the main or browser typings.
