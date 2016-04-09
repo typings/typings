@@ -74,7 +74,7 @@ If you're already publishing your module with TypeScript, you might be using NPM
 
 If you're using some other set up, just run `typings install` before you execute the build step. This will install the type definitions from `typings.json` before the TypeScript compiler runs.
 
-Therefore, in normal circumstances you don't need to commit the typings folder into your version control. Unless you have problem accessing the typings (e.g. your build server is blocked from accessing the Internet).
+In normal circumstances, you don't need to commit the typings folder, unless you have problem accessing the typings (e.g. your build server is blocked from accessing the Internet).
 
 ## Writing Typings Definitions
 
