@@ -99,6 +99,8 @@ Ambient dependencies are type definitions that are global or otherwise provide i
 
 If you're a module author, absolutely. However, it can't be used properly if any of your exposed API surface (the `.d.ts` files) have dependencies that come from Typings.
 
+Also, if you are using the `files` field to control which files will be available, remember to include `typings.json`.
+
 ## Where Do The Type Definitions Install?
 
 Typings are compiled and written into the `typings/` directory alongside `typings.json`. The structure looks like this:
