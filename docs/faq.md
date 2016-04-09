@@ -3,12 +3,11 @@
 - [Why do I need this?](#why)
 - [I'm getting a bunch of Duplicate Identifiers](#module-resolutions)
 - [My ambient dependencie(s) are not installed](#references)
-- [How do I use typings with git and continuous integration?](#how-do-i-use-typings-with-git-and-continuous-integration)
+- [How do I use Typings with version control?](#how-do-i-use-typings-with-version-control)
 - [How do I write typings definitions?](#writing-typings-definitions)
 - [How to configure typings?](#configuration)
 - [What are ambient dependencies?](#what-are-ambient-dependencies)
 - [Should I use the `typings` field in `package.json`?](#should-i-use-the-typings-field-in-packagejson)
-- [Should I commit the `typings` folder to git repository?](#typings-folder)
 - [Where do the type definitions install?](#where-do-the-type-definitions-install)
 
 Your have a different question? Open an issue and help us answer your question here!
@@ -59,9 +58,11 @@ To use either you can do **one** of the following:
 
 During installation, all references (E.g. `/// <reference path="..." />`) are stripped. They are stripped because of their ambiguous nature - it can not be determined if the reference should be included within the source or is a dependency. 90% of the time, it's better to strip. If the reference is something you require for the project to work, you can always install the references as dependencies manually.
 
-## How Do I Use Typings With Git and Continuous Integration?
+## How Do I Use Typings With Version Control?
 
-If you're already publishing your module with TypeScript, you might be using NPM scripts to automate the build. To integrate **Typings** into this flow, I recommend you run it as part of the `prepublish` or `build` steps. For example:
+Normally, you won't need to commit your `typings/` folder, unless you have issues accessing typings (E.g. CI has a firewall) or it aligns with your teams policy.
+
+If you're using NPM in your project with TypeScript, you might be using NPM scripts. To integrate **Typings** into this flow, I recommend you run it as part of the `prepublish` or `build` steps. For example:
 
 ```json
 {
@@ -72,7 +73,9 @@ If you're already publishing your module with TypeScript, you might be using NPM
 }
 ```
 
-If you're using some other set up, just run `typings install` before you execute the build step. This will install the type definitions from `typings.json` before the TypeScript compiler runs.
+**P.S.** Remember to `npm install typings --save-dev`, so it'll use the local copy in scripts.
+
+If you're using another configuration, run `typings install` before you build. This installs the type definitions in `typings.json` before the TypeScript compiler runs.
 
 ## Writing Typings Definitions
 
@@ -95,10 +98,6 @@ Ambient dependencies are type definitions that are global or otherwise provide i
 ## Should I Use The `typings` Field In `package.json`?
 
 If you're a module author, absolutely. However, it can't be used properly if any of your exposed API surface (the `.d.ts` files) have dependencies that come from Typings.
-
-## `typings` Folder
-
-In normal circumstances, you don't need to commit the typings folder, unless you have problem accessing the typings (e.g. your build server is blocked from accessing the Internet).
 
 ## Where Do The Type Definitions Install?
 
