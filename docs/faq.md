@@ -9,6 +9,7 @@
 - [What are ambient dependencies?](#what-are-ambient-dependencies)
 - [Should I use the `typings` field in `package.json`?](#should-i-use-the-typings-field-in-packagejson)
 - [Where do the type definitions install?](#where-do-the-type-definitions-install)
+- [What's the difference between typings in `typings` and `DefinitelyTyped`?](#types-of-typings)
 
 Your have a different question? Open an issue and help us answer your question here!
 
@@ -109,3 +110,22 @@ typings/{main,browser}.d.ts
 ```
 
 Where `typings/{main,browser}.d.ts` is a collection of references to installed definitions. Main and browser typings are written to separate directories for `tsconfig.json` exclude support - you can completely exclude both the main or browser typings.
+
+## Types of Typings
+### Global / Script Typings
+
+These are typings that pollutes the global namespace.
+They have `declare namespace xxx` or `declare module xxx` and does not have top-level `import`/`export`.
+Both DT and typings/registry can have these.
+
+### Top Level Module Typings
+
+They are typings for modules and have top-level `import`/`export` statements.
+They do not wrap inside `declare module "xxx"`.
+These are typings registered in `typings/registry`.
+
+### Wrapped Module Typings
+
+They are typings for modules and have do not have top-level `import`/`export` statements.
+They wrap their declarations inside `declare module "xxx"`.
+These typings only exists in DT.
