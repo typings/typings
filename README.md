@@ -26,11 +26,11 @@ typings search --name react
 typings install react --ambient --save
 
 # Install non-ambient typings (default from "npm" registry, configurable through `defaultSource` in `.typingsrc`)
-typings install batch --save
+typings install popsicle --save
 
 # Install typings from particular registry
 typings env!install atom --ambient --save
-typings npm!install debug --save
+typings npm!install bluebird --save
 
 # Install typings (DT is "ambient", make sure to enable the flag and persist the selection in `typings.json`).
 typings install react --ambient --save
