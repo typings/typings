@@ -9,12 +9,13 @@
 - [What are ambient dependencies?](#what-are-ambient-dependencies)
 - [Should I use the `typings` field in `package.json`?](#should-i-use-the-typings-field-in-packagejson)
 - [Where do the type definitions install?](#where-do-the-type-definitions-install)
+- [Types of type defintions](#types-of-typings)
 
 Your have a different question? Open an issue and help us answer your question here!
 
 ## Why?
 
-Typings takes external module definitions and wraps them up into namespaced, global declarations. Curious as to what this means? Read [this](/docs/external-modules.md).
+Typings consumes external module definitions and wraps them up into namespaced, global declarations. Curious as to what this means? Read [this](/docs/external-modules.md).
 
 The idea is, with external module definitions, you can't implement any leaky information that will break other consumers. Once you omit all the leaky details, you can properly version dependencies - though it requires some hacky namespacing from Typings to work with the TypeScript compiler.
 
@@ -109,3 +110,9 @@ typings/{main,browser}.d.ts
 ```
 
 Where `typings/{main,browser}.d.ts` is a collection of references to installed definitions. Main and browser typings are written to separate directories for `tsconfig.json` exclude support - you can completely exclude both the main or browser typings.
+
+## Types of Typings
+
+There are two major types of type definitions - external modules and ambient definitions. Typings can install both. It supports modules by default, and also supports ambient declarations using the `--ambient` flag.
+
+An module definition is considered "external" if it has an `import` or `export` declaration at the top-level. Everything else can be considered "ambient". In the past, without tooling such as Typings, we've relied on writing ambient definitions to define modules using the `declare module '...'` syntax. With Typings, it will end up the same (wrapped in `declare module '...'`), but the Typings tool is doing the wrapping so it can manage the dependency tree without namespace conflicts _and_ ensure nothing is leaking into the global namespace (unless it's `--ambient`, that's confirming to Typings you're OK with it polluting the global namespace).
