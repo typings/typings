@@ -32,9 +32,6 @@ typings install chai --save
 typings install env!atom --ambient --save
 typings install npm!bluebird --save
 
-# Install typings (DT is "ambient", make sure to enable the flag and persist the selection in `typings.json`).
-typings install react --ambient --save
-
 # Use `main.d.ts` (in `tsconfig.json` or as a `///` reference).
 cat typings/main.d.ts
 ```
