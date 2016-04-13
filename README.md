@@ -22,6 +22,16 @@ typings search tape
 # Find an available definition (by name).
 typings search --name react
 
+# Install ambient typings (default from "DT", configurable through `defaultAmbientSource` in `.typingsrc`)
+typings install react --ambient --save
+
+# Install non-ambient typings (default from "npm" registry, configurable through `defaultSource` in `.typingsrc`)
+typings install batch --save
+
+# Install typings from particular registry
+typings env!install atom --ambient --save
+typings npm!install debug --save
+
 # Install typings (DT is "ambient", make sure to enable the flag and persist the selection in `typings.json`).
 typings install react --ambient --save
 
