@@ -15,7 +15,7 @@ typings install [<name>=]<location>
 
 Valid Locations:
   <pkg>[@<version>][#<tag>]
-    Install from "defaultSource" specified in `.typingsrc`
+    Install from "defaultSource" specified in \`.typingsrc\`
       default to "npm" for non-ambient package
       default to "dt" for ambient package
   <source>!<pkg>[@<version>][#<tag>]
