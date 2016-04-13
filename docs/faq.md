@@ -99,7 +99,7 @@ Ambient dependencies are type definitions that are global or otherwise provide i
 
 If you're a module author, absolutely!
 
-However, it can't be used properly if any of your exposed API surface (the `.d.ts` files) have dependencies that come from Typings.
+However, it can't be used properly if any of your exposed API surface (the `.d.ts` files) have dependencies that come from `typings`.
 In that case, you can rely on `typings.json` to include typings for your dependencies so that your user can use `typings install npm:<your package>` to install your typings.
 
 Also, if you are using the `files` field in `package.json` to control which files will be available, remember to include `typings.json`.
