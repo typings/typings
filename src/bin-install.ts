@@ -14,12 +14,7 @@ typings install [<name>=]<location>
   <location>  The location to read from (described below)
 
 Valid Locations:
-  <pkg>[@<version>][#<tag>]
-    Install from "defaultSource" specified in \`.typingsrc\`
-      default to "npm" for non-ambient package
-      default to "dt" for ambient package
-  <source>!<pkg>[@<version>][#<tag>]
-    Install from registry mirror or DefinitelyTyped (see <source> below)
+  [<source>!]<pkg>[@<version>][#<tag>]
   file:<path>
   github:<org>/<repo>[/<path>][#<commitish>]
   bitbucket:<org>/<repo>[/<path>][#<commitish>]
@@ -27,8 +22,9 @@ Valid Locations:
   bower:<pkg>[/<path>]
   http(s)://<host>/<path>
 
-  <source>    The registry mirror: "npm", "bower", "env", "global", or "lib"
-              From DefinitelyTyped: "dt"
+  <source>    The registry mirror: "npm", "bower", "env", "global", "lib" or "dt"
+              When not specified, \`defaultSource\` or \`defaultAmbientSource\` in
+              \`.typingsrc\` will be used.
   <path>      Path to a \`.d.ts\` file or \`typings.json\`
   <host>      A domain name (with optional port)
   <version>   A semver range (E.g. ">=4.0")
