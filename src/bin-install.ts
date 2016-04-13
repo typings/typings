@@ -22,7 +22,9 @@ Valid Locations:
   bower:<pkg>[/<path>]
   http(s)://<host>/<path>
 
-  <source>    The registry mirror (E.g. "npm", "bower", "env", "global", "dt", ...)
+  <source>    The registry mirror: "npm", "bower", "env", "global", "lib" or "dt"
+              When not specified, \`defaultSource\` or \`defaultAmbientSource\` in
+              \`.typingsrc\` will be used.
   <path>      Path to a \`.d.ts\` file or \`typings.json\`
   <host>      A domain name (with optional port)
   <version>   A semver range (E.g. ">=4.0")
