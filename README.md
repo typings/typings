@@ -22,8 +22,15 @@ typings search tape
 # Find an available definition (by name).
 typings search --name react
 
-# Install typings (DT is "ambient", make sure to enable the flag and persist the selection in `typings.json`).
-typings install react --ambient --save
+# Install ambient typings (default from "DT", configurable through `defaultAmbientSource` in `.typingsrc`)
+typings install mocha --ambient --save
+
+# Install non-ambient typings (default from "npm" registry, configurable through `defaultSource` in `.typingsrc`)
+typings install chai --save
+
+# Install typings from particular registry
+typings install env!atom --ambient --save
+typings install npm!bluebird --save
 
 # Use `main.d.ts` (in `tsconfig.json` or as a `///` reference).
 cat typings/main.d.ts
