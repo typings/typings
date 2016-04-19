@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 
 import Promise = require('any-promise')
-import { archifyDependencyTree } from './support/cli'
-import { list } from 'typings-core'
+import { prune } from 'typings-core'
 
 export function help () {
   return `
@@ -22,8 +21,5 @@ export interface Options {
 }
 
 export function exec (args: string[], options: Options): Promise<void> {
-  return list(options)
-    .then(function (tree) {
-      console.log(archifyDependencyTree({ tree }))
-    })
+  return prune(options)
 }

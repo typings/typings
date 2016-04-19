@@ -3,6 +3,7 @@
 import minimist = require('minimist')
 import wordwrap = require('wordwrap')
 import { join, relative } from 'path'
+import chalk = require('chalk')
 import updateNotifier = require('update-notifier')
 import extend = require('xtend')
 import { EventEmitter } from 'events'
@@ -49,7 +50,7 @@ const argv = minimist<Argv>(process.argv.slice(2), {
 const cwd = process.cwd()
 const emitter: Emitter = new EventEmitter()
 const isDev = IS_PRODUCTION ? argv.dev : !argv.production
-const args: Args = extend({ cwd, emitter }, argv, { dev: isDev, production: !isDev })
+const args: Args = extend({ cwd }, argv, { emitter, dev: isDev, production: !isDev })
 
 // Notify the user of updates.
 updateNotifier({ pkg }).notify()
@@ -90,6 +91,12 @@ emitter.on('deprecated', function ({ date, raw, parent }) {
   } else {
     logWarning(`${date.toLocaleString()}: "${raw}" has been deprecated`, 'deprecated')
   }
+})
+
+emitter.on('prune', function ({ name, ambient, browser }) {
+  const suffix = chalk.gray((ambient ? ' (ambient)' : '') + (browser ? ' (browser)' : ''))
+
+  logInfo(`${name}${suffix}`, 'prune')
 })
 
 /**

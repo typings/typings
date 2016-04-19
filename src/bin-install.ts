@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import Promise = require('any-promise')
-import { install, installDependencyRaw, Emitter } from 'typings-core'
+import { install, installDependenciesRaw, Emitter } from 'typings-core'
 import listify = require('listify')
 import { archifyDependencyTree, logInfo } from './support/cli'
 
@@ -52,6 +52,7 @@ export interface Options {
   savePeer: boolean
   ambient: boolean
   emitter: Emitter
+  production: boolean
 }
 
 export function exec (args: string[], options: Options): Promise<void> {
@@ -88,9 +89,7 @@ export function exec (args: string[], options: Options): Promise<void> {
     }
   })
 
-  return Promise.all(args.map(arg => {
-    return installDependencyRaw(arg, options)
-  }))
+  return installDependenciesRaw(args, options)
     .then(results => {
       for (const result of results) {
         console.log(archifyDependencyTree(result))

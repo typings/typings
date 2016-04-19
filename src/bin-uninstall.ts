@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import Promise = require('any-promise')
-import { uninstallDependency } from 'typings-core'
+import { uninstallDependencies } from 'typings-core'
 import { logError } from './support/cli'
 
 export function help () {
@@ -30,13 +30,11 @@ export interface Options {
   help: boolean
 }
 
-export function exec (args: string[], options: Options) {
+export function exec (args: string[], options: Options): Promise<void> {
   if (args.length === 0) {
     logError(help())
     return
   }
 
-  return Promise.all(args.map(name => {
-    return uninstallDependency(name, options)
-  }))
+  return uninstallDependencies(args, options)
 }

@@ -6,6 +6,7 @@ import * as list from './bin-list'
 import * as search from './bin-search'
 import * as open from './bin-open'
 import * as view from './bin-view'
+import * as prune from './bin-prune'
 
 export interface Aliases {
   [cmd: string]: {
@@ -39,5 +40,7 @@ export const aliases: Aliases = {
   open: open,
   // View.
   view: view,
-  info: view
+  info: view,
+  // Prune.
+  prune: prune
 }
