@@ -147,10 +147,8 @@ Aliases: info
 Prune extraneous typings from directory
 
 ```
-typings list
+typings prune
 
 Options:
-  [--production] List only production dependencies (omit dev dependencies)
-
-Aliases: la, ll, ls
+  [--production] Also prune non-production dependencies
 ```
