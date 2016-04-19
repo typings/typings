@@ -24,7 +24,9 @@ Valid Locations:
   bower:<pkg>[/<path>]
   http(s)://<host>/<path>
 
-  <source>    The registry mirror (E.g. "npm", "bower", "env", "global", "dt", ...)
+  <source>    The registry mirror: "npm", "bower", "env", "global", "lib" or "dt"
+              When not specified, `defaultSource` or `defaultAmbientSource` in
+              `.typingsrc` will be used.
   <path>      Path to a `.d.ts` file or `typings.json`
   <host>      A domain name (with optional port)
   <version>   A semver range (E.g. ">=4.0")
@@ -121,7 +123,7 @@ Get the full URL from a Typings location
 ```
 typings open <location>
 
-  <location>  A known Typings location with scheme
+  <location>  A known Typings location with scheme (see typings install -h)
 ```
 
 ## View
@@ -138,4 +140,17 @@ Options:
   [--ambient|-A]  View `<pkg>` from the default ambient source
 
 Aliases: info
+```
+
+## Prune
+
+Prune extraneous typings from directory
+
+```
+typings list
+
+Options:
+  [--production] List only production dependencies (omit dev dependencies)
+
+Aliases: la, ll, ls
 ```

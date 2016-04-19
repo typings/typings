@@ -46,6 +46,11 @@ var commands = [
     title: 'View',
     description: 'Get information for a package on the Typings Registry',
     help: aliases.view.help()
+  },
+  {
+    title: 'Prune',
+    description: 'Prune extraneous typings from directory',
+    help: aliases.prune.help()
   }
 ]
 
