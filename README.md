@@ -28,7 +28,7 @@ typings install chai --save
 
 # If you use the package through script tag, or
 # it is part of the environment, or
-# The non-ambient typings is not yet available:
+# the non-ambient typings is not yet available:
 # Install ambient typings (default from "DT", configurable through `defaultAmbientSource` in `.typingsrc`)
 typings install mocha --ambient --save
 
