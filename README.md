@@ -22,11 +22,15 @@ typings search tape
 # Find an available definition (by name).
 typings search --name react
 
-# Install ambient typings (default from "DT", configurable through `defaultAmbientSource` in `.typingsrc`)
-typings install mocha --ambient --save
-
+# If you use the package as module:
 # Install non-ambient typings (default from "npm" registry, configurable through `defaultSource` in `.typingsrc`)
 typings install chai --save
+
+# If you use the package through script tag, or
+# It is part of the environment, or
+# The non-ambient typings is not yet available:
+# Install ambient typings (default from "DT", configurable through `defaultAmbientSource` in `.typingsrc`)
+typings install mocha --ambient --save
 
 # Install typings from particular registry
 typings install env!atom --ambient --save
