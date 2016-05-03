@@ -26,7 +26,7 @@ becomes:
 typings search react
 ```
 
-The `--ambient` flag tells Typings to accept type definitions that are "global" in nature. Currently, DefinitelTyped typings are all "global" (known as "ambient", in Typings).
+The `--ambient` flag tells Typings to accept type definitions that are "global" in nature. Currently, DefinitelyTyped typings are all "global" (known as "ambient", in Typings).
 
 # Upgrade
 
