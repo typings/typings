@@ -42,13 +42,13 @@ cat typings/main.d.ts
 
 ## Usage
 
-**Typings** is the simple way to manage and install TypeScript definitions. It uses `typings.json`, which can resolve to GitHub, NPM, Bower, HTTP and local files. Packages can use type definitions from various sources and different versions, and know they will _never_ cause a conflict for users.
+**Typings** is the simple way to manage and install TypeScript definitions. It uses `typings.json`, which can resolve to the Typings Registry, GitHub, NPM, Bower, HTTP and local files. Packages can use type definitions from various sources and different versions, knowing they will _never_ conflict for users.
 
 ```sh
 typings install debug --save
 ```
 
-A [public registry](https://github.com/typings/registry) is maintained by the community, and is used to resolve official type definitions for JavaScript packages.
+The [public registry](https://github.com/typings/registry) is maintained by the community, and is used to resolve official type definitions for JavaScript packages.
 
 ## Read More
 
@@ -58,6 +58,18 @@ A [public registry](https://github.com/typings/registry) is maintained by the co
 * [Why external modules?](docs/external-modules.md)
 * [About the registry](docs/registry.md)
 * [FAQ](docs/faq.md)
+
+## Sources
+
+* `npm` - dependencies from [NPM](http://npmjs.org/)
+* `github` - dependencies directly from [GitHub](https://github.com/) (E.g. [Duo](http://duojs.org/), [JSPM](http://jspm.io/))
+* `bower` - dependencies from [Bower](http://bower.io/)
+* `common` - "standard" libraries without a known "source"
+* `shared` - shared library functionality
+* `lib` - shared environment functionality (mirror of `shared`) (`--ambient`)
+* `env` - environments (E.g. `atom`, `electron`) (`--ambient`)
+* `global` - global (`window.<var>`) libraries (`--ambient`)
+* `dt` - typings from [DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped) (usually `--ambient`)
 
 ## Contributing
 
