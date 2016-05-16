@@ -8,7 +8,7 @@
 
 > The TypeScript Definition Manager.
 
-**Updating from 0.6 to 0.7?** Make sure you `rm -rf typings/` and re-install them, the directory structure has changed.
+**Updating from `0.x` to 1.0?** Make sure you `rm -rf typings/`, re-install, and update `tsconfig.json`. See the changelog for more information!
 
 ## Quick Start
 
@@ -23,21 +23,20 @@ typings search tape
 typings search --name react
 
 # If you use the package as a module:
-# Install non-ambient typings (default from "npm" registry, configurable through `defaultSource` in `.typingsrc`)
+# Install non-global typings (defaults to "npm" source, configurable through `defaultSource` in `.typingsrc`)
 typings install chai --save
 
 # If you use the package through script tag, or
 # it is part of the environment, or
-# the non-ambient typings is not yet available:
-# Install ambient typings (default from "DT", configurable through `defaultAmbientSource` in `.typingsrc`)
-typings install mocha --ambient --save
+# the non-global typings is not yet available:
+typings install mocha --global --save
 
 # Install typings from particular registry
-typings install env!atom --ambient --save
-typings install npm!bluebird --save
+typings install env~atom --global --save
+typings install npm~bluebird --save
 
-# Use `main.d.ts` (in `tsconfig.json` or as a `///` reference).
-cat typings/main.d.ts
+# Use `typings/index.d.ts` (in `tsconfig.json` or as a `///` reference).
+cat typings/index.d.ts
 ```
 
 ## Usage

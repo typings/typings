@@ -2,11 +2,11 @@
 
 - [Why do I need this?](#why)
 - [I'm getting a bunch of Duplicate Identifiers](#module-resolutions)
-- [My ambient dependencie(s) are not installed](#references)
+- [My global dependencie(s) are not installed](#references)
 - [How do I use Typings with version control?](#how-do-i-use-typings-with-version-control)
 - [How do I write typings definitions?](#writing-typings-definitions)
 - [How to configure typings?](#configuration)
-- [What are ambient dependencies?](#what-are-ambient-dependencies)
+- [What are global dependencies?](#what-are-global-dependencies)
 - [Should I use the `typings` field in `package.json`?](#should-i-use-the-typings-field-in-packagejson)
 - [Where do the type definitions install?](#where-do-the-type-definitions-install)
 - [Types of type defintions](#types-of-typings)
@@ -23,28 +23,14 @@ Type definitions for Typings can also come from anywhere on the internet, allowi
 
 ## Module Resolutions
 
-When you install typings, two files, `typings/main.d.ts` and `typings/browser.d.ts`, are generated. They reference all the typings installed in the project, but only one should be used at a time. If you're building a front-end package, it's recommended you use `typings/browser.d.ts`. The browser typings are compiled by following the `browser` field overrides.
-
-To use either you can do **one** of the following:
-
-* If you are using `exclude` in `tsconfig.json`, then exclude the one you don't want (similar to `node_modules`) e.g:
-
-```json
-{
-  "exclude": [
-    "typings/browser.d.ts",
-    "typings/browser",
-    "node_modules"
-  ]
-}
-```
+When you install typings, the default resolution is using "main" and is placed in the `typings/` directory. The file, `typings/index.d.ts`, is used as a bundle to reference all typings installed in the project. Typings also supports "browser" resolution logic, and can also emit both at once. See "[where do the type definitions install?](#where-do-the-type-definitions-install)" on how to emit "browser" definitions.
 
 * If you are using `files` in `tsconfig.json`, then add the one you want:
 
 ```json
 {
   "files": [
-    "typings/main.d.ts"
+    "typings/index.d.ts"
   ]
 }
 ```
@@ -52,7 +38,7 @@ To use either you can do **one** of the following:
 * If you are not using `tsconfig.json`, add as a reference to the top of TypeScript files:
 
 ```ts
-/// <reference path="../typings/main.d.ts" />
+/// <reference path="../typings/index.d.ts" />
 ```
 
 ## References
@@ -92,9 +78,9 @@ Typings supports configuration using [`rc`](https://github.com/dominictarr/rc). 
 
 The formal interface is available in [`typings/core`](https://github.com/typings/core/blob/master/src/interfaces/rc.ts).
 
-## What Are Ambient Dependencies?
+## What Are Global Dependencies?
 
-Ambient dependencies are type definitions that are global or otherwise provide information about the environment. Some examples of "environment" dependencies are Node.js, Browserify, `window` and even `Array.prototype.map`. These are globals that exist at runtime, you do not "require" them. If your package exposes a module and/or ambient dependencies, it's recommended you expose a way to install the ambient definitions (explain installation in the docs, for instance).
+Global dependencies are type definitions that are global or otherwise provide information about the environment. Some examples of "environment" dependencies are Node.js, Browserify, `window` and even `Array.prototype.map`. These are globals that exist at runtime, you do not "require" them. If your package exposes a module and/or global dependencies, it's recommended you expose a way to install the global definitions (explain installation in the docs, for instance).
 
 ## Should I Use The `typings` Field In `package.json`?
 
@@ -107,17 +93,34 @@ Also, if you are using the `files` field in `package.json` to control which file
 
 ## Where Do The Type Definitions Install?
 
-Typings are compiled and written into the `typings/` directory alongside `typings.json`. The structure looks like this:
+Typings are compiled and written into the `typings/` directory alongside `typings.json` (by default). The structure looks like this:
 
 ```sh
-typings/{main,browser}/{ambient,definitions}/<dependency>/index.d.ts
-typings/{main,browser}.d.ts
+typings/{globals,modules}/<dependency>/index.d.ts
+typings/index.d.ts
 ```
 
-Where `typings/{main,browser}.d.ts` is a collection of references to installed definitions. Main and browser typings are written to separate directories for `tsconfig.json` exclude support - you can completely exclude both the main or browser typings.
+To change the output directory or specify a different output, you can use the `resolution` feature in `typings.json`:
+
+```json
+{
+  "resolution": "src/typings"
+}
+```
+
+Or to get both "main" and "browser" typings, a la Typings `0.x`:
+
+```json
+{
+  "resolution": {
+    "main": "typings/main",
+    "browser": "typings/browser"
+  }
+}
+```
 
 ## Types of Typings
 
-There are two major types of type definitions - external modules and ambient definitions. Typings can install both. It supports modules by default, and also supports ambient declarations using the `--ambient` flag.
+There are two major types of type definitions - external modules and global definitions. Typings can install both. It supports modules by default, and also supports global definitions using the `--global` flag.
 
-An module definition is considered "external" if it has an `import` or `export` declaration at the top-level. Everything else can be considered "ambient". In the past, without tooling such as Typings, we've relied on writing ambient definitions to define modules using the `declare module '...'` syntax. With Typings, it will end up the same (wrapped in `declare module '...'`), but the Typings tool is doing the wrapping so it can manage the dependency tree without namespace conflicts _and_ ensure nothing is leaking into the global namespace (unless it's `--ambient`, that's confirming to Typings you're OK with it polluting the global namespace).
+An module definition is considered "external" if it has an `import` or `export` declaration at the top-level. Everything else can be considered "global". In the past, without tooling such as Typings, we've relied on writing global definitions to define modules using the `declare module '...'` syntax. With Typings, it will end up the same (wrapped in `declare module '...'`), but the Typings tool is doing the wrapping so it can manage the dependency tree without namespace conflicts _and_ ensure nothing is leaking into the global namespace (unless it's `--global`, that's confirming to Typings you're OK with it polluting the global namespace).

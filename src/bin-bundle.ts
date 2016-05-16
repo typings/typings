@@ -10,7 +10,7 @@ typings bundle --out <directory>
 Options:
   [--out|-o] <directory> The bundled output directory
   [--name] <name>        Bundle module name
-  [--ambient|-A]         Bundle as an ambient definition
+  [--global|-G]          Bundle as an global definition
 `
 }
 
@@ -18,7 +18,7 @@ export interface Options {
   cwd: string
   name: string
   out: string
-  ambient: boolean
+  global: boolean
   verbose: boolean
 }
 

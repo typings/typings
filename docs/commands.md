@@ -25,8 +25,7 @@ Valid Locations:
   http(s)://<host>/<path>
 
   <source>    The registry mirror: "npm", "bower", "env", "global", "lib" or "dt"
-              When not specified, `defaultSource` or `defaultAmbientSource` in
-              `.typingsrc` will be used.
+              When not specified, `defaultSource` in `.typingsrc` will be used.
   <path>      Path to a `.d.ts` file or `typings.json`
   <host>      A domain name (with optional port)
   <version>   A semver range (E.g. ">=4.0")
@@ -37,9 +36,9 @@ Options:
   [--save|-S]       Persist to "dependencies"
   [--save-dev|-D]   Persist to "devDependencies"
   [--save-peer|-P]  Persist to "peerDependencies"
-  [--ambient|-A]    Install and persist as an ambient definition
-    [-SA]           Persist to "ambientDependencies"
-    [-DA]           Persist to "ambientDevDependencies"
+  [--global|-G]     Install and persist as an global definition
+    [-SG]           Persist to "globalDependencies"
+    [-DG]           Persist to "globalDevDependencies"
   [--production]    Install only production dependencies (omits dev dependencies)
 
 Aliases: i, in
@@ -50,15 +49,15 @@ Aliases: i, in
 Remove a dependency from the typings/ directory, and optionally remove from `typings.json`.
 
 ```
-typings uninstall <name> [--save|--save-dev|--save-peer] [--ambient]
+typings uninstall <name> [--save|--save-dev|--save-peer] [--global]
 
 Options:
   [--save|-S]       Remove from "dependencies"
   [--save-dev|-D]   Remove from "devDependencies"
   [--save-peer|-P]  Remove from "peerDependencies"
-  [--ambient|-A]    Remove from the ambient version of dependencies
-    [-SA]           Remove from "ambientDependencies"
-    [-DA]           Remove from "ambientDevDependencies"
+  [--global|-G]     Remove from the global version of dependencies
+    [-SG]           Remove from "globalDependencies"
+    [-DG]           Remove from "globalDevDependencies"
 
 Aliases: r, rm, remove, un
 ```
@@ -89,7 +88,7 @@ Aliases: la, ll, ls
 
 ## Bundle
 
-Bundle the current project types into an single ambient module.
+Bundle the current project types into an single global module.
 
 ```
 typings bundle --out <directory>
@@ -97,7 +96,7 @@ typings bundle --out <directory>
 Options:
   [--out|-o] <directory> The bundled output directory
   [--name] <name>        Bundle module name
-  [--ambient|-A]         Bundle as an ambient definition
+  [--global|-G]          Bundle as an global definition
 ```
 
 ## Search
@@ -136,8 +135,7 @@ typings view <pkg>
   <pkg>  A registry expression like `[<source>!]<pkg>`
 
 Options:
-  [--versions]    List all package versions
-  [--ambient|-A]  View `<pkg>` from the default ambient source
+  [--versions]  List all package versions
 
 Aliases: info
 ```

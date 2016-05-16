@@ -2,6 +2,7 @@
 
 import minimist = require('minimist')
 import wordwrap = require('wordwrap')
+import listify = require('listify')
 import { join, relative } from 'path'
 import chalk = require('chalk')
 import updateNotifier = require('update-notifier')
@@ -33,10 +34,10 @@ interface Args extends Argv {
 }
 
 const argv = minimist<Argv>(process.argv.slice(2), {
-  boolean: ['version', 'save', 'saveDev', 'savePeer', 'ambient', 'verbose', 'dev', 'production'],
+  boolean: ['version', 'save', 'saveDev', 'savePeer', 'global', 'verbose', 'dev', 'production'],
   string: ['cwd', 'out', 'name'],
   alias: {
-    ambient: ['A'],
+    global: ['G'],
     version: ['v'],
     save: ['S'],
     saveDev: ['save-dev', 'D'],
@@ -79,7 +80,7 @@ emitter.on('postmessage', function ({ message, name }) {
 
 // Log bad locations.
 emitter.on('badlocation', function ({ raw }) {
-  logWarning(`"${raw}" is a mutable location and may change, consider specifying a commit hash`, 'badlocation')
+  logWarning(`"${raw}" is mutable and may change, consider specifying a commit hash`, 'badlocation')
 })
 
 // Log deprecated registry versions.
@@ -93,10 +94,28 @@ emitter.on('deprecated', function ({ date, raw, parent }) {
   }
 })
 
-emitter.on('prune', function ({ name, ambient, browser }) {
-  const suffix = chalk.gray((ambient ? ' (ambient)' : '') + (browser ? ' (browser)' : ''))
+// Log global dependencies list.
+emitter.on('globaldependencies', function ({ name, dependencies }) {
+  const deps = Object.keys(dependencies).map(x => JSON.stringify(x))
+
+  if (deps.length) {
+    logInfo(
+      `"${name}" lists global dependencies on ${listify(deps)} and should be installed`,
+      'globaldependencies'
+    )
+  }
+})
+
+// Log prune usages.
+emitter.on('prune', function ({ name, global, resolution }) {
+  const suffix = chalk.gray(` (${resolution})` + (global ? ' (global)' : ''))
 
   logInfo(`${name}${suffix}`, 'prune')
+})
+
+// Log messages on stripped references.
+emitter.on('reference', function ({ reference, resolution, name }) {
+  logInfo(`Stripped reference "${reference}" during installation from "${name}" (${resolution})`, 'reference')
 })
 
 /**

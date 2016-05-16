@@ -8,15 +8,15 @@ In your code you're then free to use jQuery as you like, for instance:
 import * as littleOldJ from 'oldJ';
 ```
 
-This statement inserts `littleOldJ` into the current scope, containing all the exported bindings from `'oldJ'` aka jQuery. I said you were quirky.  
+This statement inserts `littleOldJ` into the current scope, containing all the exported bindings from `'oldJ'` aka jQuery. I said you were quirky.
 
 At this point you have jQuery in place but you're unable to make use of it in your TypeScript as jQuery does not ship with definitions in the box.  It has no `jquery.d.ts`.
 
 Enter, stage left: Typings.
 
-You can `typings install jquery@1.6 --name oldJ` and Typings will bring in the jQuery type definitions in a way that satisfies the TypeScript compiler.  Typings brings in the external module definition for jQuery and creates a local ambient version called `oldJ` which you can use in your project. (nb At the time of writing the [Typings Registry](https://github.com/typings/registry) does not contain a definition for jQuery; but that's only a matter of time.)
+You can `typings install jquery@1.6 --name oldJ` and Typings will bring in the jQuery type definitions in a way that satisfies the TypeScript compiler.  Typings brings in the external module definition for jQuery and creates a local global version called `oldJ` which you can use in your project. (nb At the time of writing the [Typings Registry](https://github.com/typings/registry) does not contain a definition for jQuery; but that's only a matter of time.)
 
-This workflow is **not possible** with TSD / DefinitelyTyped because DT contains definitions which are ambient **already**.
+This workflow is **not possible** with TSD / DefinitelyTyped because DT contains definitions which are global **already**.
 
 Still a little confused?  Stick with me; we'll step through an example which should make things much clearer.
 
@@ -46,7 +46,7 @@ export = main;
 }
 ```
 
-If you look closely at the code above, you'll see the original type definition has been imported and "wrapped" as an ambient external module called `'domready'` by Typings.  
+If you look closely at the code above, you'll see the original type definition has been imported and "wrapped" as an global external module called `'domready'` by Typings.
 
 How did this come about?  Well, this was the installation experience:
 
@@ -82,8 +82,8 @@ And here's something you should notice; https://github.com/unional/typed-domread
 }
 ```
 
-i.e. Each entry in the Typings Registry declares its own **versioned** dependencies.  
+i.e. Each entry in the Typings Registry declares its own **versioned** dependencies.
 
-So this is the difference between DefinitelyTyped and the Typings registry: DT for the most part makes use of reference statements (eg `/// <reference path="../../typings/jquery/jquery.d.ts" />`) to declare dependencies based on the assumption that everything is ambiently declared from the get go and lives in a single repo (DT).
+So this is the difference between DefinitelyTyped and the Typings registry: DT for the most part makes use of reference statements (eg `/// <reference path="../../typings/jquery/jquery.d.ts" />`) to declare dependencies based on the assumption that everything is globally declared from the get go and lives in a single repo (DT).
 
-With Typings the dependencies are entirely isolated as Typings are **not** ambient until Typings installs them and makes them ambient.  And the user of Typings decides on the form those ambient definitions take.
+With Typings the dependencies are entirely isolated as Typings are **not** global until Typings installs them and makes them global.  And the user of Typings decides on the form those global definitions take.

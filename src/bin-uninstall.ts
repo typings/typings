@@ -6,15 +6,15 @@ import { logError } from './support/cli'
 
 export function help () {
   return `
-typings uninstall <name> [--save|--save-dev|--save-peer] [--ambient]
+typings uninstall <name> [--save|--save-dev|--save-peer] [--global]
 
 Options:
   [--save|-S]       Remove from "dependencies"
   [--save-dev|-D]   Remove from "devDependencies"
   [--save-peer|-P]  Remove from "peerDependencies"
-  [--ambient|-A]    Remove from the ambient version of dependencies
-    [-SA]           Remove from "ambientDependencies"
-    [-DA]           Remove from "ambientDevDependencies"
+  [--global|-G]     Remove from the global version of dependencies
+    [-SG]           Remove from "globalDependencies"
+    [-DG]           Remove from "globalDevDependencies"
 
 Aliases: r, rm, remove, un
 `
@@ -25,7 +25,7 @@ export interface Options {
   save: boolean
   saveDev: boolean
   savePeer: boolean
-  ambient: boolean
+  global: boolean
   verbose: boolean
   help: boolean
 }

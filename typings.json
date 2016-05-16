@@ -15,7 +15,7 @@
     "blue-tape": "github:typings/typed-blue-tape#a4e41a85d6f760e7c60088127968eae7d3a556fa",
     "nock": "github:typings/typed-nock#0b7c6be782a62fc36e74239fbecccf73c1aed98c"
   },
-  "ambientDependencies": {
+  "globalDependencies": {
     "node": "github:DefinitelyTyped/DefinitelyTyped/node/node.d.ts#48c1e3c1d6baefa4f1a126f188c27c4fefd36bff"
   }
 }

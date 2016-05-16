@@ -150,8 +150,8 @@ export function archifyDependencyTree (options: ArchifyOptions) {
     children(nodes, tree.dependencies)
     children(nodes, tree.devDependencies, chalk.gray('(dev)'))
     children(nodes, tree.peerDependencies, chalk.gray('(peer)'))
-    children(nodes, tree.ambientDependencies, chalk.gray('(ambient)'))
-    children(nodes, tree.ambientDevDependencies, chalk.gray('(ambient dev)'))
+    children(nodes, tree.globalDependencies, chalk.gray('(global)'))
+    children(nodes, tree.globalDevDependencies, chalk.gray('(global dev)'))
 
     return result
   }
