@@ -7,7 +7,7 @@
 
 > The TypeScript Definition Manager.
 
-**Updating from `0.x` to `1.0`?** Make sure you `rm -rf typings/`, re-install, and update `tsconfig.json`. See the changelog for more information!
+**Updating from `0.x` to `1.0`?** Make sure you `rm -rf typings/`, re-install, and update `tsconfig.json`. See [the release](https://github.com/typings/typings/releases/tag/v1.0.0) for more information!
 
 ## Quick Start
 
