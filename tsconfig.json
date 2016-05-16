@@ -12,7 +12,6 @@
   },
   "files": [
     "src/bin.ts",
-    "src/typings.ts",
-    "typings/main.d.ts"
+    "typings/index.d.ts"
   ]
 }

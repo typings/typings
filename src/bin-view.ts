@@ -10,15 +10,13 @@ typings view <pkg>
   <pkg>  A registry expression like \`[<source>!]<pkg>\`
 
 Options:
-  [--versions]    List all package versions
-  [--ambient|-A]  View \`<pkg>\` from the default ambient source
+  [--versions]  List all package versions
 
 Aliases: info
 `
 }
 
 export interface Options {
-  ambient: boolean
   versions: boolean
 }
 
