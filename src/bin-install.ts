@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 
 import Promise = require('any-promise')
+import listify = require('listify')
 import { install, installDependenciesRaw, Emitter } from 'typings-core'
-import { archifyDependencyTree } from './support/cli'
+import { archifyDependencyTree, logInfo } from './support/cli'
 
 export function help () {
   return `
@@ -54,12 +55,31 @@ export interface Options {
 }
 
 export function exec (args: string[], options: Options): Promise<void> {
+  const { emitter } = options
+
   if (args.length === 0) {
     return install(options)
       .then((result) => {
         console.log(archifyDependencyTree(result))
       })
   }
+
+  // Log messages on stripped references.
+  emitter.on('reference', function ({ reference, resolution, name }) {
+    logInfo(`Stripped reference "${reference}" during installation from "${name}" (${resolution})`, 'reference')
+  })
+
+  // Log global dependencies list.
+  emitter.on('globaldependencies', function ({ name, dependencies }) {
+    const deps = Object.keys(dependencies).map(x => JSON.stringify(x))
+
+    if (deps.length) {
+      logInfo(
+        `"${name}" lists global dependencies on ${listify(deps)} and should be installed`,
+        'globaldependencies'
+      )
+    }
+  })
 
   return installDependenciesRaw(args, options)
     .then(results => {
