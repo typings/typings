@@ -22,15 +22,15 @@ typings search tape
 typings search --name react
 
 # If you use the package as a module:
-# Install non-global typings (defaults to "npm" source, configurable through `defaultSource` in `.typingsrc`)
-typings install chai --save
+# Install non-global typings (defaults to "npm" source, configurable through `defaultSource` in `.typingsrc`).
+typings install debug --save
 
 # If you use the package through script tag, or
 # it is part of the environment, or
 # the non-global typings is not yet available:
-typings install mocha --global --save
+typings install dt~mocha --global --save
 
-# Install typings from particular registry
+# Install typings from particular registry.
 typings install env~atom --global --save
 typings install npm~bluebird --save
 
