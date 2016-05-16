@@ -29,7 +29,7 @@ var commands = [
   },
   {
     title: 'Bundle',
-    description: 'Bundle the current project types into an single ambient module.',
+    description: 'Bundle the current project types into an single global module.',
     help: aliases.bundle.help()
   },
   {

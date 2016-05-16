@@ -8,7 +8,7 @@
 
 > The TypeScript Definition Manager.
 
-**Updating from `0.x` to 1.0?** Make sure you `rm -rf typings/`, re-install, and update `tsconfig.json`. See the changelog for more information!
+**Updating from `0.x` to `1.0`?** Make sure you `rm -rf typings/`, re-install, and update `tsconfig.json`. See the changelog for more information!
 
 ## Quick Start
 
@@ -65,10 +65,10 @@ The [public registry](https://github.com/typings/registry) is maintained by the 
 * `bower` - dependencies from [Bower](http://bower.io/)
 * `common` - "standard" libraries without a known "source"
 * `shared` - shared library functionality
-* `lib` - shared environment functionality (mirror of `shared`) (`--ambient`)
-* `env` - environments (E.g. `atom`, `electron`) (`--ambient`)
-* `global` - global (`window.<var>`) libraries (`--ambient`)
-* `dt` - typings from [DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped) (usually `--ambient`)
+* `lib` - shared environment functionality (mirror of `shared`) (`--global`)
+* `env` - environments (E.g. `atom`, `electron`) (`--global`)
+* `global` - global (`window.<var>`) libraries (`--global`)
+* `dt` - typings from [DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped) (usually `--global`)
 
 ## Contributing
 
