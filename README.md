@@ -87,6 +87,8 @@ npm run build
 npm run test
 ```
 
+## [Change Log](https://github.com/typings/typings/releases)
+
 ## License
 
 MIT
