@@ -71,12 +71,14 @@ export function handle (promise: any, options: PrintOptions) {
  * Final error handling for the CLI.
  */
 export function handleError (error: Error, options: PrintOptions): any {
-  let cause = error
+  let cause = (error as any).cause
 
   logError(error.message, 'message')
 
-  while (cause = (cause as any).cause) {
+  while (cause) {
     logError(cause.message, 'caused by')
+
+    cause = (cause as any).cause
   }
 
   if (options.verbose && error.stack) {
