@@ -7,7 +7,7 @@ export function help () {
   return `
 typings view <pkg>
 
-  <pkg>  A registry expression like \`[<source>!]<pkg>\`
+  <pkg>  A registry expression like \`[<source>~]<pkg>\`
 
 Options:
   [--versions]  List all package versions
