@@ -7,7 +7,18 @@
 
 > The TypeScript Definition Manager.
 
-**Updating from `0.x` to `1.0`?** Make sure you `rm -rf typings/`, re-install, and update `tsconfig.json`. See [the release](https://github.com/typings/typings/releases/tag/v1.0.0) for more information!
+## Updating From `0.x` to `1.0`?
+
+* `rm -rf typings/`
+  * The directory contains "main", by default
+  * Update `tsconfig.json` to match (the bundle file is `typings/index.d.ts`)
+* Want `main` and/or `browser` output again? See [where the typings install](https://github.com/typings/typings/blob/master/docs/faq.md#where-do-the-type-definitions-install) in the FAQ
+* Usages of `ambient` are now `global`
+  * That means `globalDependencies` and `globalDevDependencies` in `typings.json`
+  * It also means `--ambient` is now `--global`
+* Removed `defaultAmbientSource`
+  * If you want to install from DefinitelyTyped, be explicit (use `dt~<pkg> --global`)
+* See [the release notes](https://github.com/typings/typings/releases/tag/v1.0.0) for more information!
 
 ## Quick Start
 
