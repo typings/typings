@@ -16,7 +16,7 @@ typings install [<name>=]<location>
   <location>  The location to read from (described below)
 
 Valid Locations:
-  [<source>!]<pkg>[@<version>][#<tag>]
+  [<source>~]<pkg>[@<version>][#<tag>]
   file:<path>
   github:<org>/<repo>[/<path>][#<commitish>]
   bitbucket:<org>/<repo>[/<path>][#<commitish>]
