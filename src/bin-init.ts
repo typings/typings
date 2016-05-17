@@ -19,5 +19,7 @@ export interface Options {
 }
 
 export function exec (args: string[], options: Options): Promise<void> {
-  return init(options)
+  const { cwd, upgrade } = options
+
+  return init({ cwd, upgrade })
 }
