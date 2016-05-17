@@ -16,7 +16,7 @@ typings install [<name>=]<location>
   <location>  The location to read from (described below)
 
 Valid Locations:
-  [<source>!]<pkg>[@<version>][#<tag>]
+  [<source>~]<pkg>[@<version>][#<tag>]
   file:<path>
   github:<org>/<repo>[/<path>][#<commitish>]
   bitbucket:<org>/<repo>[/<path>][#<commitish>]
@@ -132,7 +132,7 @@ Get information for a package on the Typings Registry
 ```
 typings view <pkg>
 
-  <pkg>  A registry expression like `[<source>!]<pkg>`
+  <pkg>  A registry expression like `[<source>~]<pkg>`
 
 Options:
   [--versions]  List all package versions
