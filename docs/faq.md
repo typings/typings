@@ -11,7 +11,7 @@
 - [Where do the type definitions install?](#where-do-the-type-definitions-install)
 - [Types of type defintions](#types-of-typings)
 
-Your have a different question? Open an issue and help us answer your question here!
+Have a different question? Open an issue or pull request and we can add it here!
 
 ## Why?
 
