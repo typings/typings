@@ -1,12 +1,3 @@
-# ![Typings](https://cdn.rawgit.com/typings/typings/master/logo.svg)
-
-[![NPM version][npm-image]][npm-url]
-[![NPM downloads][downloads-image]][downloads-url]
-[![Build status][travis-image]][travis-url]
-[![Gitter][gitter-image]][gitter-url]
-
-> The TypeScript Definition Manager.
-
 ## Updating From `0.x` to `1.0`?
 
 * `rm -rf typings/`
@@ -19,6 +10,15 @@
 * Removed `defaultAmbientSource`
   * If you want to install from DefinitelyTyped, be explicit (use `dt~<pkg> --global`)
 * See [the release notes](https://github.com/typings/typings/releases/tag/v1.0.0) for more information!
+
+# ![Typings](https://cdn.rawgit.com/typings/typings/master/logo.svg)
+
+[![NPM version][npm-image]][npm-url]
+[![NPM downloads][downloads-image]][downloads-url]
+[![Build status][travis-image]][travis-url]
+[![Gitter][gitter-image]][gitter-url]
+
+> The TypeScript Definition Manager.
 
 ## Quick Start
 
