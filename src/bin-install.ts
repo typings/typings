@@ -61,7 +61,7 @@ export interface Options {
 export function exec (args: string[], options: Options): Promise<void> {
   const { emitter } = options
 
-  if (typeof options.ambient !== "undefined") {
+  if (typeof options.ambient !== 'undefined') {
     logError('The "ambient" flag is deprecated. Please use "global" instead', 'deprecated')
     return
   }
