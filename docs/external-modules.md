@@ -14,7 +14,7 @@ At this point you have jQuery in place but you're unable to make use of it in yo
 
 Enter, stage left: Typings.
 
-You can `typings install jquery@1.6 --name oldJ` and Typings will bring in the jQuery type definitions in a way that satisfies the TypeScript compiler.  Typings brings in the external module definition for jQuery and creates a local global version called `oldJ` which you can use in your project. (nb At the time of writing the [Typings Registry](https://github.com/typings/registry) does not contain a definition for jQuery; but that's only a matter of time.)
+You can `typings install jquery@1.6 --name oldJ` and Typings will bring in the jQuery type definitions in a way that satisfies the TypeScript compiler.  Typings brings in the external module definition for jQuery and creates a local global version called `oldJ` which you can use in your project.
 
 This workflow is **not possible** with TSD / DefinitelyTyped because DT contains definitions which are global **already**.
 
