@@ -3,7 +3,7 @@
 import Promise = require('any-promise')
 import listify = require('listify')
 import { install, installDependenciesRaw, Emitter } from 'typings-core'
-import { archifyDependencyTree, logInfo } from './support/cli'
+import { archifyDependencyTree, logInfo, logError } from './support/cli'
 
 export function help () {
   return `
@@ -50,12 +50,21 @@ export interface Options {
   saveDev: boolean
   savePeer: boolean
   global: boolean
+  /**
+   * Deprecated
+   */
+  ambient: boolean
   emitter: Emitter
   production: boolean
 }
 
 export function exec (args: string[], options: Options): Promise<void> {
   const { emitter } = options
+
+  if (typeof options.ambient !== 'undefined') {
+    logError('The "ambient" flag is deprecated. Please use "global" instead', 'deprecated')
+    return
+  }
 
   if (args.length === 0) {
     return install(options)
