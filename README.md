@@ -14,7 +14,7 @@
   * Update `tsconfig.json` to match (the bundle file is `typings/index.d.ts`)
 * Want `main` and/or `browser` output again? See [where the typings install](https://github.com/typings/typings/blob/master/docs/faq.md#where-do-the-type-definitions-install) in the FAQ
 * Usages of `ambient` are now `global`
-  * That means `globalDependencies` and `globalDevDependencies` in `typings.json`
+  * That means in `typings.json` any `ambientDependencies` should be renamed `globalDependencies` and any `ambientDevDependencies` should be renamed `globalDevDependencies`.
   * It also means `--ambient` is now `--global`
 * Removed `defaultAmbientSource`
   * If you want to install from DefinitelyTyped, be explicit (use `dt~<pkg> --global`)
