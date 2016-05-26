@@ -5,11 +5,10 @@ import { bundle } from 'typings-core'
 
 export function help () {
   return `
-typings bundle --out <directory>
+typings bundle --out <filepath>
 
 Options:
-  [--out|-o] <directory> The bundled output directory
-  [--name] <name>        Bundle module name
+  [--out|-o] <filepath>  The bundled output file path
   [--global|-G]          Bundle as an global definition
 `
 }
