@@ -25,7 +25,7 @@ Type definitions for Typings can also come from anywhere on the internet, allowi
 
 When you install typings, the default resolution is using "main" and is placed in the `typings/` directory. The file, `typings/index.d.ts`, is used as a bundle to reference all typings installed in the project. Typings also supports "browser" resolution logic, and can also emit both at once. See "[where do the type definitions install?](#where-do-the-type-definitions-install)" on how to emit "browser" definitions.
 
-* If you are using `files` in `tsconfig.json`, then add the one you want:
+* If you are using `files` in `tsconfig.json`, add the index file:
 
 ```json
 {
