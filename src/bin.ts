@@ -2,7 +2,7 @@
 
 import minimist = require('minimist')
 import wordwrap = require('wordwrap')
-import { join, relative } from 'path'
+import { join, relative, resolve } from 'path'
 import chalk = require('chalk')
 import updateNotifier = require('update-notifier')
 import extend = require('xtend')
@@ -47,10 +47,10 @@ const argv = minimist<Argv>(process.argv.slice(2), {
   }
 })
 
-const cwd = process.cwd()
+const cwd = argv.cwd ? resolve(argv.cwd) : process.cwd()
 const emitter: Emitter = new EventEmitter()
 const isDev = IS_PRODUCTION ? argv.dev : !argv.production
-const args: Args = extend({ cwd }, argv, { emitter, dev: isDev, production: !isDev })
+const args: Args = extend(argv, { emitter, cwd, dev: isDev, production: !isDev })
 
 // Notify the user of updates.
 updateNotifier({ pkg }).notify()
