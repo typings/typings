@@ -1,6 +1,6 @@
 {
   "name": "typings",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "The TypeScript Definition Manager",
   "main": "dist/bin.js",
   "bin": {
