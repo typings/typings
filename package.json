@@ -50,7 +50,7 @@
     "listify": "^1.0.0",
     "minimist": "^1.2.0",
     "typings-core": "^1.0.0",
-    "update-notifier": "^0.7.0",
+    "update-notifier": "^1.0.0",
     "wordwrap": "^1.0.0",
     "xtend": "^4.0.1"
   },
