@@ -12,7 +12,6 @@ import { Emitter } from 'typings-core'
 import { aliases } from './aliases'
 
 const pkg = require('../package.json')
-const IS_PRODUCTION = process.env.NODE_ENV === 'production'
 
 interface Argv {
   help: boolean
@@ -33,7 +32,7 @@ interface Args extends Argv {
 }
 
 const argv = minimist<Argv>(process.argv.slice(2), {
-  boolean: ['version', 'save', 'saveDev', 'savePeer', 'global', 'verbose', 'dev', 'production'],
+  boolean: ['version', 'save', 'saveDev', 'savePeer', 'global', 'verbose', 'production'],
   string: ['cwd', 'out', 'name'],
   alias: {
     global: ['G'],
@@ -44,13 +43,15 @@ const argv = minimist<Argv>(process.argv.slice(2), {
     verbose: ['V'],
     out: ['o'],
     help: ['h']
+  },
+  default: {
+    production: process.env.NODE_ENV === 'production'
   }
 })
 
 const cwd = argv.cwd ? resolve(argv.cwd) : process.cwd()
 const emitter: Emitter = new EventEmitter()
-const isDev = IS_PRODUCTION ? argv.dev : !argv.production
-const args: Args = extend(argv, { emitter, cwd, dev: isDev, production: !isDev })
+const args: Args = extend(argv, { emitter, cwd })
 
 // Notify the user of updates.
 updateNotifier({ pkg }).notify()
