@@ -10,7 +10,7 @@
 - [Should I use the `typings` field in `package.json`?](#should-i-use-the-typings-field-in-packagejson)
 - [Where do the type definitions install?](#where-do-the-type-definitions-install)
 - [Types of type defintions](#types-of-typings)
-- [Why `npm:<package>`?](#npm
+- [Why `npm:<package>`?](#aboue-npm-pkg)
 
 Have a different question? Open an issue or pull request and we can add it here!
 
@@ -130,4 +130,5 @@ An module definition is considered "external" if it has an `import` or `export` 
 
 `tsc` will automatically read typings for npm modules. Why do we still need `typings install npm:<pkg>`?
 
-This is especially useful when the module is a private module written by you. If the module depends on modules that does not have built in typings, you can add `typings.json` and include the typings you need, and then your consumer can use `typings install npm:<pkg>` to install the typings needed by your module.
+This is because `tsc` can only resolve npm dependencies if they are also typed. To get around this limitation, the module authors can add a `typings.json` in their module to specify the typings needed.
+When you consume such module, you can use `typings install npm:<pkg>` to install those typings
