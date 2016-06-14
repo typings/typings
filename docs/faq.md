@@ -10,6 +10,7 @@
 - [Should I use the `typings` field in `package.json`?](#should-i-use-the-typings-field-in-packagejson)
 - [Where do the type definitions install?](#where-do-the-type-definitions-install)
 - [Types of type defintions](#types-of-typings)
+- [Why `npm:<package>`?](#npm
 
 Have a different question? Open an issue or pull request and we can add it here!
 
@@ -124,3 +125,9 @@ Or to get both "main" and "browser" typings, a la Typings `0.x`:
 There are two major types of type definitions - external modules and global definitions. Typings can install both. It supports modules by default, and also supports global definitions using the `--global` flag.
 
 An module definition is considered "external" if it has an `import` or `export` declaration at the top-level. Everything else can be considered "global". In the past, without tooling such as Typings, we've relied on writing global definitions to define modules using the `declare module '...'` syntax. With Typings, it will end up the same (wrapped in `declare module '...'`), but the Typings tool is doing the wrapping so it can manage the dependency tree without namespace conflicts _and_ ensure nothing is leaking into the global namespace (unless it's `--global`, that's confirming to Typings you're OK with it polluting the global namespace).
+
+## About `npm:<pkg>`
+
+`tsc` will automatically read typings for npm modules. Why do we still need `typings install npm:<pkg>`?
+
+This is especially useful when the module is a private module written by you. If the module depends on modules that does not have built in typings, you can add `typings.json` and include the typings you need, and then your consumer can use `typings install npm:<pkg>` to install the typings needed by your module.
