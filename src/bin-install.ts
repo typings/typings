@@ -44,18 +44,20 @@ Aliases: i, in
 }
 
 export interface Options {
-  cwd: string
   verbose: boolean
   save: boolean
   saveDev: boolean
   savePeer: boolean
   global: boolean
+  emitter: Emitter
+  production: boolean
+  cwd: string
+  name?: string
+  source?: string
   /**
    * Deprecated
    */
   ambient: boolean
-  emitter: Emitter
-  production: boolean
 }
 
 export function exec (args: string[], options: Options): Promise<void> {

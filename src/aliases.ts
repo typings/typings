@@ -23,6 +23,7 @@ export const aliases: Aliases = {
   // Remove.
   r: uninstall,
   rm: uninstall,
+  un: uninstall,
   remove: uninstall,
   uninstall: uninstall,
   // Init.

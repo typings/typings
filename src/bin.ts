@@ -21,9 +21,13 @@ interface Argv {
   saveDev: boolean
   savePeer: boolean
   verbose: boolean
-  cwd: string
-  out: string
   production: boolean
+  cwd?: string
+  out?: string
+  source?: string
+  offset?: number
+  limit?: number
+  sort?: string
 }
 
 interface Args extends Argv {
@@ -33,7 +37,7 @@ interface Args extends Argv {
 
 const argv = minimist<Argv>(process.argv.slice(2), {
   boolean: ['version', 'save', 'saveDev', 'savePeer', 'global', 'verbose', 'production'],
-  string: ['cwd', 'out', 'name'],
+  string: ['cwd', 'out', 'name', 'source', 'offset', 'limit', 'sort'],
   alias: {
     global: ['G'],
     version: ['v'],
