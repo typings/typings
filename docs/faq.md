@@ -128,7 +128,8 @@ An module definition is considered "external" if it has an `import` or `export` 
 
 ## About `npm:<pkg>`
 
+_Related to the [`typings` field in `package.json`]((#should-i-use-the-typings-field-in-packagejson)._
+
 `tsc` will automatically read typings for npm modules. Why do we still need `typings install npm:<pkg>`?
 
-This is because `tsc` can only resolve npm dependencies if they are also typed. To get around this limitation, the module authors can add a `typings.json` in their module to specify the typings needed.
-When you consume such module, you can use `typings install npm:<pkg>` to install those typings.
+This is because `tsc` can only resolve npm dependencies if they are also typed. To get around this limitation, module authors can publish a `typings.json` with their module to specify the typings needed. When you consume the module, using `typings install npm:<pkg>` to install the typings from `node_modules/` and resolve dependencies in `package.json` and `typings.json`.
