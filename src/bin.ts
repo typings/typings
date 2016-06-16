@@ -89,12 +89,9 @@ emitter.on('badlocation', function ({ raw }) {
 
 // Log deprecated registry versions.
 emitter.on('deprecated', function ({ date, raw, parent }) {
-  if (parent == null) {
-    logWarning(`${date.toLocaleString()}: "${raw}" is deprecated (outdated or removed)`, 'deprecated')
-  } else if (parent.raw) {
-    logWarning(`${date.toLocaleString()}: "${raw}" has been deprecated (used by "${parent.raw}")`, 'deprecated')
-  } else {
-    logWarning(`${date.toLocaleString()}: "${raw}" has been deprecated`, 'deprecated')
+  // Only log warnings for top-level packages.
+  if (parent == null || parent.raw == null) {
+    logWarning(`${date.toLocaleDateString()}: "${raw}" is deprecated (updated, replaced or removed)`, 'deprecated')
   }
 })
 
