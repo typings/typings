@@ -124,7 +124,7 @@ Or to get both "main" and "browser" typings, a la Typings `0.x`:
 
 There are two major types of type definitions - external modules and global definitions. Typings can install both. It supports modules by default, and also supports global definitions using the `--global` flag.
 
-An module definition is considered "external" if it has an `import` or `export` declaration at the top-level. Everything else can be considered "global". In the past, without tooling such as Typings, we've relied on writing global definitions to define modules using the `declare module '...'` syntax. With Typings, it will end up the same (wrapped in `declare module '...'`), but the Typings tool is doing the wrapping so it can manage the dependency tree without namespace conflicts _and_ ensure nothing is leaking into the global namespace (unless it's `--global`, that's confirming to Typings you're OK with it polluting the global namespace).
+A module definition is considered "external" if it has an `import` or `export` declaration at the top-level. Everything else can be considered "global". In the past, without tooling such as Typings, we've relied on writing global definitions to define modules using the `declare module '...'` syntax. With Typings, it will end up the same (wrapped in `declare module '...'`), but the Typings tool is doing the wrapping so it can manage the dependency tree without namespace conflicts _and_ ensure nothing is leaking into the global namespace (unless it's `--global`, that's confirming to Typings you're OK with it polluting the global namespace).
 
 ## About `npm:<pkg>`
 
