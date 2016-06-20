@@ -8,6 +8,7 @@
     "noImplicitAny": true,
     "removeComments": true,
     "sourceMap": true,
+    "inlineSources": true,
     "newLine": "LF"
   },
   "files": [
