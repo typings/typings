@@ -10,7 +10,7 @@
 - [Should I use the `typings` field in `package.json`?](#should-i-use-the-typings-field-in-packagejson)
 - [Where do the type definitions install?](#where-do-the-type-definitions-install)
 - [Types of type defintions](#types-of-typings)
-- [Why `npm:<package>`?](#aboue-npm-pkg)
+- [Why `npm:<package>`?](#about-npmpkg)
 
 Have a different question? Open an issue or pull request and we can add it here!
 
