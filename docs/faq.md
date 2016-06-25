@@ -75,9 +75,42 @@ You can also use [`generator-typings`](https://github.com/typings/generator-typi
 
 ## Configuration
 
-Typings supports configuration using [`rc`](https://github.com/dominictarr/rc). The config options can be set using CLI arguments, environment variables prefixed with `typings_` or a `.typingsrc` file.
+If you have special connection requirements, you can setup your connenction configuration with a `.typingsrc` file. Typings looks for it in the user's home directory (eg: `c:\Users\myName\` on Windows, `$HOME` / `~` on Linux), and in the current working directory. More details on setting up rc configuration files can be found from the [rc package](https://github.com/dominictarr/rc).
+
+ ### Example configuration
+
+This `.typingsrc` file shows how to disable SSL when connecting from behind a corporate firewall.
+
+```ini
+ registryURL=http://api.typings.org/
+ rejectUnauthorized = false
+```
+
+typingsrc also supports json format
+```json
+{
+	"rejectUnauthorized": false,
+  "registryURL": "http://api.typings.org/"
+}
+```
+
 
 The formal interface is available in [`typings/core`](https://github.com/typings/core/blob/master/src/interfaces/rc.ts).
+
+| **_Property_** | **_Description_** |
+| -------------- | ------------------ |
+|  httpProxy     | Any standard http-proxy as supported by the [request](https://github.com/mikeal/request) package. (default: `process.env.HTTP_PROXY`).  For example, `"http://127.0.0.1:8888/"` [or real proxy from incloak.com/proxy-list/](http://incloak.com/proxy-list/). If your proxy requires authentication, you may need to include a username and password in your url: `"http://domain\\myusername:password@myproxyServer:port"`, or if you are *not* on an AD domain: `"http://username:mypassword@myProxyServer:port"`</p> |
+| httpsProxy     |  Same as httpProxy, but use `https:` in the string.
+| noProxy | A string of space-separated hosts to *not* proxy (default: `process.env.NO_PROXY`). |
+| rejectUnauthorized | Reject invalid SSL certificates (default: `true`). Useful behind (corporate) proxies that act like man-in-the middle on https connections. This setting is passed to the [request](https://github.com/mikeal/request) package to handle connection. |
+|  ca | A string or array of strings of trusted certificates in PEM format.
+| key | Private key to use for SSL. |
+| cert |  Public x509 certificate to use. |
+| userAgent |  Set the User-Agent for HTTP requests (default: `"typings/{typingsVersion} node{nodeVersion} {platform} {arch}"`). |
+| githubToken | Add your GitHub token for resolving `github:*` locations.  You can create this token on Github.com at [https://github.com/settings/tokens/new](https://github.com/settings/tokens/new). The OAuth token can be used to boost the Github API rate-limit from 60 to 5000 (non-cached) requests per hour. This token just needs ['read-only access to public information'](http://developer.github.com/v3/oauth/#scopes) so no additional OAuth scopes are necessary. Note: keep in mind the `.typingsrc` file is *not* secured. Don't use a token with additional scope unless you know what you are doing.|
+| registryURL | Override the registry URL. (Default: `"https://api.typings.org"`.)
+| defaultSource | Override the default installation source (E.g. when doing `typings install debug`) (default: `npm`). Allowed options: `file`, `npm`, `github`, `bitbucket`, `bower`, `http`, or `https`|
+
 
 ## What Are Global Dependencies?
 
