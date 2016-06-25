@@ -86,16 +86,13 @@ This `.typingsrc` file shows how to disable SSL when connecting from behind a co
  rejectUnauthorized = false
 ```
 
-typingsrc also supports json format
+.typingsrc also supports json format. The above settings can be written as:
 ```json
 {
-	"rejectUnauthorized": false,
+  "rejectUnauthorized": false,
   "registryURL": "http://api.typings.org/"
 }
 ```
-
-
-The formal interface is available in [`typings/core`](https://github.com/typings/core/blob/master/src/interfaces/rc.ts).
 
 | **_Property_** | **_Description_** |
 | -------------- | ------------------ |
@@ -109,8 +106,7 @@ The formal interface is available in [`typings/core`](https://github.com/typings
 | userAgent |  Set the User-Agent for HTTP requests (default: `"typings/{typingsVersion} node{nodeVersion} {platform} {arch}"`). |
 | githubToken | Add your GitHub token for resolving `github:*` locations.  You can create this token on Github.com at [https://github.com/settings/tokens/new](https://github.com/settings/tokens/new). The OAuth token can be used to boost the Github API rate-limit from 60 to 5000 (non-cached) requests per hour. This token just needs ['read-only access to public information'](http://developer.github.com/v3/oauth/#scopes) so no additional OAuth scopes are necessary. Note: keep in mind the `.typingsrc` file is *not* secured. Don't use a token with additional scope unless you know what you are doing.|
 | registryURL | Override the registry URL. (Default: `"https://api.typings.org"`.)
-| defaultSource | Override the default installation source (E.g. when doing `typings install debug`) (default: `npm`). Allowed options: `file`, `npm`, `github`, `bitbucket`, `bower`, `http`, or `https`|
-
+| defaultSource | Override the default installation source (E.g. when doing `typings install debug`) (default: `npm`). Allowed options: `file`, `npm`, `github`, `bitbucket`, `bower`, `http`, or `https`
 
 ## What Are Global Dependencies?
 
