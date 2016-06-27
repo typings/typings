@@ -28,13 +28,13 @@ The `--global` flag tells Typings to accept type definitions that are "global" i
 
 # Upgrade
 
-Delete the old `typings` directory:
+### Delete the old `typings` directory:
 
 ```sh
 rm -rf typings
 ```
 
-Use the old `tsd.json` to load the config for `typings` and then delete that as well:
+### Use the old `tsd.json` to load the config for `typings` and then delete that as well:
 
 ```sh
 typings init --upgrade
@@ -42,7 +42,17 @@ rm tsd.json
 typings install
 ```
 
-Finally, update your `tsconfig.json` according to the Typings resolution [you wish to include](https://github.com/typings/typings/blob/master/docs/faq.md#module-resolutions). For example:
+### Change `.tsdrc` to `.typingsrc`
+
+You may have created a `.tsdrc` file in your user or project directory if you were behind a firewall, used a proxy, or had setup a github token. Change the filename to .typingsrc In Windows Explorer, type `.typingsrc.` and the last period is removed automatically.
+
+Update the names of two properties in `.typingsrc`:
+
+> rename `token` to `githubToken`
+
+> rename `strictSSL` to `rejectUnauthorized`
+
+### Finally, update your `tsconfig.json` according to the Typings resolution [you wish to include](https://github.com/typings/typings/blob/master/docs/faq.md#module-resolutions). For example:
 
 ```json
  {
