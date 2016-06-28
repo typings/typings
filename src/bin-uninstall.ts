@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 import Promise = require('any-promise')
 import { uninstallDependencies } from 'typings-core'
 import { logError } from './support/cli'

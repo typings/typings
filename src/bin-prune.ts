@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 import Promise = require('any-promise')
 import { prune } from 'typings-core'
 

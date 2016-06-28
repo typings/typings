@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 import Promise = require('any-promise')
 import { archifyDependencyTree } from './support/cli'
 import { list } from 'typings-core'

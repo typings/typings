@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 import Promise = require('any-promise')
 import columnify = require('columnify')
 import { search } from 'typings-core'

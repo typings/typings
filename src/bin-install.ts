@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 import Promise = require('any-promise')
 import listify = require('listify')
 import { install, installDependenciesRaw, Emitter } from 'typings-core'
