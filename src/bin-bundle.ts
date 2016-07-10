@@ -5,6 +5,8 @@ export function help () {
   return `
 typings bundle --out <filepath>
 
+Bundle the current project types into an single global module.
+
 Options:
   [--out|-o] <filepath>  The bundled output file path
   [--global|-G]          Bundle as an global definition

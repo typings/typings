@@ -6,6 +6,8 @@ export function help () {
   return `
 typings uninstall <name> [--save|--save-dev|--save-peer] [--global]
 
+Remove a dependency from the \`typings/\` directory, and optionally remove from \`typings.json\`.
+
 Options:
   [--save|-S]       Remove from "dependencies"
   [--save-dev|-D]   Remove from "devDependencies"

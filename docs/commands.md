@@ -46,7 +46,7 @@ Aliases: i, in
 
 ## Uninstall
 
-Remove a dependency from the typings/ directory, and optionally remove from `typings.json`.
+Remove a dependency from the `typings/` directory, and optionally remove from `typings.json`.
 
 ```
 typings uninstall <name> [--save|--save-dev|--save-peer] [--global]
@@ -75,7 +75,7 @@ Options:
 
 ## List
 
-Print the typings dependency tree.
+Print the typings dependency tree for the current project.
 
 ```
 typings list
@@ -117,7 +117,7 @@ Options:
 
 ## Open
 
-Get the full URL from a Typings location
+Get the full URL from a Typings location.
 
 ```
 typings open <location>
@@ -127,7 +127,7 @@ typings open <location>
 
 ## View
 
-Get information for a package on the Typings Registry
+Get information for a package on the Typings Registry.
 
 ```
 typings view <pkg>
@@ -142,7 +142,7 @@ Aliases: info
 
 ## Prune
 
-Prune extraneous typings from directory
+Prune extraneous typings from current project.
 
 ```
 typings prune

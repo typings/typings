@@ -7,6 +7,8 @@ export function help () {
   return `
 typings view <pkg>
 
+Get information for a package on the Typings Registry.
+
   <pkg>  A registry expression like \`[<source>~]<pkg>\`
 
 Options:

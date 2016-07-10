@@ -6,6 +6,8 @@ export function help () {
   return `
 typings search [query]
 
+Search the Typings Registry for type defintions.
+
 Options:
   [--name] <name>     Search for definitions by exact name (E.g. only "react")
   [--source] <source> The registry mirror (E.g. "npm", "bower", "env", "global", "dt", ...)
