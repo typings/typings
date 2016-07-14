@@ -108,6 +108,16 @@ export = Promise;
 
 * https://github.com/typed-typings/npm-bluebird
 
+### Export with internal types
+
+```ts
+declare function doSomething(value: doSomething.Foo): void
+
+declare namespace doSomething {
+  export interface Foo { ... }
+}
+```
+
 ## External Module with ES6 Syntax
 
 ### Named Export
