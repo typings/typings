@@ -108,7 +108,7 @@ export = Promise;
 
 * https://github.com/typed-typings/npm-bluebird
 
-### Export with internal types
+### Export with Internal Types
 
 ```ts
 declare function doSomething(value: doSomething.Foo): void
