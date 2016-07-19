@@ -5,7 +5,7 @@
 - [My global dependencie(s) are not installed](#references)
 - [How do I use Typings with version control?](#how-do-i-use-typings-with-version-control)
 - [How do I write typings definitions?](#writing-typings-definitions)
-- [How to configure typings?](#configuration)
+- [How do I configure typings with `.typingsrc`?](#configuration)
 - [What are global dependencies?](#what-are-global-dependencies)
 - [Should I use the `typings` field in `package.json`?](#should-i-use-the-typings-field-in-packagejson)
 - [Where do the type definitions install?](#where-do-the-type-definitions-install)
