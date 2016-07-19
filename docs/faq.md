@@ -44,7 +44,15 @@ When you install typings, the default resolution is using "main" and is placed i
 
 ## References
 
-During installation, all references (E.g. `/// <reference path="..." />`) are stripped. They are stripped because of their ambiguous nature - it can not be determined if the reference should be included within the source or is a dependency. 90% of the time, it's better to strip. If the reference is something you require for the project to work, you can always install the references as dependencies manually.
+During installation, all references (E.g. `/// <reference path="..." />`) are stripped. They are stripped because of their ambiguous nature - it can not be determined if the reference should be included within the source or is a dependency. If the reference is something you require for the project to work, you can always install the references as dependencies manually.
+
+The biggest example of this behaviour is from DefinitelyTyped (`dt`). All dependencies (direct or in-direct) in DefinitelyTyped are managed through references. If you install something from DefinitelyTyped and it says a reference was stripped, it will probably need to be installed manually for the definition to work. You can install these dependencies by using the stripped URL printed on the screen directly, or you can search for the definition using the `typings search` command. For example:
+
+![image](https://cloud.githubusercontent.com/assets/1088987/16957595/da30f4e8-4d91-11e6-913b-b703b71e9315.png)
+
+![image](https://cloud.githubusercontent.com/assets/1088987/16961677/679af084-4da3-11e6-8129-c8a89dcf60ad.png)
+
+![image](https://cloud.githubusercontent.com/assets/1088987/16961698/82fec972-4da3-11e6-83fd-46b7e7b977ec.png)
 
 ## How Do I Use Typings With Version Control?
 
