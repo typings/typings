@@ -50,7 +50,9 @@ The biggest example of this behaviour is from DefinitelyTyped (`dt`). All depend
 
 ![image](https://cloud.githubusercontent.com/assets/1088987/16957595/da30f4e8-4d91-11e6-913b-b703b71e9315.png)
 
-![image](https://cloud.githubusercontent.com/assets/1088987/16957668/38bb169c-4d92-11e6-8b9c-7009c0561af1.png)
+![image](https://cloud.githubusercontent.com/assets/1088987/16961677/679af084-4da3-11e6-8129-c8a89dcf60ad.png)
+
+![image](https://cloud.githubusercontent.com/assets/1088987/16961698/82fec972-4da3-11e6-83fd-46b7e7b977ec.png)
 
 ## How Do I Use Typings With Version Control?
 
