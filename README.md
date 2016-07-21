@@ -7,19 +7,6 @@
 
 > The TypeScript Definition Manager.
 
-## Updating From `0.x` to `1.0`?
-
-* `rm -rf typings/`
-  * The directory contains "main", by default
-  * Update `tsconfig.json` to match (the bundle file is `typings/index.d.ts`)
-* Want `main` and/or `browser` output again? See [where the typings install](https://github.com/typings/typings/blob/master/docs/faq.md#where-do-the-type-definitions-install) in the FAQ
-* Usages of `ambient` are now `global`
-  * That means in `typings.json` any `ambientDependencies` should be renamed `globalDependencies` and any `ambientDevDependencies` should be renamed `globalDevDependencies`.
-  * It also means `--ambient` is now `--global`
-* Removed `defaultAmbientSource`
-  * If you want to install from DefinitelyTyped, be explicit (use `dt~<pkg> --global`). For example: `typings install dt~angular-component-router --global --save`
-* See [the release notes](https://github.com/typings/typings/releases/tag/v1.0.0) for more information!
-
 ## Quick Start
 
 ```sh
@@ -29,21 +16,20 @@ npm install typings --global
 # Search for definitions.
 typings search tape
 
-# Find an available definition (by name).
+# Find a definition by name.
 typings search --name react
 
 # If you use the package as a module:
 # Install non-global typings (defaults to "npm" source, configurable through `defaultSource` in `.typingsrc`).
 typings install debug --save
 
-# If you use the package through script tag, or
-# it is part of the environment, or
-# the non-global typings is not yet available:
+# If you use the package through `<script>`, it is part of the environment, or
+# the module typings are not yet available, try searching and installing with `--global`:
 typings install dt~mocha --global --save
 
-# Install typings from particular registry.
+# Install typings from a particular source (use `<source>~<name>` or `--source <source>`).
 typings install env~atom --global --save
-typings install npm~bluebird --save
+typings install bluebird --source npm --save
 
 # Use `typings/index.d.ts` (in `tsconfig.json` or as a `///` reference).
 cat typings/index.d.ts
