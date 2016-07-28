@@ -67,6 +67,7 @@ The [public registry](https://github.com/typings/registry) is maintained by the 
 * [Why external modules?](docs/external-modules.md)
 * [About the registry](docs/registry.md)
 * [FAQ](docs/faq.md)
+* [Known Issues](docs/known-issues.md)
 
 ## Sources
 
