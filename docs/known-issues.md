@@ -12,13 +12,13 @@ Workaround: TBD
 
 ## Global Dependencies
 
-If the typings has global dependencies listed, it will not be installed with the typings automatically.
+If the typings have global dependencies listed, they will not be installed with the typings automatically.
 The consumer will see a `INFO` message like `"\<typings x\>" lists global dependencies on "\<typings y\>" and should be installed`.
-Consumer needs to install them manually.
+The consumer will need to install them manually.
 
 This is a limitation because global dependencies, by definition, are global. They declare themselves in the [global environment](http://www.ecma-international.org/ecma-262/7.0/index.html#sec-lexical-environments).
 
-Because of that, if there are two modules depends on the same global dependency, that dependency will be installed twice and cause "Duplicate Identifier" errors.
+Because of this, if there are two modules depends on the same global dependency, that dependency would be installed twice causing "Duplicate Identifier" errors.
 
 Workaround:
 - Create typings in external module format (aka module file with ambient module declaration), or
