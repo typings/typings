@@ -13,7 +13,7 @@ Workaround: TBD
 ## Global Dependencies
 
 If the typings has global dependencies listed, it will not be installed with the typings automatically.
-The consumer will see a `INFO` message like "<typings>" lists global dependencies on "<xyz typings>" and should be installed".
+The consumer will see a `INFO` message like "\<typings\>" lists global dependencies on "\<xyz typings\>" and should be installed".
 Consumer needs to install them manually.
 
 This is a limitation because global dependencies, by definition, are global. They declare themselves in the [global environment](http://www.ecma-international.org/ecma-262/7.0/index.html#sec-lexical-environments).
