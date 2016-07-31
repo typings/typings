@@ -8,7 +8,7 @@ export function help () {
 typings install (with no arguments, in package directory)
 typings install [<name>=]<location>
 
-  <name>      Module name of the installed definition
+  <name>      Module name alias
   <location>  The location to read from (described below)
 
 Valid Locations:
