@@ -21,5 +21,5 @@ This is a limitation because global dependencies, by definition, are global. The
 Because of this, if there are two modules depends on the same global dependency, that dependency would be installed twice causing "Duplicate Identifier" errors.
 
 Workaround:
-- Create typings in external module format (aka module file with ambient module declaration), or
+- Create typings in external module format, or
 - Consumer needs to install them manually
