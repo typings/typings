@@ -84,7 +84,7 @@ export function exec (args: string[], options: Options): Promise<void> {
 
     if (deps.length) {
       logInfo(
-        `"${name}" lists global dependencies on ${listify(deps)} and should be installed`,
+        `"${name}" lists global dependencies on ${listify(deps)} that must be installed manually`,
         'globaldependencies'
       )
     }
