@@ -6,6 +6,8 @@ export function help () {
   return `
 typings list
 
+Print the typings dependency tree for the current project.
+
 Options:
   [--production] List only production dependencies (omit dev dependencies)
 

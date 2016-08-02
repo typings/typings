@@ -8,6 +8,8 @@ export function help () {
 typings install (with no arguments, in package directory)
 typings install [<name>=]<location>
 
+Write a dependency to the \`typings/\` directory, optionally persisting it in \`typings.json\`.
+
   <name>      Module name of the installed definition
   <location>  The location to read from (described below)
 

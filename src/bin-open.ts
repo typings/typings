@@ -5,6 +5,8 @@ export function help () {
   return `
 typings open <location>
 
+Get the full URL from a Typings location.
+
   <location>  A known Typings location with scheme (see typings install -h)
 `
 }

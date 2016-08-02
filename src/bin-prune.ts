@@ -5,6 +5,8 @@ export function help () {
   return `
 typings prune
 
+Prune extraneous typings from current project.
+
 Options:
   [--production] Also prune non-production dependencies
 `
