@@ -88,15 +88,13 @@ Aliases: la, ll, ls
 
 ## Bundle
 
-Bundle the current project types into an single global module.
+Bundle the current project types into a single global module.
 
 ```
-typings bundle --out <directory>
-
+typings bundle --out <filepath>
 Options:
-  [--out|-o] <directory> The bundled output directory
-  [--name] <name>        Bundle module name
-  [--global|-G]          Bundle as an global definition
+  [--out|-o] <filepath>  The bundled output file path
+  [--global|-G]          Bundle as a global definition
 ```
 
 ## Search
