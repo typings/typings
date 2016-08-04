@@ -7,7 +7,7 @@ typings bundle --out <filepath>
 
 Options:
   [--out|-o] <filepath>  The bundled output file path
-  [--global|-G]          Bundle as an global definition
+  [--global|-G]          Bundle as a global definition
 `
 }
 
