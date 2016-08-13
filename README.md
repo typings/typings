@@ -27,6 +27,9 @@ typings install debug --save
 # the module typings are not yet available, try searching and installing with `--global`:
 typings install dt~mocha --global --save
 
+# If you need a specific commit from github
+typings install d3=github:DefinitelyTyped/DefinitelyTyped/d3/d3.d.ts#1c05872e7811235f43780b8b596bfd26fe8e7760 --global --save
+
 # Install typings from a particular source (use `<source>~<name>` or `--source <source>`).
 typings install env~atom --global --save
 typings install bluebird --source npm --save
