@@ -47,6 +47,7 @@ export interface Options {
   saveDev: boolean
   savePeer: boolean
   global: boolean
+  unicode: boolean
   emitter: Emitter
   production: boolean
   cwd: string
@@ -59,7 +60,7 @@ export interface Options {
 }
 
 export function exec (args: string[], options: Options): Promise<void> {
-  const { emitter } = options
+  const { emitter, unicode } = options
 
   if (typeof options.ambient !== 'undefined') {
     logError('The "ambient" flag is deprecated. Please use "global" instead', 'deprecated')
@@ -69,7 +70,9 @@ export function exec (args: string[], options: Options): Promise<void> {
   if (args.length === 0) {
     return install(options)
       .then((result) => {
-        console.log(archifyDependencyTree(result))
+        const { name, tree } = result
+
+        console.log(archifyDependencyTree({ name, tree, unicode }))
       })
   }
 
@@ -93,7 +96,9 @@ export function exec (args: string[], options: Options): Promise<void> {
   return installDependenciesRaw(args, options)
     .then(results => {
       for (const result of results) {
-        console.log(archifyDependencyTree(result))
+        const { name, tree } = result
+
+        console.log(archifyDependencyTree({ name, tree, unicode }))
       }
     })
 }
