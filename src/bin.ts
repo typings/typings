@@ -2,6 +2,7 @@
 
 import minimist = require('minimist')
 import wordwrap = require('wordwrap')
+import hasUnicode = require('has-unicode')
 import { join, relative, resolve } from 'path'
 import chalk = require('chalk')
 import updateNotifier = require('update-notifier')
@@ -28,6 +29,7 @@ interface Argv {
   offset?: number
   limit?: number
   sort?: string
+  unicode?: boolean
 }
 
 interface Args extends Argv {
@@ -36,7 +38,7 @@ interface Args extends Argv {
 }
 
 const argv = minimist<Argv>(process.argv.slice(2), {
-  boolean: ['version', 'save', 'saveDev', 'savePeer', 'global', 'verbose', 'production'],
+  boolean: ['version', 'save', 'saveDev', 'savePeer', 'global', 'verbose', 'production', 'unicode'],
   string: ['cwd', 'out', 'name', 'source', 'offset', 'limit', 'sort'],
   alias: {
     global: ['G'],
@@ -49,6 +51,7 @@ const argv = minimist<Argv>(process.argv.slice(2), {
     help: ['h']
   },
   default: {
+    unicode: hasUnicode(),
     production: process.env.NODE_ENV === 'production'
   }
 })

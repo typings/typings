@@ -4,6 +4,7 @@
     "archy": "github:typings/typed-archy#3706c5e4df4efcc8cec8849a1c493cebd0830bea",
     "chalk": "github:typings/typed-chalk#a7e422c5455e70292e5675a727d43a7b05fc3e58",
     "columnify": "github:typings/typed-columnify#855f119ac0310bc0dc924b7c26dc1426e2aa43a5",
+    "has-unicode": "registry:npm/has-unicode#2.0.0+20160826085324",
     "listify": "registry:npm/listify#1.0.0+20160211003958",
     "minimist": "github:typings/typed-minimist#9bfb8ebb1cf82abe2e16b00d6e0f59492224728e",
     "typings-core": "npm:typings-core",

@@ -110,6 +110,7 @@ export function handleError (error: Error, options: PrintOptions): any {
 export interface ArchifyOptions {
   name?: string
   tree: DependencyTree
+  unicode?: boolean
 }
 
 /**
@@ -165,5 +166,5 @@ export function archifyDependencyTree (options: ArchifyOptions) {
     archyTree.nodes.push(chalk.gray('(No dependencies)'))
   }
 
-  return archy(archyTree)
+  return archy(archyTree, '', { unicode: options.unicode })
 }

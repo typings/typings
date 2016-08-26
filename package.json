@@ -47,6 +47,7 @@
     "bluebird": "^3.1.1",
     "chalk": "^1.0.0",
     "columnify": "^1.5.2",
+    "has-unicode": "^2.0.1",
     "listify": "^1.0.0",
     "minimist": "^1.2.0",
     "typings-core": "^1.4.0",
