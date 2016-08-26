@@ -36,7 +36,7 @@ Options:
   [--save|-S]       Persist to "dependencies"
   [--save-dev|-D]   Persist to "devDependencies"
   [--save-peer|-P]  Persist to "peerDependencies"
-  [--global|-G]     Install and persist as an global definition
+  [--global|-G]     Install and persist as a global definition
     [-SG]           Persist to "globalDependencies"
     [-DG]           Persist to "globalDevDependencies"
   [--production]    Install only production dependencies (omits dev dependencies)
