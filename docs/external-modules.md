@@ -46,7 +46,7 @@ export = main;
 }
 ```
 
-If you look closely at the code above, you'll see the original type definition has been imported and "wrapped" as an global external module called `'domready'` by Typings.
+If you look closely at the code above, you'll see the original type definition has been imported and "wrapped" as a global external module called `'domready'` by Typings.
 
 How did this come about?  Well, this was the installation experience:
 
