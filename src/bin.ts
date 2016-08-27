@@ -37,15 +37,6 @@ interface Args extends Argv {
   emitter: Emitter
 }
 
-let unicodeDefault = hasUnicode()
-if (process.env.TYPINGS_CONFIG_UNICODE || process.env.NPM_CONFIG_UNICODE) {
-  try {
-    unicodeDefault = !!JSON.parse(process.env.TYPINGS_CONFIG_UNICODE || process.env.NPM_CONFIG_UNICODE)
-  } catch (e) {
-    // ignore
-  }
-}
-
 const argv = minimist<Argv>(process.argv.slice(2), {
   boolean: ['version', 'save', 'saveDev', 'savePeer', 'global', 'verbose', 'production', 'unicode'],
   string: ['cwd', 'out', 'name', 'source', 'offset', 'limit', 'sort'],
@@ -60,7 +51,9 @@ const argv = minimist<Argv>(process.argv.slice(2), {
     help: ['h']
   },
   default: {
-    unicode: unicodeDefault,
+    unicode: (process.env.TYPINGS_CONFIG_UNICODE || process.env.NPM_CONFIG_UNICODE)
+      ? ['true', '1'].indexOf(process.env.TYPINGS_CONFIG_UNICODE || process.env.NPM_CONFIG_UNICODE) !== -1
+      : hasUnicode(),
     production: process.env.NODE_ENV === 'production'
   }
 })
