@@ -37,6 +37,8 @@ interface Args extends Argv {
   emitter: Emitter
 }
 
+const unicodeConfig = process.env.TYPINGS_CONFIG_UNICODE || process.env.NPM_CONFIG_UNICODE
+
 const argv = minimist<Argv>(process.argv.slice(2), {
   boolean: ['version', 'save', 'saveDev', 'savePeer', 'global', 'verbose', 'production', 'unicode'],
   string: ['cwd', 'out', 'name', 'source', 'offset', 'limit', 'sort'],
@@ -51,10 +53,14 @@ const argv = minimist<Argv>(process.argv.slice(2), {
     help: ['h']
   },
   default: {
-    unicode: hasUnicode(),
+    unicode: unicodeConfig ? isTrue(unicodeConfig) : hasUnicode(),
     production: process.env.NODE_ENV === 'production'
   }
 })
+
+function isTrue (value: string) {
+  return value === '1' || value === 'true'
+}
 
 const cwd = argv.cwd ? resolve(argv.cwd) : process.cwd()
 const emitter: Emitter = new EventEmitter()
