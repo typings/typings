@@ -54,13 +54,13 @@ The [public registry](https://github.com/typings/registry) is maintained by the 
 
 ## Read More
 
-* [Commands](docs/commands.md)
-* [Coming from TSD?](docs/tsd.md)
-* [Example typings](docs/examples.md)
-* [Why external modules?](docs/external-modules.md)
-* [About the registry](docs/registry.md)
-* [FAQ](docs/faq.md)
-* [Known Issues](docs/known-issues.md)
+* [Commands](https://github.com/typings/typings/blob/master/docs/commands.md)
+* [Coming from TSD?](https://github.com/typings/typings/blob/master/docs/tsd.md)
+* [Example typings](https://github.com/typings/typings/blob/master/docs/examples.md)
+* [Why external modules?](https://github.com/typings/typings/blob/master/docs/external-modules.md)
+* [About the registry](https://github.com/typings/typings/blob/master/docs/registry.md)
+* [FAQ](https://github.com/typings/typings/blob/master/docs/faq.md)
+* [Known Issues](https://github.com/typings/typings/blob/master/docs/known-issues.md)
 
 ## Sources
 
