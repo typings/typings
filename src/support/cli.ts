@@ -89,7 +89,7 @@ export function handleError (error: Error, options: PrintOptions): any {
   log('')
   logError(process.cwd(), 'cwd')
   logError(`${os.type()} ${os.release()}`, 'system')
-  logError(process.argv.map(JSON.stringify).join(' '), 'command')
+  logError(process.argv.map(arg => JSON.stringify(arg)).join(' '), 'command')
   logError(process.version, 'node -v')
   logError(pkg.version, `typings -v`)
 
