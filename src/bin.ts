@@ -8,7 +8,7 @@ import chalk = require('chalk')
 import updateNotifier = require('update-notifier')
 import extend = require('xtend')
 import { EventEmitter } from 'events'
-import { handle, logWarning, logInfo } from './support/cli'
+import { handle, logWarning, logInfo, setLogLevel } from './support/cli'
 import { Emitter } from 'typings-core'
 import { aliases } from './aliases'
 
@@ -30,6 +30,7 @@ interface Argv {
   limit?: number
   sort?: string
   unicode?: boolean
+  loglevel?: string
 }
 
 interface Args extends Argv {
@@ -41,7 +42,7 @@ const unicodeConfig = process.env.TYPINGS_CONFIG_UNICODE || process.env.NPM_CONF
 
 const argv = minimist<Argv>(process.argv.slice(2), {
   boolean: ['version', 'save', 'saveDev', 'savePeer', 'global', 'verbose', 'production', 'unicode'],
-  string: ['cwd', 'out', 'name', 'source', 'offset', 'limit', 'sort'],
+  string: ['cwd', 'out', 'name', 'source', 'offset', 'limit', 'sort', 'logLevel'],
   alias: {
     global: ['G'],
     version: ['v'],
@@ -64,6 +65,7 @@ function isTrue (value: string) {
 
 const cwd = argv.cwd ? resolve(argv.cwd) : process.cwd()
 const emitter: Emitter = new EventEmitter()
+const logLevel: number = argv.loglevel ? setLogLevel(argv.loglevel) : 0
 const args: Args = extend(argv, { emitter, cwd })
 
 // Notify the user of updates.
@@ -139,10 +141,11 @@ Usage: typings <command>
 Commands:
 ${wrap(Object.keys(aliases).sort().join(', '))}
 
-typings <command> -h   Get help for <command>
-typings <command> -V   Enable verbose logging
+typings <command> -h     Get help for <command>
+typings <command> -V     Enable verbose logging
 
-typings --version      Print the CLI version
+typings --version        Print the CLI version
+  [--log-level] <level>  Set the log level (E.g. "debug", info", "warn", "error", "silent")
 
 typings@${pkg.version} ${join(__dirname, '..')}
 `)

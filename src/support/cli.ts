@@ -28,6 +28,43 @@ function formatLine (color: Function, type: string, line: string, prefix?: strin
 }
 
 /**
+ * Available log levels.
+ */
+let logLevels: LogLevels = {
+    debug: 0,
+    info: 1,
+    warn: 2,
+    error: 3,
+    silent: 4
+}
+interface LogLevels {
+    debug: number
+    info: number
+    warn: number
+    error: number
+    silent: number
+    [key: string]: number
+}
+
+/**
+ * Current log level.  Defaults to emit all.
+ */
+let logLevel: number = logLevels.info
+
+/**
+ * Set the level of logs to emit.
+ */
+export function setLogLevel(level: string): number {
+    let match = logLevels[level]
+    if (!match && match !== logLevels.debug) {
+        logError(`invalid log level (options are ${Object.keys(logLevels).join(', ')})`)
+    } else {
+        logLevel = match
+    }
+    return logLevel
+}
+
+/**
  * Log an info message.
  */
 export function logInfo (message: string, prefix?: string) {
@@ -35,7 +72,9 @@ export function logInfo (message: string, prefix?: string) {
     return formatLine(chalk.bgBlack.cyan, 'INFO', line, prefix)
   }).join('\n')
 
-  log(output)
+  if (logLevel <= logLevels.info) {
+    log(output)
+  }
 }
 
 /**
@@ -46,7 +85,9 @@ export function logWarning (message: string, prefix?: string) {
     return formatLine(chalk.bgYellow.black, 'WARN', line, prefix)
   }).join('\n')
 
-  log(output)
+  if (logLevel <= logLevels.warn) {
+    log(output)
+  }
 }
 
 /**
@@ -57,7 +98,9 @@ export function logError (message: string, prefix?: string) {
     return formatLine(chalk.bgBlack.red, 'ERR!', line, prefix)
   }).join('\n')
 
-  log(output)
+  if (logLevel <= logLevels.error) {
+    log(output)
+  }
 }
 
 /**
