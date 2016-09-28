@@ -65,7 +65,9 @@ function isTrue (value: string) {
 
 const cwd = argv.cwd ? resolve(argv.cwd) : process.cwd()
 const emitter: Emitter = new EventEmitter()
-const logLevel: number = argv.loglevel ? setLogLevel(argv.loglevel) : 0
+if (argv.loglevel) {
+  setLogLevel(argv.loglevel)
+}
 const args: Args = extend(argv, { emitter, cwd })
 
 // Notify the user of updates.
