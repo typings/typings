@@ -42,7 +42,7 @@ const unicodeConfig = process.env.TYPINGS_CONFIG_UNICODE || process.env.NPM_CONF
 
 const argv = minimist<Argv>(process.argv.slice(2), {
   boolean: ['version', 'save', 'saveDev', 'savePeer', 'global', 'verbose', 'production', 'unicode'],
-  string: ['cwd', 'out', 'name', 'source', 'offset', 'limit', 'sort', 'logLevel'],
+  string: ['cwd', 'out', 'name', 'source', 'offset', 'limit', 'sort', 'loglevel'],
   alias: {
     global: ['G'],
     version: ['v'],
@@ -65,10 +65,11 @@ function isTrue (value: string) {
 
 const cwd = argv.cwd ? resolve(argv.cwd) : process.cwd()
 const emitter: Emitter = new EventEmitter()
+const args: Args = extend(argv, { emitter, cwd })
+
 if (argv.loglevel) {
   setLogLevel(argv.loglevel)
 }
-const args: Args = extend(argv, { emitter, cwd })
 
 // Notify the user of updates.
 updateNotifier({ pkg }).notify()

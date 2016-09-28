@@ -3,6 +3,7 @@ import Promise = require('any-promise')
 import archy = require('archy')
 import * as os from 'os'
 import { DependencyTree, DependencyBranch } from 'typings-core'
+import * as listify from 'listify'
 
 const pkg = require('../../package.json')
 
@@ -30,77 +31,67 @@ function formatLine (color: Function, type: string, line: string, prefix?: strin
 /**
  * Available log levels.
  */
-let logLevels: LogLevels = {
-    debug: 0,
-    info: 1,
-    warn: 2,
-    error: 3,
-    silent: 4
-}
-interface LogLevels {
-    debug: number
-    info: number
-    warn: number
-    error: number
-    silent: number
-    [key: string]: number
+const loglevels: { [key: string]: number } = {
+  debug: 0,
+  info: 1,
+  warn: 2,
+  error: 3,
+  silent: 4
 }
 
 /**
  * Current log level.  Defaults to emit all.
  */
-let logLevel: number = logLevels.info
+let loglevel: number = loglevels['info']
 
 /**
  * Set the level of logs to emit.
  */
 export function setLogLevel(level: string): number {
-    let match = logLevels[level]
-    if (!match && match !== logLevels.debug) {
-        logError(`invalid log level (options are ${Object.keys(logLevels).join(', ')})`)
-    } else {
-        logLevel = match
+    if (!loglevels.hasOwnProperty(level)) {
+        logError(`invalid log level (options are ${listify(Object.keys(loglevels))})`)
+        return
     }
-    return logLevel
+    return (loglevel = loglevels[level])
 }
 
 /**
  * Log an info message.
  */
 export function logInfo (message: string, prefix?: string) {
+  if (loglevel > loglevels['info']) {
+    return
+  }
   const output = message.split(/\r?\n/g).map(line => {
     return formatLine(chalk.bgBlack.cyan, 'INFO', line, prefix)
   }).join('\n')
-
-  if (logLevel <= logLevels.info) {
-    log(output)
-  }
+  log(output)
 }
 
 /**
  * Log a warning message.
  */
 export function logWarning (message: string, prefix?: string) {
+  if (loglevel > loglevels['warn']) {
+    return
+  }
   const output = message.split(/\r?\n/g).map(line => {
     return formatLine(chalk.bgYellow.black, 'WARN', line, prefix)
   }).join('\n')
-
-  if (logLevel <= logLevels.warn) {
-    log(output)
-  }
+  log(output)
 }
 
 /**
  * Log an error message.
  */
 export function logError (message: string, prefix?: string) {
+  if (loglevel > loglevels['error']) {
+    return
+  }
   const output = message.split(/\r?\n/g).map(line => {
     return formatLine(chalk.bgBlack.red, 'ERR!', line, prefix)
   }).join('\n')
-
-  if (logLevel <= logLevels.error) {
-    log(output)
-  }
+  log(output)
 }
 
 /**
