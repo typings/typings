@@ -63,11 +63,11 @@ export function logInfo (message: string, prefix?: string) {
   if (loglevel > loglevels['info']) {
     return
   }
-  
+
   const output = message.split(/\r?\n/g).map(line => {
     return formatLine(chalk.bgBlack.cyan, 'INFO', line, prefix)
   }).join('\n')
-  
+
   log(output)
 }
 
@@ -78,11 +78,11 @@ export function logWarning (message: string, prefix?: string) {
   if (loglevel > loglevels['warn']) {
     return
   }
-  
+
   const output = message.split(/\r?\n/g).map(line => {
     return formatLine(chalk.bgYellow.black, 'WARN', line, prefix)
   }).join('\n')
-  
+
   log(output)
 }
 
@@ -93,11 +93,11 @@ export function logError (message: string, prefix?: string) {
   if (loglevel > loglevels['error']) {
     return
   }
-  
+
   const output = message.split(/\r?\n/g).map(line => {
     return formatLine(chalk.bgBlack.red, 'ERR!', line, prefix)
   }).join('\n')
-  
+
   log(output)
 }
 
