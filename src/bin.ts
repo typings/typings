@@ -8,7 +8,7 @@ import chalk = require('chalk')
 import updateNotifier = require('update-notifier')
 import extend = require('xtend')
 import { EventEmitter } from 'events'
-import { handle, logWarning, logInfo, setLogLevel } from './support/cli'
+import { handle, logWarning, logInfo, setLoglevel } from './support/cli'
 import { Emitter } from 'typings-core'
 import { aliases } from './aliases'
 
@@ -68,7 +68,7 @@ const emitter: Emitter = new EventEmitter()
 const args: Args = extend(argv, { emitter, cwd })
 
 if (argv.loglevel) {
-  setLogLevel(argv.loglevel)
+  setLoglevel(argv.loglevel)
 }
 
 // Notify the user of updates.
@@ -144,11 +144,11 @@ Usage: typings <command>
 Commands:
 ${wrap(Object.keys(aliases).sort().join(', '))}
 
-typings <command> -h     Get help for <command>
-typings <command> -V     Enable verbose logging
+typings <command> -h    Get help for <command>
+typings <command> -V    Enable verbose logging
 
-typings --version        Print the CLI version
-  [--log-level] <level>  Set the log level (E.g. "debug", info", "warn", "error", "silent")
+typings --version       Print the CLI version
+  [--loglevel] <level>  Set the log level ("debug", info", "warn", "error" or "silent")
 
 typings@${pkg.version} ${join(__dirname, '..')}
 `)
