@@ -1,9 +1,9 @@
 import chalk = require('chalk')
 import Promise = require('any-promise')
 import archy = require('archy')
+import listify = require('listify')
 import * as os from 'os'
 import { DependencyTree, DependencyBranch } from 'typings-core'
-import * as listify from 'listify'
 
 const pkg = require('../../package.json')
 
@@ -40,7 +40,7 @@ const loglevels: { [key: string]: number } = {
 }
 
 /**
- * Current log level.  Defaults to emit all.
+ * Current logging level.
  */
 let loglevel: number = loglevels['info']
 
@@ -52,6 +52,7 @@ export function setLogLevel(level: string): number {
         logError(`invalid log level (options are ${listify(Object.keys(loglevels))})`)
         return
     }
+
     return (loglevel = loglevels[level])
 }
 
@@ -62,9 +63,11 @@ export function logInfo (message: string, prefix?: string) {
   if (loglevel > loglevels['info']) {
     return
   }
+  
   const output = message.split(/\r?\n/g).map(line => {
     return formatLine(chalk.bgBlack.cyan, 'INFO', line, prefix)
   }).join('\n')
+  
   log(output)
 }
 
@@ -75,9 +78,11 @@ export function logWarning (message: string, prefix?: string) {
   if (loglevel > loglevels['warn']) {
     return
   }
+  
   const output = message.split(/\r?\n/g).map(line => {
     return formatLine(chalk.bgYellow.black, 'WARN', line, prefix)
   }).join('\n')
+  
   log(output)
 }
 
@@ -88,9 +93,11 @@ export function logError (message: string, prefix?: string) {
   if (loglevel > loglevels['error']) {
     return
   }
+  
   const output = message.split(/\r?\n/g).map(line => {
     return formatLine(chalk.bgBlack.red, 'ERR!', line, prefix)
   }).join('\n')
+  
   log(output)
 }
 
@@ -116,11 +123,11 @@ export function handleError (error: Error, options: PrintOptions): any {
   }
 
   if (options.verbose && error.stack) {
-    log('')
+    logError('')
     logError(error.stack, 'stack')
   }
 
-  log('')
+  logError('')
   logError(process.cwd(), 'cwd')
   logError(`${os.type()} ${os.release()}`, 'system')
   logError(process.argv.map(arg => JSON.stringify(arg)).join(' '), 'command')
@@ -131,7 +138,7 @@ export function handleError (error: Error, options: PrintOptions): any {
     logError((error as any).code, 'code')
   }
 
-  log('')
+  logError('')
   logError('If you need help, you may report this error at:')
   logError(`  <https://github.com/typings/typings/issues>`)
 
