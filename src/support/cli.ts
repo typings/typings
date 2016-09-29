@@ -1,6 +1,7 @@
 import chalk = require('chalk')
 import Promise = require('any-promise')
 import archy = require('archy')
+import listify = require('listify')
 import * as os from 'os'
 import { DependencyTree, DependencyBranch } from 'typings-core'
 
@@ -28,9 +29,41 @@ function formatLine (color: Function, type: string, line: string, prefix?: strin
 }
 
 /**
+ * Available log levels.
+ */
+const loglevels: { [key: string]: number } = {
+  debug: 0,
+  info: 1,
+  warn: 2,
+  error: 3,
+  silent: 4
+}
+
+/**
+ * Current logging level.
+ */
+let loglevel: number = loglevels['info']
+
+/**
+ * Set the level of logs to emit.
+ */
+export function setLoglevel(level: string): number {
+  if (!loglevels.hasOwnProperty(level)) {
+    logError(`invalid log level (options are ${listify(Object.keys(loglevels))})`)
+    return
+  }
+
+  return (loglevel = loglevels[level])
+}
+
+/**
  * Log an info message.
  */
 export function logInfo (message: string, prefix?: string) {
+  if (loglevel > loglevels['info']) {
+    return
+  }
+
   const output = message.split(/\r?\n/g).map(line => {
     return formatLine(chalk.bgBlack.cyan, 'INFO', line, prefix)
   }).join('\n')
@@ -42,6 +75,10 @@ export function logInfo (message: string, prefix?: string) {
  * Log a warning message.
  */
 export function logWarning (message: string, prefix?: string) {
+  if (loglevel > loglevels['warn']) {
+    return
+  }
+
   const output = message.split(/\r?\n/g).map(line => {
     return formatLine(chalk.bgYellow.black, 'WARN', line, prefix)
   }).join('\n')
@@ -53,6 +90,10 @@ export function logWarning (message: string, prefix?: string) {
  * Log an error message.
  */
 export function logError (message: string, prefix?: string) {
+  if (loglevel > loglevels['error']) {
+    return
+  }
+
   const output = message.split(/\r?\n/g).map(line => {
     return formatLine(chalk.bgBlack.red, 'ERR!', line, prefix)
   }).join('\n')
@@ -82,11 +123,11 @@ export function handleError (error: Error, options: PrintOptions): any {
   }
 
   if (options.verbose && error.stack) {
-    log('')
+    logError('')
     logError(error.stack, 'stack')
   }
 
-  log('')
+  logError('')
   logError(process.cwd(), 'cwd')
   logError(`${os.type()} ${os.release()}`, 'system')
   logError(process.argv.map(arg => JSON.stringify(arg)).join(' '), 'command')
@@ -97,7 +138,7 @@ export function handleError (error: Error, options: PrintOptions): any {
     logError((error as any).code, 'code')
   }
 
-  log('')
+  logError('')
   logError('If you need help, you may report this error at:')
   logError(`  <https://github.com/typings/typings/issues>`)
 
