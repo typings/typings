@@ -5,7 +5,7 @@
 - [My global dependencie(s) are not installed](#references)
 - [How do I use Typings with version control?](#how-do-i-use-typings-with-version-control)
 - [How do I write typings definitions?](#writing-typings-definitions)
-- [How do I configure typings with `.typingsrc`?](#configuration)
+- [How do I configure Typings? (See also: Typings is having connection/proxy issues)](#configuration)
 - [What are global dependencies?](#what-are-global-dependencies)
 - [Should I use the `typings` field in `package.json`?](#should-i-use-the-typings-field-in-packagejson)
 - [Where do the type definitions install?](#where-do-the-type-definitions-install)
@@ -18,9 +18,9 @@ Have a different question? Open an issue or pull request and we can add it here!
 
 Typings consumes external module definitions and wraps them up into namespaced, global declarations. Curious as to what this means? Read [this](/docs/external-modules.md).
 
-The idea is, with external module definitions, you can't implement any leaky information that will break other consumers. Once you omit all the leaky details, you can properly version dependencies - though it requires some hacky namespacing from Typings to work with the TypeScript compiler.
+The idea is, with external module definitions, you can't implement any leaky information that will break other consumers. Once you omit all the leaky details, you can properly version dependencies - though it requires some namespacing tricks from Typings to make it work with the TypeScript compiler.
 
-Type definitions for Typings can also come from anywhere on the internet, allowing new consumers of definitions that were previously restricted to a subset of tooling to distribute type definitions.
+Type definitions for Typings can also come from anywhere, allowing new consumers of definitions, that were previously restricted to a subset of tools, to distribute type definitions.
 
 ## Module Resolutions
 
