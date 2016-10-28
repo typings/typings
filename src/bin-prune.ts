@@ -1,5 +1,6 @@
 import Promise = require('any-promise')
 import { prune } from 'typings-core'
+import { spinner } from './support/cli'
 
 export function help () {
   return `
@@ -17,5 +18,5 @@ export interface Options {
 }
 
 export function exec (args: string[], options: Options): Promise<void> {
-  return prune(options)
+  return spinner(prune(options))
 }

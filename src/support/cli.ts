@@ -2,10 +2,21 @@ import chalk = require('chalk')
 import Promise = require('any-promise')
 import archy = require('archy')
 import listify = require('listify')
+import logUpdate = require('log-update')
+import elegantSpinner = require('elegant-spinner')
+import truncate = require('cli-truncate')
 import * as os from 'os'
 import { DependencyTree, DependencyBranch } from 'typings-core'
+import promiseFinally from 'promise-finally'
 
 const pkg = require('../../package.json')
+
+/**
+ * Keep track of a progress spinner.
+ */
+let statusFrame: (() => string) | undefined
+let statusTimeout: NodeJS.Timer | undefined
+let statusMessage: string | undefined
 
 /**
  * Options for the execution.
@@ -18,7 +29,9 @@ export interface PrintOptions {
  * Log a trivial string, without bells or whistles.
  */
 export function log (message: string) {
+  logUpdate.clear()
   console.error(message)
+  render()
 }
 
 /**
@@ -47,7 +60,7 @@ let loglevel: number = loglevels['info']
 /**
  * Set the level of logs to emit.
  */
-export function setLoglevel(level: string): number {
+export function setLoglevel(level: string): number | undefined {
   if (!loglevels.hasOwnProperty(level)) {
     logError(`invalid log level (options are ${listify(Object.keys(loglevels))})`)
     return
@@ -99,6 +112,63 @@ export function logError (message: string, prefix?: string) {
   }).join('\n')
 
   log(output)
+}
+
+/**
+ * Set the current status message.
+ */
+export function setStatus (message: string) {
+  statusMessage = message
+}
+
+/**
+ * Render the current status.
+ */
+export function render () {
+  clearInterval(statusTimeout)
+
+  if (statusFrame && (process.stdout as any).isTTY) {
+    let status = chalk.cyan(statusFrame())
+
+    if (statusMessage) {
+      status += ` ${statusMessage}`
+    }
+
+    logUpdate(truncate(status, (process.stdout as any).columns))
+
+    statusTimeout = setTimeout(render, 50)
+  }
+}
+
+/**
+ * Start the status spinner.
+ */
+export function startSpinner () {
+  statusFrame = elegantSpinner()
+  render()
+}
+
+/**
+ * Stop the status spinner.
+ */
+export function stopSpinner () {
+  clearTimeout(statusTimeout)
+
+  statusFrame = undefined
+  statusTimeout = undefined
+  statusMessage = undefined
+
+  logUpdate.clear()
+  logUpdate.done()
+}
+
+/**
+ * Create a spinner around the process.
+ */
+export function spinner (promise: any) {
+  startSpinner()
+
+  return promiseFinally(Promise.resolve(promise), stopSpinner)
 }
 
 /**

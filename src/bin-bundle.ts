@@ -1,5 +1,6 @@
 import Promise = require('any-promise')
 import { bundle } from 'typings-core'
+import { spinner } from './support/cli'
 
 export function help () {
   return `
@@ -20,5 +21,5 @@ export interface Options {
 }
 
 export function exec (args: string[], options: Options): Promise<any> {
-  return bundle(options)
+  return spinner(bundle(options))
 }

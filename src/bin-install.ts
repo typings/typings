@@ -1,7 +1,7 @@
 import Promise = require('any-promise')
 import listify = require('listify')
 import { install, installDependenciesRaw, Emitter } from 'typings-core'
-import { archifyDependencyTree, logInfo, logError } from './support/cli'
+import { archifyDependencyTree, logInfo, logError, spinner } from './support/cli'
 
 export function help () {
   return `
@@ -68,7 +68,7 @@ export function exec (args: string[], options: Options): Promise<void> {
   }
 
   if (args.length === 0) {
-    return install(options)
+    return spinner(install(options))
       .then((result) => {
         const { name, tree } = result
 
@@ -93,7 +93,7 @@ export function exec (args: string[], options: Options): Promise<void> {
     }
   })
 
-  return installDependenciesRaw(args, options)
+  return spinner(installDependenciesRaw(args, options))
     .then(results => {
       for (const result of results) {
         const { name, tree } = result

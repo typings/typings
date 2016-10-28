@@ -1,5 +1,5 @@
 import Promise = require('any-promise')
-import { archifyDependencyTree } from './support/cli'
+import { archifyDependencyTree, spinner } from './support/cli'
 import { list } from 'typings-core'
 
 export function help () {
@@ -21,7 +21,7 @@ export interface Options {
 }
 
 export function exec (args: string[], options: Options): Promise<void> {
-  return list(options)
+  return spinner(list(options))
     .then(function (tree) {
       console.log(archifyDependencyTree({ tree, unicode: options.unicode }))
     })

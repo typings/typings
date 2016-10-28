@@ -1,6 +1,6 @@
 import Promise = require('any-promise')
 import { uninstallDependencies } from 'typings-core'
-import { logError } from './support/cli'
+import { logError, spinner } from './support/cli'
 
 export function help () {
   return `
@@ -34,5 +34,5 @@ export function exec (args: string[], options: Options): Promise<void> {
     return
   }
 
-  return uninstallDependencies(args, options)
+  return spinner(uninstallDependencies(args, options))
 }

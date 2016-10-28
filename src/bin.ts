@@ -8,7 +8,7 @@ import chalk = require('chalk')
 import updateNotifier = require('update-notifier')
 import extend = require('xtend')
 import { EventEmitter } from 'events'
-import { handle, logWarning, logInfo, setLoglevel } from './support/cli'
+import { handle, logWarning, logInfo, setLoglevel, setStatus } from './support/cli'
 import { Emitter } from 'typings-core'
 import { aliases } from './aliases'
 
@@ -38,7 +38,7 @@ interface Args extends Argv {
   emitter: Emitter
 }
 
-const unicodeConfig = process.env.TYPINGS_CONFIG_UNICODE || process.env.NPM_CONFIG_UNICODE
+const unicodeConfig = process.env['TYPINGS_CONFIG_UNICODE'] || process.env['NPM_CONFIG_UNICODE']
 
 const argv = minimist<Argv>(process.argv.slice(2), {
   boolean: ['version', 'save', 'saveDev', 'savePeer', 'global', 'verbose', 'production', 'unicode'],
@@ -55,7 +55,7 @@ const argv = minimist<Argv>(process.argv.slice(2), {
   },
   default: {
     unicode: unicodeConfig ? isTrue(unicodeConfig) : hasUnicode(),
-    production: process.env.NODE_ENV === 'production'
+    production: process.env['NODE_ENV'] === 'production'
   }
 })
 
@@ -114,6 +114,21 @@ emitter.on('prune', function ({ name, global, resolution }) {
   const suffix = chalk.gray(` (${resolution})` + (global ? ' (global)' : ''))
 
   logInfo(`${name}${suffix}`, 'prune')
+})
+
+// Log resolve status.
+emitter.on('resolve', function ({ src, name }) {
+  setStatus(`Resolving "${name}" from "${src}"`)
+})
+
+// Log resolved status.
+emitter.on('resolved', function ({ name }) {
+  setStatus(`Resolved "${name}"`)
+})
+
+// Log resolve status.
+emitter.on('compiledependency', function ({ name }) {
+  setStatus(`Compiling "${name}"`)
 })
 
 /**
