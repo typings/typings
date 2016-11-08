@@ -54,7 +54,7 @@
     "log-update": "^1.0.2",
     "minimist": "^1.2.0",
     "promise-finally": "^2.2.1",
-    "typings-core": "^1.6.1",
+    "typings-core": "^2.0.0",
     "update-notifier": "^1.0.0",
     "wordwrap": "^1.0.0",
     "xtend": "^4.0.1"
