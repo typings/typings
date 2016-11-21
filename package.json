@@ -65,7 +65,7 @@
     "rimraf": "^2.5.2",
     "ts-node": "^1.0.0",
     "tslint": "^3.5.0",
-    "tslint-config-standard": "^1.5.0",
+    "tslint-config-standard": "^2.0.0",
     "typescript": "^2.0.3"
   }
 }
