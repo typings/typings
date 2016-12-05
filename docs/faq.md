@@ -2,6 +2,7 @@
 
 - [Why do I need this?](#why)
 - [I'm getting a bunch of Duplicate Identifiers](#module-resolutions)
+- [Supported Node Versions](#supported-node-versions)
 - [My global dependencie(s) are not installed](#references)
 - [How do I use Typings with version control?](#how-do-i-use-typings-with-version-control)
 - [How do I write typings definitions?](#writing-typings-definitions)
