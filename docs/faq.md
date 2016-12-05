@@ -42,6 +42,10 @@ When you install typings, the default resolution is using "main" and is placed i
 /// <reference path="../typings/index.d.ts" />
 ```
 
+## Supported Node Versions 
+
+All versions of node ≥4 are supported. 
+
 ## References
 
 During installation, all references (E.g. `/// <reference path="..." />`) are stripped. They are stripped because of their ambiguous nature - it can not be determined if the reference should be included within the source or is a dependency. If the reference is something you require for the project to work, you can always install the references as dependencies manually.
