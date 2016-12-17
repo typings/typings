@@ -67,6 +67,7 @@ The [public registry](https://github.com/typings/registry) is maintained by the 
 * `npm` - dependencies from [NPM](http://npmjs.org/)
 * `github` - dependencies directly from [GitHub](https://github.com/) (E.g. [Duo](http://duojs.org/), [JSPM](http://jspm.io/))
 * `bitbucket` - dependencies directly from [Bitbucket](https://bitbucket.org)
+* `jspm`: - dependencies from installed [JSPM](http://jspm.io/) packages with typings distributed. Requires `jspm@0.17+`.
 * `bower` - dependencies from [Bower](http://bower.io/)
 * `common` - "standard" libraries without a known "source"
 * `shared` - shared library functionality
