@@ -17,6 +17,7 @@ Valid Locations:
   bitbucket:<org>/<repo>[/<path>][#<commitish>]
   npm:<pkg>[/<path>]
   bower:<pkg>[/<path>]
+  jspm:<pkg> (for jspm@0.17+)
   http(s)://<host>/<path>
 
   <source>    The registry mirror: "npm", "bower", "env", "global", "lib" or "dt"
