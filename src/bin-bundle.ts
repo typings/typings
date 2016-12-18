@@ -1,4 +1,3 @@
-import Promise = require('any-promise')
 import { bundle } from 'typings-core'
 import { spinner } from './support/cli'
 

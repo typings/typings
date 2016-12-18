@@ -1,5 +1,4 @@
 import chalk = require('chalk')
-import Promise = require('any-promise')
 import archy = require('archy')
 import listify = require('listify')
 import logUpdate = require('log-update')

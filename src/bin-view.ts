@@ -1,4 +1,3 @@
-import Promise = require('any-promise')
 import columnify = require('columnify')
 import { viewEntry, viewVersions } from 'typings-core'
 import { logError } from './support/cli'

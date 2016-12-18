@@ -1,4 +1,3 @@
-import Promise = require('any-promise')
 import { prune } from 'typings-core'
 import { spinner } from './support/cli'
 

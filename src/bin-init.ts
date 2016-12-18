@@ -1,4 +1,3 @@
-import Promise = require('any-promise')
 import { init } from 'typings-core'
 
 export function help () {

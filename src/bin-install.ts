@@ -1,4 +1,3 @@
-import Promise = require('any-promise')
 import listify = require('listify')
 import { install, installDependenciesRaw, Emitter } from 'typings-core'
 import { archifyDependencyTree, logInfo, logError, spinner } from './support/cli'
@@ -35,9 +34,9 @@ Options:
   [--global|-G]     Install and persist as a global definition
     [-SG]           Persist to "globalDependencies"
     [-DG]           Persist to "globalDevDependencies"
-  [--production]    Install only production dependencies (omits dev dependencies) and 
+  [--production]    Install only production dependencies (omits dev dependencies) and
                     is implictly set when environment variable NODE_ENV=production
-  [--no-production] Install production and dev dependencies (overrides environment 
+  [--no-production] Install production and dev dependencies (overrides environment
                     variable NODE_ENV=production)
 
 Aliases: i, in

@@ -1,4 +1,3 @@
-import Promise = require('any-promise')
 import { uninstallDependencies } from 'typings-core'
 import { logError, spinner } from './support/cli'
 

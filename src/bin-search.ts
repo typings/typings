@@ -1,4 +1,3 @@
-import Promise = require('any-promise')
 import columnify = require('columnify')
 import { search } from 'typings-core'
 import { spinner } from './support/cli'

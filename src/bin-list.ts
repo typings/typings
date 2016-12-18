@@ -1,4 +1,3 @@
-import Promise = require('any-promise')
 import { archifyDependencyTree, spinner } from './support/cli'
 import { list } from 'typings-core'
 
