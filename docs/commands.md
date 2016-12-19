@@ -12,7 +12,7 @@ Write a dependency to the `typings/` directory, optionally persisting it in `typ
 typings install (with no arguments, in package directory)
 typings install [<name>=]<location>
 
-  <name>      Module name of the installed definition
+  <name>      Alternate name of the definition
   <location>  The location to read from (described below)
 
 Valid Locations:
@@ -22,6 +22,7 @@ Valid Locations:
   bitbucket:<org>/<repo>[/<path>][#<commitish>]
   npm:<pkg>[/<path>]
   bower:<pkg>[/<path>]
+  jspm:<pkg> (for jspm@0.17+)
   http(s)://<host>/<path>
 
   <source>    The registry mirror: "npm", "bower", "env", "global", "lib" or "dt"
@@ -91,10 +92,11 @@ Aliases: la, ll, ls
 
 ## Bundle
 
-Bundle the current project types into a single global module.
+Bundle the current project types into an single global module.
 
 ```
 typings bundle --out <filepath>
+
 Options:
   [--out|-o] <filepath>  The bundled output file path
   [--global|-G]          Bundle as a global definition
