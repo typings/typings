@@ -31,7 +31,8 @@ but it looks like an external module. You'll need to remove the global option to
 ```
 
 To resolve this, you can either use the TypeScript@2.0 mechanism: `npm install @types/angular`, or
-drop the `--global` flag: `typings install dt~angular`
+
+drop the `--global` flag: `typings install dt~angular`.
 
 
 ## Quick Start
