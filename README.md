@@ -7,7 +7,7 @@
 
 > The TypeScript Definition Manager.
 
-## Notice Regarding TypeScript@2.0
+## Deprecation Notice: Regarding TypeScript@2.0
 
 **For users doing `typings install dt~<package> --global` and receiving error**
 
@@ -31,6 +31,8 @@ but it looks like an external module. You'll need to remove the global option to
 
 To resolve this, you can either use the TypeScript@2.0 mechanism: `npm install @types/angular`, or drop the `--global` flag: `typings install dt~angular`.
 
+`typings` will still be maintained as there are use-cases which aren't yet covered by TypeScript.
+If you are using NodeJS, most likely you can use `npm install @types/<package>` instead.
 
 ## Quick Start
 
