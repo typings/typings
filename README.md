@@ -25,8 +25,8 @@ Causing error similar to:
 ```sh
 > typings install dt~angular --global 
 
-typings ERR! message Attempted to compile "angular" as a global module, but it looks like an external module. You'll need to remove the global option to cont
-inue.
+typings ERR! message Attempted to compile "angular" as a global module,
+but it looks like an external module. You'll need to remove the global option to continue.
 ...
 ```
 
