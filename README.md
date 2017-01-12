@@ -7,6 +7,33 @@
 
 > The TypeScript Definition Manager.
 
+## Notice Regarding TypeScript@2.0
+
+**For users doing `typings install dt~<package> --global` and receiving error**
+
+Starting from `TypeScript@2.0`, TypeScript user can acquire typings through `npm install @types/<package>`.
+
+Those typings are coming from the [`type-2.0`](https://github.com/DefinitelyTyped/DefinitelyTyped/tree/types-2.0) branch of [DefinitlyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped).
+
+In the future, [redirect](https://github.com/Microsoft/types-publisher/issues/4) will be supported enabling contributors to contribute typings in their own repo as they are doing now through [`typings/registry`](https://github.com/typings/registry).
+
+Typings in [`type-2.0`](https://github.com/DefinitelyTyped/DefinitelyTyped/tree/types-2.0) branch of [DefinitlyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped) are written in external module format instead of the global format in the master branch of DT.
+
+Recently, these external module format typings begins to commit to the master branch of DT.
+Causing error similar to:
+
+```sh
+> typings install dt~angular --global 
+
+typings ERR! message Attempted to compile "angular" as a global module, but it looks like an external module. You'll need to remove the global option to cont
+inue.
+...
+```
+
+To resolve this, you can either use the TypeScript@2.0 mechanism: `npm install @types/angular`, or
+drop the `--global` flag: `typings install dt~angular`
+
+
 ## Quick Start
 
 ```sh
