@@ -45,7 +45,7 @@
     "archy": "^1.0.0",
     "bluebird": "^3.1.1",
     "chalk": "^1.0.0",
-    "cli-truncate": "^0.2.1",
+    "cli-truncate": "^1.0.0",
     "columnify": "^1.5.2",
     "elegant-spinner": "^1.0.1",
     "has-unicode": "^2.0.1",
