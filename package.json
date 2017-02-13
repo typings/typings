@@ -60,7 +60,7 @@
   },
   "devDependencies": {
     "dependency-check": "^2.5.1",
-    "nock": "^9.0.0",
+    "nock": "^9.0.6",
     "rimraf": "^2.5.2",
     "ts-node": "^2.0.0",
     "tslint": "^4.0.2",
