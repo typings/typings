@@ -59,7 +59,7 @@ let loglevel: number = loglevels['info']
 /**
  * Set the level of logs to emit.
  */
-export function setLoglevel(level: string): number | undefined {
+export function setLoglevel (level: string): number | undefined {
   if (!loglevels.hasOwnProperty(level)) {
     logError(`invalid log level (options are ${listify(Object.keys(loglevels))})`)
     return
