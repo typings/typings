@@ -1,3 +1,4 @@
+import chalk = require('chalk')
 import { uninstallDependencies } from 'typings-core'
 import { logError, spinner } from './support/cli'
 
@@ -34,4 +35,11 @@ export function exec (args: string[], options: Options): Promise<void> {
   }
 
   return spinner(uninstallDependencies(args, options))
+    .then((result) => {
+      Object.keys(result.resolutions).forEach((name) => {
+        args.forEach((arg) => {
+          console.log(`- ${arg} ${chalk.grey(`(${name})`)}`)
+        })
+      })
+    })
 }

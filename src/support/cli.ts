@@ -164,7 +164,7 @@ export function stopSpinner () {
 /**
  * Create a spinner around the process.
  */
-export function spinner (promise: any) {
+export function spinner <T> (promise: Promise<T> | T): Promise<T> {
   startSpinner()
 
   return promiseFinally(Promise.resolve(promise), stopSpinner)
@@ -269,12 +269,7 @@ export function archifyDependencyTree (options: ArchifyOptions) {
     return result
   }
 
-  const archyTree = traverse(result, options.tree)
+  const tree = traverse(result, options.tree)
 
-  // Print "no dependencies" on empty tree.
-  if (archyTree.nodes.length === 0) {
-    archyTree.nodes.push(chalk.gray('(No dependencies)'))
-  }
-
-  return archy(archyTree, '', { unicode: options.unicode })
+  return archy(tree, '', { unicode: options.unicode })
 }
