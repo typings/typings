@@ -1,5 +1,9 @@
 language: node_js
 
+branches:
+  only:
+    - master
+    
 notifications:
   email:
     on_success: never
