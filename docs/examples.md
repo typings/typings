@@ -45,6 +45,9 @@ Exposing a single function.
 ```ts
 declare function domready (...): any;
 
+// This allows consumer to do `import * as domready from 'domready';`
+declare namespace domready { };
+
 export = domready
 ```
 
@@ -55,6 +58,9 @@ Function with overloads.
 ```ts
 declare function xtend <A> (a: A): A;
 declare function xtend <A, B> (a: A, b: B): A & B;
+
+declare namespace xtend { };
+
 export = xtend;
 ```
 
