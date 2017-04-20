@@ -50,7 +50,7 @@
     "elegant-spinner": "^1.0.1",
     "has-unicode": "^2.0.1",
     "listify": "^1.0.0",
-    "log-update": "^1.0.2",
+    "log-update": "^2.0.0",
     "minimist": "^1.2.0",
     "promise-finally": "^3.0.0",
     "typings-core": "^2.3.3",
