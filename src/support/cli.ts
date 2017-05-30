@@ -134,9 +134,8 @@ export function render () {
     }
 
     logUpdate(truncate(status, (process.stdout as any).columns))
-
-    statusTimeout = setTimeout(render, 50)
   }
+  statusTimeout = setTimeout(render, 50)
 }
 
 /**
