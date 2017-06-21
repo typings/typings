@@ -9,30 +9,22 @@
 
 ## Deprecation Notice: Regarding TypeScript@2.0
 
-**For users doing `typings install dt~<package> --global` and receiving error**
+**For users doing `typings install dt~<package> --global` and receiving errors.**
 
-Starting from `TypeScript@2.0`, TypeScript user can acquire typings through `npm install @types/<package>`.
+Starting from TypeScript 2.0, users can install typings using `npm install @types/<package>`. These typings are coming from [DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped). In the future, we hope [redirects](https://github.com/Microsoft/types-publisher/issues/4) will be enabled to support existing maintainers to contribute effectively to NPM's `@types` as they did to [`typings/registry`](https://github.com/typings/registry).
 
-Those typings are coming [DefinitlyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped).
-
-In the future, [redirect](https://github.com/Microsoft/types-publisher/issues/4) will be supported enabling contributors to contribute typings in their own repo as they are doing now through [`typings/registry`](https://github.com/typings/registry).
-
-Typings in are now written in external module format instead of the global format in the master branch of DT.
-
-This causes error similar to:
+Typings on DefinitelyTyped have also moved to the external module format supported by TypeScript. This finally solved the real problem that Typings was trying to solve! It also means it will cause errors such as:
 
 ```sh
 > typings install dt~angular --global 
 
 typings ERR! message Attempted to compile "angular" as a global module,
 but it looks like an external module. You'll need to remove the global option to continue.
-
 ```
 
-To resolve this, you can either use the TypeScript@2.0 mechanism: `npm install @types/angular`, or drop the `--global` flag: `typings install dt~angular`.
+To resolve this, we recommend moving to TypeScript 2.0's official aquisition method (`npm install @types/angular`). You can also drop the `--global` flag from `typings`, though some definitions on DefinitelyTyped may not work with the Typings approach because of new TypeScript features (namely UMD namespaces).
 
-`typings` will still be maintained as there are use-cases which aren't yet covered by TypeScript.
-If you are using NodeJS, most likely you can use `npm install @types/<package>` instead.
+This project will remain operational for the foreseeable future, but is effectively deprecated. New projects should use `@types` from NPM.
 
 ## Quick Start
 
