@@ -44,7 +44,7 @@
   "dependencies": {
     "archy": "^1.0.0",
     "bluebird": "^3.1.1",
-    "chalk": "^1.0.0",
+    "chalk": "^2.0.0",
     "cli-truncate": "^1.0.0",
     "columnify": "^1.5.2",
     "elegant-spinner": "^1.0.1",
